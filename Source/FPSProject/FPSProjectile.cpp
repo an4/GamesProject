@@ -41,5 +41,11 @@ void AFPSProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, F
     if (OtherActor && (OtherActor != this) && OtherComp)
     {
         OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
+
+		// Damage the other actor! TODO: Is there a proper way to use the damage system in UE4?
+		const float damage = 5.0f;
+		// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
+		FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
+		OtherActor->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
     }
 }

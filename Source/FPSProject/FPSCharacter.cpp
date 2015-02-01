@@ -2,6 +2,7 @@
 #include "FPSProject.h"
 #include "FPSProjectile.h"
 #include "FPSCharacter.h"
+#include "UnrealNetwork.h"
 
 AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -25,6 +26,21 @@ AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
     Mesh->SetOwnerNoSee(true);
 }
 
+float AFPSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// TODO: Implement this properly ourselves (with damage type handlers!)
+	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
+	Health -= DamageAmount;
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We took damage!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+	}
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void AFPSCharacter::BeginPlay()
 {
     Super::BeginPlay();
@@ -33,6 +49,9 @@ void AFPSCharacter::BeginPlay()
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We are using FPSCharacter!"));
     }
+
+	// Set starting health
+	Health = 100.0f;
 }
 
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
@@ -51,7 +70,8 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 
 void AFPSCharacter::MoveForward(float Value)
 {
-    if ((Controller != NULL) && (Value != 0.0f))
+	// TODO: Health test - forward disabled when health gone
+    if ((Controller != NULL) && (Value != 0.0f) && (Health > 0.0f))
     {
         // find out which way is forward
         FRotator Rotation = Controller->GetControlRotation();
@@ -117,4 +137,13 @@ void AFPSCharacter::OnFire()
             }
         }
     }
+}
+
+// Handles replication of properties to clients in multiplayer!
+void AFPSCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Replicate health to all clients.
+	DOREPLIFETIME(AFPSCharacter, Health);
 }

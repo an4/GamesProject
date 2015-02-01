@@ -24,6 +24,10 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
         UFUNCTION()
         void OnFire();
 
+		// handles damage
+		UFUNCTION()
+		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
         /** Gun muzzle's offset from the camera location */
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
         FVector MuzzleOffset;
@@ -39,6 +43,10 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
         /** Pawn mesh: 1st person view (arms; seen only by self) */
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         USkeletalMeshComponent* FirstPersonMesh;
+
+		/** Property to store the character's health. */
+		UPROPERTY(Replicated)
+		float Health;
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
