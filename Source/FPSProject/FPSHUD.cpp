@@ -2,6 +2,7 @@
 
 #include "FPSProject.h"
 #include "FPSHUD.h"
+#include "FPSCharacter.h"
 
 AFPSHUD::AFPSHUD(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -10,6 +11,9 @@ AFPSHUD::AFPSHUD(const FObjectInitializer& ObjectInitializer)
     static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTexObj(TEXT("Texture2D'/Game/crosshair.crosshair'"));
     CrosshairTex = CrosshairTexObj.Object;
 
+	// Grab a default font
+	static ConstructorHelpers::FObjectFinder<UFont> DefaultFontObj(TEXT("Font'/Game/Fonts/DroidSans'"));
+	DefaultFont = DefaultFontObj.Object;
 }
 
 void AFPSHUD::DrawHUD()
@@ -25,6 +29,22 @@ void AFPSHUD::DrawHUD()
     FCanvasTileItem TileItem(CrosshairDrawPosition, CrosshairTex->Resource, FLinearColor::White);
     TileItem.BlendMode = SE_BLEND_Translucent;
     Canvas->DrawItem(TileItem);
+
+	// This is all dubious!
+	//AActor *Owner = this->GetOwner();
+
+	//if (Owner && Owner->IsA<AFPSCharacter>()) {
+	//	AFPSCharacter *PlayerOwner = static_cast<AFPSCharacter *>(Owner);
+
+	//	Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
+	//}
+	//else {
+	//	Canvas->DrawText(DefaultFont, TEXT("IDK"), 10.0f, 10.0f);
+	//}
+	if (GetOwningPawn() != NULL) {
+		AFPSCharacter *PlayerOwner = dynamic_cast<AFPSCharacter *>(GetOwningPawn());
+		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
+	}
 }
 
 

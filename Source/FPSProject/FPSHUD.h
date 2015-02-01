@@ -20,5 +20,6 @@ class FPSPROJECT_API AFPSHUD : public AHUD
 private:
     /** Crosshair asset pointer */
     UTexture2D* CrosshairTex;
+	UFont* DefaultFont;
 	
 };
