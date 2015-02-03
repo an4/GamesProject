@@ -12,14 +12,43 @@ UCLASS()
 class FPSPROJECT_API AGPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
-	// Following code taken from the replication wiki.
 
-	bool bSomeBool;
+public:
+	virtual void SetupInputComponent() override;
 
-	void SetSomeBool(bool bNewSomeBool);
+	//handles moving forward/backward
+    UFUNCTION()
+    void MoveForward(float Val);
+    //handles strafing
+    UFUNCTION()
+    void MoveRight(float Val);
 
-	UFUNCTION(reliable, server, WithValidation)
-	void ServerSetSomeBool(bool bNewSomeBool);
+	//handles turning
+	UFUNCTION()
+	void AddControllerYawInput(float Value);
+	//handles up/down look
+	UFUNCTION()
+	void AddControllerPitchInput(float Value);
+
+    //sets jump flag when key is pressed
+    UFUNCTION()
+    void OnStartJump();
+    //clears jump flag when key is released
+    UFUNCTION()
+	void OnStopJump();
+
+	//handles firing
+	void OnFire();
+	//UFUNCTION(Reliable, Server, WithValidation)
+	//void ServerOnFire();
+
+	//// Following code taken from the replication wiki.
+
+	//bool bSomeBool;
+
+	//void SetSomeBool(bool bNewSomeBool);
+
+	//UFUNCTION(reliable, server, WithValidation)
+	//void ServerSetSomeBool(bool bNewSomeBool);
 	
 };

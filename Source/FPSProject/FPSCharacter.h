@@ -24,6 +24,9 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
         UFUNCTION()
         void OnFire();
 
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFire();
+
 		// handles damage
 		UFUNCTION()
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
@@ -48,21 +51,22 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
 		UPROPERTY(Replicated)
 		float Health;
 
+		//sets jump flag when key is pressed
+		UFUNCTION()
+		void OnStartJump();
+		//clears jump flag when key is released
+		UFUNCTION()
+		void OnStopJump();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-        //handles moving forward/backward
-        UFUNCTION()
-        void MoveForward(float Val);
-        //handles strafing
-        UFUNCTION()
-        void MoveRight(float Val);
+        ////handles moving forward/backward
+        //UFUNCTION()
+        //void MoveForward(float Val);
+        ////handles strafing
+        //UFUNCTION()
+        //void MoveRight(float Val);
 
-        //sets jump flag when key is pressed
-        UFUNCTION()
-        void OnStartJump();
-        //clears jump flag when key is released
-        UFUNCTION()
-        void OnStopJump();
 	
 };

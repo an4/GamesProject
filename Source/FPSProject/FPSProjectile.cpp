@@ -25,6 +25,10 @@ AFPSProjectile::AFPSProjectile(const FObjectInitializer& ObjectInitializer)
     // Die after 3 seconds by default
     InitialLifeSpan = 3.0f;
 
+	// Instance on clients.
+	bNetLoadOnClient = true;
+	bReplicates = true;
+	bReplicateMovement = true;
 }
 
 void AFPSProjectile::InitVelocity(const FVector& ShootDirection)
