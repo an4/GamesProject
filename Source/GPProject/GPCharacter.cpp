@@ -109,41 +109,45 @@ void AGPCharacter::OnStopJump()
     bPressedJump = false;
 }
 
+// Abstract fire conditions to a function, as if the client attempts to fire erroneously they will be dropped!
+bool AGPCharacter::CanFire()
+{
+	return Health > 0.0f;
+}
+
 void AGPCharacter::OnFire()
 {
-
-	/*if (GEngine)
+	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
+	if (CanFire())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Warning: Calling char OnFire()"));
-	}*/
-    // try and fire a projectile
-	ServerOnFire();
+		ServerOnFire();
+	}
 }
 
 bool AGPCharacter::ServerOnFire_Validate()
 {
-	return true;
+	// Only allow the character to fire if they have health.
+	return CanFire();
 }
 
 void AGPCharacter::ServerOnFire_Implementation()
 {
-
-	/*if (GEngine)
-	{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Warning: Calling char OnFire()"));
-	}*/
-	// try and fire a projectile
-
-	if (Role < ROLE_Authority) {
-		return;
-	}
-
-	if (ProjectileClass != NULL)
-	{
-		// Get the camera transform
+	// If we have been validated by the server, then we need to broadcast the fire event to all clients.
+	if (Role == ROLE_Authority) {
+		// TODO: Move this client side and validate?
 		FVector CameraLoc;
 		FRotator CameraRot;
 		GetActorEyesViewPoint(CameraLoc, CameraRot);
+
+		BroadcastOnFire(CameraLoc, CameraRot);
+	}
+}
+
+void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot)
+{
+	if (ProjectileClass != NULL)
+	{
+		// Get the camera transform
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the camera to find the final muzzle position
 		FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
 		FRotator MuzzleRotation = CameraRot;
