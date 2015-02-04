@@ -3,16 +3,16 @@
 #pragma once
 
 #include "GameFramework/HUD.h"
-#include "FPSHUD.generated.h"
+#include "GPHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSPROJECT_API AFPSHUD : public AHUD
+class GPPROJECT_API AGPHUD : public AHUD
 {
 	GENERATED_BODY()
-    AFPSHUD(const FObjectInitializer& ObjectInitializer);
+    AGPHUD(const FObjectInitializer& ObjectInitializer);
 
     /** Primary draw call for the HUD */
     virtual void DrawHUD() override;

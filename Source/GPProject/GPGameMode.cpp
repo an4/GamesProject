@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "FPSProject.h"
-#include "FPSGameMode.h"
-#include "FPSHUD.h"
+#include "GPProject.h"
+#include "GPGameMode.h"
+#include "GPHUD.h"
 #include "GPPlayerController.h"
 
 
-AFPSGameMode::AFPSGameMode(const class FObjectInitializer& ObjectInitializer)
+AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
 	// set the player controller class to our own subclass
@@ -20,10 +20,10 @@ AFPSGameMode::AFPSGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
-    HUDClass = AFPSHUD::StaticClass();
+    HUDClass = AGPHUD::StaticClass();
 }
 
-void AFPSGameMode::StartPlay()
+void AGPGameMode::StartPlay()
 {
     Super::StartPlay();
 

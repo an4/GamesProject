@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class FPSPROJECT_API AGPCharacter : public ACharacter
+class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
     
@@ -37,7 +37,7 @@ class FPSPROJECT_API AGPCharacter : public ACharacter
 
         /** Projectile class to spawn */
         UPROPERTY(EditDefaultsOnly, Category = Projectile)
-        TSubclassOf<class AFPSProjectile> ProjectileClass;
+        TSubclassOf<class AGPProjectile> ProjectileClass;
 
         /** First person camera */
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)

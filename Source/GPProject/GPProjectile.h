@@ -3,20 +3,20 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "FPSProjectile.generated.h"
+#include "GPProjectile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSPROJECT_API AFPSProjectile : public AActor
+class GPPROJECT_API AGPProjectile : public AActor
 {
 	GENERATED_BODY()
 	/** Sphere collision component */
     UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
     USphereComponent* CollisionComp;
 
-    AFPSProjectile(const FObjectInitializer& ObjectInitializer);
+    AGPProjectile(const FObjectInitializer& ObjectInitializer);
 	
     /** Projectile movement component */
     public:

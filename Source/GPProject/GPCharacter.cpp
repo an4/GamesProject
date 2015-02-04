@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-#include "FPSProject.h"
-#include "FPSProjectile.h"
+#include "GPProject.h"
+#include "GPProjectile.h"
 #include "GPCharacter.h"
 #include "UnrealNetwork.h"
 
@@ -155,7 +155,7 @@ void AGPCharacter::ServerOnFire_Implementation()
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			// spawn the projectile at the muzzle
-			AFPSProjectile* const Projectile = World->SpawnActor<AFPSProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
 				// find launch direction

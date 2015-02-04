@@ -5,7 +5,7 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "FPSProject",
+			"Name": "GPProject",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "FPSProject.h"
-#include "FPSHUD.h"
+#include "GPProject.h"
+#include "GPHUD.h"
 #include "GPCharacter.h"
 
-AFPSHUD::AFPSHUD(const FObjectInitializer& ObjectInitializer)
+AGPHUD::AGPHUD(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     // Set the crosshair texture
@@ -16,7 +16,7 @@ AFPSHUD::AFPSHUD(const FObjectInitializer& ObjectInitializer)
 	DefaultFont = DefaultFontObj.Object;
 }
 
-void AFPSHUD::DrawHUD()
+void AGPHUD::DrawHUD()
 {
     Super::DrawHUD();
     // Draw very simple crosshair

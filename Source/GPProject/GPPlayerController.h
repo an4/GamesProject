@@ -9,7 +9,7 @@
  * 
  */
 UCLASS()
-class FPSPROJECT_API AGPPlayerController : public APlayerController
+class GPPROJECT_API AGPPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 

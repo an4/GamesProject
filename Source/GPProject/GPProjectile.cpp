@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "FPSProject.h"
-#include "FPSProjectile.h"
+#include "GPProject.h"
+#include "GPProjectile.h"
 
-AFPSProjectile::AFPSProjectile(const FObjectInitializer& ObjectInitializer)
+AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     // Use a sphere as a simple collision representation
     CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("SphereComp"));
     CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
     CollisionComp->InitSphereRadius(15.0f);
-    CollisionComp->OnComponentHit.AddDynamic(this, &AFPSProjectile::OnHit);
+    CollisionComp->OnComponentHit.AddDynamic(this, &AGPProjectile::OnHit);
     RootComponent = CollisionComp;
 
     // Use a ProjectileMovementComponent to govern this projectile's movement
@@ -31,7 +31,7 @@ AFPSProjectile::AFPSProjectile(const FObjectInitializer& ObjectInitializer)
 	bReplicateMovement = true;
 }
 
-void AFPSProjectile::InitVelocity(const FVector& ShootDirection)
+void AGPProjectile::InitVelocity(const FVector& ShootDirection)
 {
     if (ProjectileMovement)
     {
@@ -40,7 +40,7 @@ void AFPSProjectile::InitVelocity(const FVector& ShootDirection)
     }
 }
 
-void AFPSProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     if (OtherActor && (OtherActor != this) && OtherComp)
     {
