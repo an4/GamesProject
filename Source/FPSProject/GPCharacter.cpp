@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "FPSProject.h"
 #include "FPSProjectile.h"
-#include "FPSCharacter.h"
+#include "GPCharacter.h"
 #include "UnrealNetwork.h"
 
-AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
+AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     // Create a CameraComponent 
@@ -26,7 +26,7 @@ AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
     Mesh->SetOwnerNoSee(true);
 }
 
-float AFPSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
@@ -41,35 +41,35 @@ float AFPSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
-void AFPSCharacter::BeginPlay()
+void AGPCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We are using FPSCharacter!"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We are using GPCharacter!"));
     }
 
 	// Set starting health
 	Health = 100.0f;
 }
 
-void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
+void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Setting up input"));
     // set up gameplay key bindings
-    //InputComponent->BindAxis("MoveForward", this, &AFPSCharacter::MoveForward);
-    //InputComponent->BindAxis("MoveRight", this, &AFPSCharacter::MoveRight);
-    //InputComponent->BindAxis("Turn", this, &AFPSCharacter::AddControllerYawInput);
-    //InputComponent->BindAxis("LookUp", this, &AFPSCharacter::AddControllerPitchInput);
+    //InputComponent->BindAxis("MoveForward", this, &AGPCharacter::MoveForward);
+    //InputComponent->BindAxis("MoveRight", this, &AGPCharacter::MoveRight);
+    //InputComponent->BindAxis("Turn", this, &AGPCharacter::AddControllerYawInput);
+    //InputComponent->BindAxis("LookUp", this, &AGPCharacter::AddControllerPitchInput);
 
-    InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnStartJump);
-    InputComponent->BindAction("Jump", IE_Released, this, &AFPSCharacter::OnStopJump);
+    InputComponent->BindAction("Jump", IE_Pressed, this, &AGPCharacter::OnStartJump);
+    InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
 
-    //InputComponent->BindAction("Fire", IE_Pressed, this, &AFPSCharacter::OnFire);
+    //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
 }
 
-//void AFPSCharacter::MoveForward(float Value)
+//void AGPCharacter::MoveForward(float Value)
 //{
 //	// TODO: Health test - forward disabled when health gone
 //    if ((Controller != NULL) && (Value != 0.0f) && (Health > 0.0f))
@@ -87,7 +87,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 //    }
 //}
 //
-//void AFPSCharacter::MoveRight(float Value)
+//void AGPCharacter::MoveRight(float Value)
 //{
 //    if ((Controller != NULL) && (Value != 0.0f))
 //    {
@@ -99,17 +99,17 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 //    }
 //}
 
-void AFPSCharacter::OnStartJump()
+void AGPCharacter::OnStartJump()
 {
     bPressedJump = true;
 }
 
-void AFPSCharacter::OnStopJump()
+void AGPCharacter::OnStopJump()
 {
     bPressedJump = false;
 }
 
-void AFPSCharacter::OnFire()
+void AGPCharacter::OnFire()
 {
 
 	/*if (GEngine)
@@ -120,12 +120,12 @@ void AFPSCharacter::OnFire()
 	ServerOnFire();
 }
 
-bool AFPSCharacter::ServerOnFire_Validate()
+bool AGPCharacter::ServerOnFire_Validate()
 {
 	return true;
 }
 
-void AFPSCharacter::ServerOnFire_Implementation()
+void AGPCharacter::ServerOnFire_Implementation()
 {
 
 	/*if (GEngine)
@@ -167,10 +167,10 @@ void AFPSCharacter::ServerOnFire_Implementation()
 }
 
 // Handles replication of properties to clients in multiplayer!
-void AFPSCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// Replicate health to all clients.
-	DOREPLIFETIME(AFPSCharacter, Health);
+	DOREPLIFETIME(AGPCharacter, Health);
 }

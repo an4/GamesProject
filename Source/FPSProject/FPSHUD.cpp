@@ -2,7 +2,7 @@
 
 #include "FPSProject.h"
 #include "FPSHUD.h"
-#include "FPSCharacter.h"
+#include "GPCharacter.h"
 
 AFPSHUD::AFPSHUD(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -33,8 +33,8 @@ void AFPSHUD::DrawHUD()
 	// This is all dubious!
 	//AActor *Owner = this->GetOwner();
 
-	//if (Owner && Owner->IsA<AFPSCharacter>()) {
-	//	AFPSCharacter *PlayerOwner = static_cast<AFPSCharacter *>(Owner);
+	//if (Owner && Owner->IsA<AGPCharacter>()) {
+	//	AGPCharacter *PlayerOwner = static_cast<AGPCharacter *>(Owner);
 
 	//	Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
 	//}
@@ -42,7 +42,7 @@ void AFPSHUD::DrawHUD()
 	//	Canvas->DrawText(DefaultFont, TEXT("IDK"), 10.0f, 10.0f);
 	//}
 	if (GetOwningPawn() != NULL) {
-		AFPSCharacter *PlayerOwner = dynamic_cast<AFPSCharacter *>(GetOwningPawn());
+		AGPCharacter *PlayerOwner = dynamic_cast<AGPCharacter *>(GetOwningPawn());
 		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
 	}
 }

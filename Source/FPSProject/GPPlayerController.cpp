@@ -2,7 +2,7 @@
 
 #include "FPSProject.h"
 #include "GPPlayerController.h"
-#include "FPSCharacter.h"
+#include "GPCharacter.h"
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -72,7 +72,7 @@ void AGPPlayerController::OnStartJump()
 {
 	if (GetCharacter() != NULL)
 	{
-		Cast<AFPSCharacter>(GetCharacter())->OnStartJump();
+		Cast<AGPCharacter>(GetCharacter())->OnStartJump();
 	}
 }
 
@@ -80,7 +80,7 @@ void AGPPlayerController::OnStopJump()
 {
 	if (GetCharacter() != NULL)
 	{
-		Cast<AFPSCharacter>(GetCharacter())->OnStopJump();
+		Cast<AGPCharacter>(GetCharacter())->OnStopJump();
 	}
 }
 
@@ -88,7 +88,7 @@ void AGPPlayerController::OnFire()
 {
 	if (GetCharacter() != NULL)
 	{
-		Cast<AFPSCharacter>(GetCharacter())->OnFire();
+		Cast<AGPCharacter>(GetCharacter())->OnFire();
 	}
 }
 
@@ -102,7 +102,7 @@ void AGPPlayerController::OnFire()
 //{
 //	if (GetCharacter() != NULL)
 //	{
-//		Cast<AFPSCharacter>(GetCharacter())->OnFire();
+//		Cast<AGPCharacter>(GetCharacter())->OnFire();
 //	}
 //}
 

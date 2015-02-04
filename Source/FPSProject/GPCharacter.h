@@ -3,18 +3,18 @@
 #pragma once
 
 #include "GameFramework/Character.h"
-#include "FPSCharacter.generated.h"
+#include "GPCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSPROJECT_API AFPSCharacter : public ACharacter
+class FPSPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
     
-    // Constructor for AFPSCharacter
-    AFPSCharacter(const FObjectInitializer& ObjectInitializer);
+    // Constructor for AGPCharacter
+    AGPCharacter(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
 

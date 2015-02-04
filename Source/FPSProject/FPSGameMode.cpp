@@ -15,7 +15,7 @@ AFPSGameMode::AFPSGameMode(const class FObjectInitializer& ObjectInitializer)
 	PlayerControllerClass = AGPPlayerController::StaticClass();
 
     // set default pawn class to our Blueprinted character
-    static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_FPSCharacter.BP_FPSCharacter'"));
+    static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
     if (PlayerPawnObject.Object != NULL)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
