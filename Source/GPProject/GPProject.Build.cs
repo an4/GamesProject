@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class FPSProject : ModuleRules
+public class GPProject : ModuleRules
 {
-	public FPSProject(TargetInfo Target)
+	public GPProject(TargetInfo Target)
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 

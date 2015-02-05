@@ -3,18 +3,18 @@
 #pragma once
 
 #include "GameFramework/Character.h"
-#include "FPSCharacter.generated.h"
+#include "GPCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSPROJECT_API AFPSCharacter : public ACharacter
+class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
     
-    // Constructor for AFPSCharacter
-    AFPSCharacter(const FObjectInitializer& ObjectInitializer);
+    // Constructor for AGPCharacter
+    AGPCharacter(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
 
@@ -24,13 +24,20 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
         UFUNCTION()
         void OnFire();
 
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFire();
+
+		// handles damage
+		UFUNCTION()
+		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
         /** Gun muzzle's offset from the camera location */
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
         FVector MuzzleOffset;
 
         /** Projectile class to spawn */
         UPROPERTY(EditDefaultsOnly, Category = Projectile)
-        TSubclassOf<class AFPSProjectile> ProjectileClass;
+        TSubclassOf<class AGPProjectile> ProjectileClass;
 
         /** First person camera */
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -40,21 +47,26 @@ class FPSPROJECT_API AFPSCharacter : public ACharacter
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         USkeletalMeshComponent* FirstPersonMesh;
 
+		/** Property to store the character's health. */
+		UPROPERTY(Replicated)
+		float Health;
+
+		//sets jump flag when key is pressed
+		UFUNCTION()
+		void OnStartJump();
+		//clears jump flag when key is released
+		UFUNCTION()
+		void OnStopJump();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-        //handles moving forward/backward
-        UFUNCTION()
-        void MoveForward(float Val);
-        //handles strafing
-        UFUNCTION()
-        void MoveRight(float Val);
+        ////handles moving forward/backward
+        //UFUNCTION()
+        //void MoveForward(float Val);
+        ////handles strafing
+        //UFUNCTION()
+        //void MoveRight(float Val);
 
-        //sets jump flag when key is pressed
-        UFUNCTION()
-        void OnStartJump();
-        //clears jump flag when key is released
-        UFUNCTION()
-        void OnStopJump();
 	
 };

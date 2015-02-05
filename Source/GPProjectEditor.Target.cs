@@ -3,9 +3,9 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class FPSProjectEditorTarget : TargetRules
+public class GPProjectEditorTarget : TargetRules
 {
-	public FPSProjectEditorTarget(TargetInfo Target)
+	public GPProjectEditorTarget(TargetInfo Target)
 	{
 		Type = TargetType.Editor;
 	}
@@ -20,6 +20,6 @@ public class FPSProjectEditorTarget : TargetRules
 		ref List<string> OutExtraModuleNames
 		)
 	{
-		OutExtraModuleNames.AddRange( new string[] { "FPSProject" } );
+		OutExtraModuleNames.AddRange( new string[] { "GPProject" } );
 	}
 }
