@@ -16,7 +16,6 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 	virtual void StartPlay() override;
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
 
-	AGPBuilding building;
 	FActorSpawnParameters SpawnParams;
 
 	public:

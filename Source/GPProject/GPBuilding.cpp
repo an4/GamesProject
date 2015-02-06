@@ -3,11 +3,12 @@
 #include "GPProject.h"
 #include "GPBuilding.h"
 
-
-
-
 AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	//BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Meshes/BP_Cube"));
+    DummyRoot = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("RootComponent"));
+    RootComponent = DummyRoot;
+
+    BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
+    BuildingMesh->AttachTo(RootComponent);
 }

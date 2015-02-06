@@ -13,10 +13,13 @@ class GPPROJECT_API AGPBuilding : public AActor
 {
 	GENERATED_BODY()
 
+	AGPBuilding(const FObjectInitializer& ObjectInitializer);
+    
+public:
 
-	public:
-		//UStaticMeshComponent* BuildingMesh;
-		AGPBuilding(const FObjectInitializer& ObjectInitializer);
-
+    UPROPERTY()
+    class USceneComponent* DummyRoot;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+    UStaticMeshComponent* BuildingMesh;
 };
