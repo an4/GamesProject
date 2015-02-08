@@ -44,6 +44,8 @@ void AGPHUD::DrawHUD()
 	if (GetOwningPawn() != NULL) {
 		AGPCharacter *PlayerOwner = dynamic_cast<AGPCharacter *>(GetOwningPawn());
 		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
+		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->GetActorLocation().X), 50.0f, 10.0f);
+		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->GetActorLocation().Y), 100.0f, 10.0f);
 	}
 }
 
