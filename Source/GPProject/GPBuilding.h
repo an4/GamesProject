@@ -14,9 +14,13 @@ class GPPROJECT_API AGPBuilding : public AActor
 	GENERATED_BODY()
 
 	AGPBuilding(const FObjectInitializer& ObjectInitializer);
+	virtual void BeginPlay() override;
     
 public:
 
     UPROPERTY()
     class USceneComponent* DummyRoot;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+	UStaticMeshComponent* BuildingMesh;
 };
