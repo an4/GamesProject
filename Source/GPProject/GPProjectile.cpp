@@ -27,8 +27,8 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
 
 	// Instance on clients.
 	bNetLoadOnClient = true;
-	bReplicates = true;
-	bReplicateMovement = true;
+	bReplicates = false;
+	bReplicateMovement = false;
 }
 
 void AGPProjectile::InitVelocity(const FVector& ShootDirection)
@@ -42,7 +42,7 @@ void AGPProjectile::InitVelocity(const FVector& ShootDirection)
 
 void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (OtherActor && (OtherActor != this) && OtherComp)
+    if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
     {
         OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
 

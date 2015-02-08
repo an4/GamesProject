@@ -18,6 +18,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     virtual void BeginPlay() override;
 
+	UFUNCTION()
+	bool CanFire();
 	
     public:
         //handles firing
@@ -26,6 +28,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnFire();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
 
 		// handles damage
 		UFUNCTION()
