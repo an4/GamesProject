@@ -7,8 +7,8 @@ AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
     DummyRoot = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("RootComponent"));
-    RootComponent = DummyRoot;
+    //RootComponent = DummyRoot;
 
-    BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
-    BuildingMesh->AttachTo(RootComponent);
+    //BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
+    //BuildingMesh->AttachTo(RootComponent);
 }

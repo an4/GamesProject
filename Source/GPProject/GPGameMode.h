@@ -16,12 +16,12 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 	virtual void StartPlay() override;
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
 
-	FActorSpawnParameters SpawnParams;
-
 	public:
 		/** Building class to spawn */
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
+
+		void AGPGameMode::SpawnBuilding();
 
 
 

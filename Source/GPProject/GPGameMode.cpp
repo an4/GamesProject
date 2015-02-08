@@ -27,28 +27,38 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 void AGPGameMode::StartPlay()
 {
     Super::StartPlay();
-
+	SpawnBuilding();
     StartMatch();
 
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO WORLD"));
     }
+}
 
-    FVector const buildingLocation(-230.0f, 100.0f, 300.0f);
-    FRotator const buildingRotation(100.0f, 100.0f, 100.0f);
+void AGPGameMode::SpawnBuilding()
+{
+	FVector const buildingLocation(-230.0f, 100.0f, 300.0f);
+	FRotator const buildingRotation(100.0f, 100.0f, 100.0f);
 
-    UWorld* const World = GetWorld();
+	UWorld* const World = GetWorld();
 
-    if (World)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO Building"));
-        
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = Instigator;
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 
-        AGPBuilding* const building = World->SpawnActor<AGPBuilding>(BuildingClass, buildingLocation, buildingRotation, SpawnParams);
-        //building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), buildingLocation);
-        //building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), &buildingLocation, &buildingRotation, SpawnParams);
-    }
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
+
+		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), buildingLocation, buildingRotation, SpawnParams);
+		if (building != NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO Building"));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Not so HELLO Building"));
+		}
+		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), buildingLocation);
+		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), &buildingLocation, &buildingRotation, SpawnParams);
+	}
 }

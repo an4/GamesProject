@@ -19,7 +19,4 @@ public:
 
     UPROPERTY()
     class USceneComponent* DummyRoot;
-	
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
-    UStaticMeshComponent* BuildingMesh;
 };
