@@ -9,7 +9,7 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 {
     // Create a CameraComponent 
     FirstPersonCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
-    FirstPersonCameraComponent->AttachParent = CapsuleComponent;
+    FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
     // Position the camera a bit above the eyes
     FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
     // Allow the pawn to control rotation.
@@ -23,7 +23,7 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     FirstPersonMesh->CastShadow = false;
 
     // everyone but the owner can see the regular body mesh
-    Mesh->SetOwnerNoSee(true);
+    GetMesh()->SetOwnerNoSee(true);
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
