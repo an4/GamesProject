@@ -27,7 +27,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 void AGPGameMode::StartPlay()
 {
     Super::StartPlay();
-	SpawnBuilding();
+	SpawnBuilding(FVector(-230.0f, 100.0f, 300.0f));
     StartMatch();
 
     if (GEngine)
@@ -36,10 +36,9 @@ void AGPGameMode::StartPlay()
     }
 }
 
-void AGPGameMode::SpawnBuilding()
+void AGPGameMode::SpawnBuilding(FVector buildingLocation)
 {
-	FVector const buildingLocation(-230.0f, 100.0f, 300.0f);
-	FRotator const buildingRotation(100.0f, 100.0f, 100.0f);
+	FRotator const buildingRotation(0.0f, 0.0f, 0.0f);
 
 	UWorld* const World = GetWorld();
 
@@ -48,7 +47,7 @@ void AGPGameMode::SpawnBuilding()
 		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
+		SpawnParams.Instigator = NULL;
 
 		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), buildingLocation, buildingRotation, SpawnParams);
 		if (building != NULL)

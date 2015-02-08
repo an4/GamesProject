@@ -21,7 +21,8 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
 
-		void AGPGameMode::SpawnBuilding();
+		UFUNCTION()
+		void SpawnBuilding(FVector buildingLocation);
 
 
 
