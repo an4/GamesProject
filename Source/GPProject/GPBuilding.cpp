@@ -11,9 +11,9 @@ AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
 
     BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshOb_torus(TEXT("StaticMesh'/Game/Meshes/GP_Cube.GP_Cube'"));
-	if (StaticMeshOb_torus.Object)
-		BuildingMesh->SetStaticMesh(StaticMeshOb_torus.Object);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> cubemeshpath(TEXT("StaticMesh'/Game/Meshes/GP_Cube.GP_Cube'"));
+	if (cubemeshpath.Object)
+		BuildingMesh->SetStaticMesh(cubemeshpath.Object);
 
 	BuildingMesh->AttachTo(RootComponent);
 }
