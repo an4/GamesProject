@@ -27,10 +27,6 @@ void AGPBuilding::BeginPlay()
 	FVector origin = FVector();
 	FVector boxExtent = FVector();
 	GetActorBounds(false, origin, boxExtent);
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Origin X: %f, Y: %f, Z: %f"), origin.X, origin.Y, origin.Z));
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Size sX: %f, Y: %f, Z: %f"), boxExtent.X, boxExtent.Y, boxExtent.Z));
-
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, TEXT("BeginPlay for the block"));
 }
 
 void AGPBuilding::OnRep_Scale()
