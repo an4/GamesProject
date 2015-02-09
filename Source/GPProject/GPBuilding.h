@@ -23,4 +23,13 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
 	UStaticMeshComponent* BuildingMesh;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	FVector Scale;
+
+	UFUNCTION()
+	void OnRep_Scale();
+
+	UFUNCTION()
+	void SetScale(FVector AbsoluteScale);
 };
