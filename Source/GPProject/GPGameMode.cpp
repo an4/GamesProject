@@ -26,16 +26,17 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 
 void AGPGameMode::StartPlay()
 {
-    Super::StartPlay();
+	Super::StartPlay();
 
-	//Should spawn a building at the NW and SE corners of the map...
-	//SpawnBuilding(FVector2D(100.0f, 2470.0f), FVector2D(-100.0f, -2480.0f));
-	SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
-	SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
-	SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
-	SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
-
-    StartMatch();
+	if (Role == ROLE_Authority)
+	{
+		//Should spawn a building at the NW and SE corners of the map...
+		SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
+		SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
+		// Spawn some extra obstacles in game coordinates to test pathfinding
+		SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+		SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+	}
 
     if (GEngine)
     {
@@ -107,7 +108,8 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 
 		if (building != NULL)
 		{
-			building->SetActorScale3D(scale);
+			//building->SetActorScale3D(scale);
+			building->SetScale(scale);
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO Building"));
 		}
 		else {
