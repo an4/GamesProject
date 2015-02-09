@@ -29,8 +29,11 @@ void AGPGameMode::StartPlay()
     Super::StartPlay();
 
 	//Should spawn a building at the NW and SE corners of the map...
-	SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
+	//SpawnBuilding(FVector2D(100.0f, 2470.0f), FVector2D(-100.0f, -2480.0f));
+	SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+	SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
 	SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
+	SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
 
     StartMatch();
 
@@ -43,8 +46,8 @@ void AGPGameMode::StartPlay()
 void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
 {
 	// World size TODO: Calculate this!
-	const float worldx = 1000.0f;
-	const float worldy = 1000.0f;
+	const float worldx = 5000.0f;
+	const float worldy = 5000.0f;
 
 	// World NW corner offset (The origin is currently at the centre of the floor object) TODO: Move to 0,0?
 	const FVector worldOffset = FVector(-1.0f * (worldx / 2.0f), -1.0f * (worldy / 2.0f), 0.0f);
