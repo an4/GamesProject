@@ -111,12 +111,6 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		if (building != NULL)
 		{
 			building->SetActorScale3D(scale);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO Building"));
 		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Not so HELLO Building"));
-		}
-		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), buildingLocation);
-		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), &buildingLocation, &buildingRotation, SpawnParams);
 	}
 }
