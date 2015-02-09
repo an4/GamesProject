@@ -20,6 +20,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
+	
     HUDClass = AGPHUD::StaticClass();
 }
 
@@ -27,10 +28,89 @@ void AGPGameMode::StartPlay()
 {
     Super::StartPlay();
 
+	//Should spawn a building at the NW and SE corners of the map...
+	SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
+	SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
+
     StartMatch();
 
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO WORLD"));
     }
+}
+
+void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
+{
+	// World size TODO: Calculate this!
+	const float worldx = 1000.0f;
+	const float worldy = 1000.0f;
+
+	// World NW corner offset (The origin is currently at the centre of the floor object) TODO: Move to 0,0?
+	const FVector worldOffset = FVector(-1.0f * (worldx / 2.0f), -1.0f * (worldy / 2.0f), 0.0f);
+
+	// Building mesh size TODO: Calculate this!
+	const float meshx = 200.0f;
+	const float meshy = 200.0f;
+
+	// Dimensions of the building rectangle (in pixels!)
+	const float sqx_px = FMath::Max(a.X, b.X) - FMath::Min(a.X, b.X);
+	const float sqy_px = FMath::Max(a.Y, b.Y) - FMath::Min(a.Y, b.Y);
+
+	// Dimensions of the entire input space (in pixels!)
+	const float worldx_px = 640.0f;
+	const float worldy_px = 640.0f; // TODO: Switch this for 480 and resize the world so it matches the aspect ratio.
+
+	// Get the unscaled centre point.
+	FVector2D centre2D = (a + b) / 2.0f;
+	FVector centre = FVector(centre2D, 0.0f);
+
+	FRotator rot = centre.Rotation();
+	// Offset the rotation by 45 as we got this from the diagonal.
+	rot.Yaw -= 45.0f;
+
+	// Scale factors for mesh scaling.
+	const float scalex = (sqx_px * worldx) / (worldx_px * meshx);
+	const float scaley = (sqy_px * worldy) / (worldy_px * meshy);
+
+	// Scale factors for points in the world.
+	const float cscalex = worldx / worldx_px;
+	const float cscaley = worldy / worldy_px;
+
+	// Scale the centre points up into game coordinates.
+	centre.X *= cscalex;
+	centre.Y *= cscaley;
+
+	// Offset the centre for differing input vs game origins
+	centre += worldOffset;
+
+	return SpawnBuilding(centre, rot, FVector(scalex, scaley, 5.0f));
+}
+
+void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale)
+{
+	//FRotator const buildingRotation(0.0f, 0.0f, 0.0f);
+
+	UWorld* const World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
+
+		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), centre, rotation, SpawnParams);
+
+		if (building != NULL)
+		{
+			building->SetActorScale3D(scale);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO Building"));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Not so HELLO Building"));
+		}
+		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), buildingLocation);
+		//building = (AGPBuilding*)GetWorld()->SpawnActor(AGPBuilding::StaticClass(), &buildingLocation, &buildingRotation, SpawnParams);
+	}
 }
