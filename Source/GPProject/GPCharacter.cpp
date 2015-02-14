@@ -36,6 +36,12 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We took damage!"));
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+		
+		if (Health <= 0)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+			GetWorld()->GetAuthGameMode()->RestartPlayer(Controller);
+		}
 	}
 
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -67,6 +73,16 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
     InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
 
     //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
+}
+
+void AGPCharacter::Restart()
+{
+	Super::Restart();
+	Health = 100;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been restarted!"));
+	}
 }
 
 //void AGPCharacter::MoveForward(float Value)
