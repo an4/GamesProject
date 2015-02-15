@@ -36,6 +36,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION()
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 
+		// handles points
+		UFUNCTION()
+		void IncreasePoints();
+
         /** Gun muzzle's offset from the camera location */
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
         FVector MuzzleOffset;
@@ -55,6 +59,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		/** Property to store the character's health. */
 		UPROPERTY(Replicated)
 		float Health;
+
+		// Property to store the character's points
+		UPROPERTY()
+		float Point;
 
 		//sets jump flag when key is pressed
 		UFUNCTION()
