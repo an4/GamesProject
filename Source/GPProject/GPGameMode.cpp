@@ -36,6 +36,9 @@ void AGPGameMode::StartPlay()
 		// Spawn some extra obstacles in game coordinates to test pathfinding
 		SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
 		SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+
+        // Spawn flag
+        SpawnFlag();
 	}
 
     if (GEngine)
@@ -114,4 +117,31 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 			building->SetScale(scale);
 		}
 	}
+}
+
+void AGPGameMode::SpawnFlag()
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = NULL;
+
+        FVector location = FVector(600.f, 0.f, 21.f);
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+
+        AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+        if (flag == NULL)
+        {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+            }
+        }
+    }
 }
