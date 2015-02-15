@@ -46,6 +46,7 @@ void AGPHUD::DrawHUD()
 		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Health), 10.0f, 10.0f);
 		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->GetActorLocation().X), 10.0f, 50.0f);
 		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->GetActorLocation().Y), 10.0f, 100.0f);
+		Canvas->DrawText(DefaultFont, FString::SanitizeFloat(PlayerOwner->Point), 10.0f, 150.0f);
 	}
 }
 

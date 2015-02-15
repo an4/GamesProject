@@ -30,15 +30,30 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
-	Health -= DamageAmount;
 
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We took damage!"));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+	if (EventInstigator != GetController()) {
+
+		Health -= DamageAmount;
+
+		AGPCharacter* otherPlayer = Cast<AGPCharacter,ACharacter>(EventInstigator->GetCharacter());
+		otherPlayer->IncreasePoints();
+
+		if (GEngine)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We took damage!"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Points scored!"));
+		}
+
+		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	}
+	else {
+		return NULL;
+	}
+}
 
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+void AGPCharacter::IncreasePoints() {
+	Point += 10.0f;
 }
 
 void AGPCharacter::BeginPlay()
@@ -52,6 +67,7 @@ void AGPCharacter::BeginPlay()
 
 	// Set starting health
 	Health = 100.0f;
+	Point = 0.0f;
 }
 
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
