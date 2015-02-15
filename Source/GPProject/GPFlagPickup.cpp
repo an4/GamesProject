@@ -17,8 +17,15 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     }
 
     PickupMesh->SetMaterial(0, Material_Green.Object);
+
+    BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 }
 
 void AGPFlagPickup::OnPickedUp() {
     Super::OnPickedUp();
+}
+
+void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    GetWorld()->DestroyActor(this, true);
 }

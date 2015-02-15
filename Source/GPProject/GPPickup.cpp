@@ -10,7 +10,7 @@ AGPPickup::AGPPickup(const FObjectInitializer& ObjectInitializer)
     bIsActive = true;
 
     // Create the root SphereComponent to handle the pickup's collision
-    BaseCollisionComponent =  ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("BaseSphereComponent"));
+    BaseCollisionComponent =  ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("BaseSphereComponent"));
 
     // Set the SphereComponent as the root component.
     RootComponent = BaseCollisionComponent;

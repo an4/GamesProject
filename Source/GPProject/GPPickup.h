@@ -23,7 +23,7 @@ public:
 
     /** Simple collision primitive to use as the root component. */
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pickup)
-    USceneComponent* BaseCollisionComponent;
+    USphereComponent* BaseCollisionComponent;
 
     /** StaticMeshComponent to represent the pickup in the level. */
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pickup)
