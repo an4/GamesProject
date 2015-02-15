@@ -24,6 +24,11 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 
     // everyone but the owner can see the regular body mesh
     GetMesh()->SetOwnerNoSee(true);
+
+	/*for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+			
+	}*/
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -40,7 +45,7 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		if (Health <= 0)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-			GetWorld()->GetAuthGameMode()->RestartPlayer(Controller);
+			Respawn();
 		}
 	}
 
@@ -75,13 +80,24 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
     //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
 }
 
-void AGPCharacter::Restart()
+void AGPCharacter::Respawn()
 {
-	Super::Restart();
+	/*bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	FirstPersonCameraComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f), false);*/
+	SetActorLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FRotator(0.0f, 0.0f, 180.0f), false);
+	//GetRootComponent()->SetWorldLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FQuat(FRotator(0.0f, 0.0f, 0.0f)));
+	/*bUseControllerRotationPitch = true;
+	bUseControllerRotationRoll = true;
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;*/
+
 	Health = 100;
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been restarted!"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
 	}
 }
 
