@@ -11,7 +11,11 @@
 UCLASS()
 class GPPROJECT_API AGPGameMode : public AGameMode
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
+
+		double tickCount;
+
+	bool IsClear(FVector2D centre, FRotator rotation, FVector scale);
 
 	virtual void StartPlay() override;
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
@@ -26,7 +30,6 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UFUNCTION()
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
 
-
-
+		void Tick(float DeltaSeconds) override;
 };
 

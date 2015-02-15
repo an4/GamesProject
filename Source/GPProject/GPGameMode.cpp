@@ -4,6 +4,7 @@
 #include "GPGameMode.h"
 #include "GPHUD.h"
 #include "GPPlayerController.h"
+#include "EngineUtils.h"
 
 
 AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
@@ -22,6 +23,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     }
 	
     HUDClass = AGPHUD::StaticClass();
+	tickCount = 0.0;
 }
 
 void AGPGameMode::StartPlay()
@@ -112,6 +114,53 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		if (building != NULL)
 		{
 			building->SetScale(scale);
+		}
+	}
+}
+
+bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
+{
+	FConstPawnIterator pawns = this->GetWorld()->GetPawnIterator();
+
+	// Ensure no buildings are in the way.
+	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
+	{
+		FVector2D loc = FVector2D(bIt->GetActorLocation());
+		if (FVector2D::DistSquared(loc, centre) <= 100 * 100 / 2)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d in the way..."), bIt->GetUniqueID()));
+			return false;
+		}
+	}
+
+	// Ensure no player pawns are in the way.
+	for (FConstPawnIterator pIt = GetWorld()->GetPawnIterator(); pIt; ++pIt)
+	{
+		FVector2D loc = FVector2D(pIt->Get()->GetActorLocation()); //TODO: Check bounds
+		
+		// For now ignore rotation and scale and just make sure the bounding circle of the mesh around centre is clear.
+		if (FVector2D::DistSquared(loc, centre) <= 100 * 100 / 2)
+		{
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pawn %d in the way..."), pIt->Get()->GetUniqueID()));
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void AGPGameMode::Tick(float DeltaSeconds)
+{
+	tickCount += DeltaSeconds;
+	if (tickCount >= 10.0) {
+		tickCount = 0.0;
+
+		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 112.), FVector(2500., 2500., 112.)));
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
+
+		if (IsClear(FVector2D(centre), FRotator(), FVector())) {
+			SpawnBuilding(centre, FRotator(), FVector(1.0, 1.0, 1.0));
 		}
 	}
 }
