@@ -13,7 +13,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
-		double tickCount;
+	double tickCount;
 
 	bool IsClear(FVector2D centre, FRotator rotation, FVector scale);
 

@@ -33,11 +33,11 @@ void AGPGameMode::StartPlay()
 	if (Role == ROLE_Authority)
 	{
 		//Should spawn a building at the NW and SE corners of the map...
-		SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
-		SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
+		//SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
+		//SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
 		// Spawn some extra obstacles in game coordinates to test pathfinding
-		SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
-		SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+		//SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
+		//SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
 	}
 
     if (GEngine)
@@ -122,11 +122,15 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 {
 	FConstPawnIterator pawns = this->GetWorld()->GetPawnIterator();
 
+	const float minDist = 200. * 200. + 200. * 200.;
+
 	// Ensure no buildings are in the way.
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
 	{
 		FVector2D loc = FVector2D(bIt->GetActorLocation());
-		if (FVector2D::DistSquared(loc, centre) <= 100 * 100 / 2)
+		float dist = FVector2D::DistSquared(loc, centre);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d dist squared %f"), bIt->GetUniqueID(), dist));
+		if (dist <= minDist)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d in the way..."), bIt->GetUniqueID()));
 			return false;
@@ -137,9 +141,9 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 	for (FConstPawnIterator pIt = GetWorld()->GetPawnIterator(); pIt; ++pIt)
 	{
 		FVector2D loc = FVector2D(pIt->Get()->GetActorLocation()); //TODO: Check bounds
-		
+
 		// For now ignore rotation and scale and just make sure the bounding circle of the mesh around centre is clear.
-		if (FVector2D::DistSquared(loc, centre) <= 100 * 100 / 2)
+		if (FVector2D::DistSquared(loc, centre) <= minDist)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pawn %d in the way..."), pIt->Get()->GetUniqueID()));
 			return false;
@@ -157,10 +161,9 @@ void AGPGameMode::Tick(float DeltaSeconds)
 
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 112.), FVector(2500., 2500., 112.)));
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
-
-		if (IsClear(FVector2D(centre), FRotator(), FVector())) {
-			SpawnBuilding(centre, FRotator(), FVector(1.0, 1.0, 1.0));
+		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, FVector())) {
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
+			SpawnBuilding(centre, FRotator::ZeroRotator, FVector(1.0, 1.0, 1.0));
 		}
 	}
 }
