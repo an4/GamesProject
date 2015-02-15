@@ -28,4 +28,31 @@ void AGPFlagPickup::OnPickedUp() {
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     GetWorld()->DestroyActor(this, true);
+    SpawnFlag(OtherActor);
+}
+
+void AGPFlagPickup::SpawnFlag(class AActor* FlagOwner)
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = FlagOwner;
+        SpawnParams.Instigator = NULL;
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+
+        AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+        if (flag == NULL)
+        {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+            }
+        }
+    }
 }

@@ -21,6 +21,8 @@ AGPPickup::AGPPickup(const FObjectInitializer& ObjectInitializer)
     // Attach the StaticMeshComponent to the RootComponent.
     PickupMesh->AttachTo(RootComponent);
 
+    //PickupMesh->SetSimulatePhysics(true);
+
     bReplicates = true;
 }
 

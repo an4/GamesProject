@@ -39,6 +39,7 @@ void AGPGameMode::StartPlay()
 
         // Spawn flag
         SpawnFlag();
+
 	}
 
     if (GEngine)
@@ -130,9 +131,8 @@ void AGPGameMode::SpawnFlag()
         SpawnParams.Owner = this;
         SpawnParams.Instigator = NULL;
 
-        FVector location = FVector(600.f, 0.f, 21.f);
-
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
 
         AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 
