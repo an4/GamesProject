@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GPProject.h"
+#include "GPCharacter.h"
 #include "GPFlagPickup.h"
 
 AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
@@ -29,6 +30,11 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 {
     GetWorld()->DestroyActor(this, true);
     SpawnFlag(OtherActor);
+
+    AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
+    if (currentActor) {
+        currentActor->OnFlagPickUp();
+    }
 }
 
 void AGPFlagPickup::SpawnFlag(class AActor* FlagOwner)

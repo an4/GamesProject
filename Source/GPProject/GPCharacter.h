@@ -63,6 +63,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION()
 		void OnStopJump();
 
+        UPROPERTY(Replicated)
+        uint8 FlagsPickedUp;
+
+        UFUNCTION()
+        void OnFlagPickUp();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
