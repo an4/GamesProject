@@ -19,7 +19,7 @@ class GPPROJECT_API AGPBuilding : public AActor
 public:
 
     UPROPERTY()
-    class USceneComponent* DummyRoot;
+    class UBoxComponent* DummyRoot;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
 	UStaticMeshComponent* BuildingMesh;
@@ -32,4 +32,5 @@ public:
 
 	UFUNCTION()
 	void SetScale(FVector AbsoluteScale);
+
 };

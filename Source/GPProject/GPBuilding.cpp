@@ -18,8 +18,10 @@ AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
 
 	BuildingMesh->AttachTo(RootComponent);
 
+	bNetLoadOnClient = true;
 	bReplicates = true;
 	bReplicateMovement = true;
+	bCollideWhenPlacing = true;
 }
 
 void AGPBuilding::BeginPlay()
