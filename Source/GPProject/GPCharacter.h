@@ -32,6 +32,26 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
 
+		//handles bomb launching
+		UFUNCTION()
+		void OnBombLaunch();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnBombLaunch();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnBombLaunch(FVector CameraLoc, FRotator CameraRot);
+
+		//handles bomb detonation
+		UFUNCTION()
+		void OnBombDetonate();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnBombDetonate();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnBombDetonate();
+
 		// handles damage
 		UFUNCTION()
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
@@ -48,6 +68,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(EditDefaultsOnly, Category = Projectile)
         TSubclassOf<class AGPProjectile> ProjectileClass;
 
+		/** RemoteBomb class to spawn */
+		UPROPERTY(EditDefaultsOnly, Category = Placeable)
+		TSubclassOf<class AGPRemoteBomb> RemoteBombClass;
+
         /** First person camera */
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
         UCameraComponent* FirstPersonCameraComponent;
@@ -63,6 +87,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		// Property to store the character's points
 		UPROPERTY()
 		float Point;
+
+		// List of mines
+		UPROPERTY()
+		TArray<AGPRemoteBomb*> RemoteBombList;
+
+		UPROPERTY()
+		bool BombPlanted;
 
 		//sets jump flag when key is pressed
 		UFUNCTION()
