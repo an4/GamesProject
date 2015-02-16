@@ -4,7 +4,6 @@
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
 #include "UnrealNetwork.h"
-#include <string>
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
