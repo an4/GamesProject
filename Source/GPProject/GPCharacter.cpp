@@ -4,6 +4,7 @@
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
 #include "UnrealNetwork.h"
+#include <string>
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -70,6 +71,7 @@ void AGPCharacter::BeginPlay()
 	Health = 100.0f;
 	Point = 0.0f;
 	BombPlanted = false;
+	MaxBombs = 5;
 }
 
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
@@ -191,7 +193,7 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 void AGPCharacter::OnBombLaunch()
 {
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
-	if (CanFire() && !BombPlanted)
+	if (CanFire() && RemoteBombList.Num() < MaxBombs)
 	{
 		ServerOnBombLaunch();
 	}
@@ -200,7 +202,7 @@ void AGPCharacter::OnBombLaunch()
 bool AGPCharacter::ServerOnBombLaunch_Validate()
 {
 	// Only allow the character to fire if they have health.
-	return (CanFire() && !BombPlanted);
+	return (CanFire() && RemoteBombList.Num() < MaxBombs);
 }
 
 void AGPCharacter::ServerOnBombLaunch_Implementation()
@@ -247,7 +249,6 @@ void AGPCharacter::BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRota
 
 void AGPCharacter::OnBombDetonate()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Attempting explosion"));
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
 	if (CanFire() && BombPlanted)
 	{
@@ -290,7 +291,6 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 				if (!CurRB->IsValidLowLevel()) continue;
 				// Explode it
 				CurRB->Explode();
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Exploded"));
 			}
 			// Remove all entries from the array
 			RemoteBombList.Empty();

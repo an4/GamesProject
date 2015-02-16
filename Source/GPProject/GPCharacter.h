@@ -92,8 +92,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UPROPERTY()
 		TArray<AGPRemoteBomb*> RemoteBombList;
 
+		// Check bombs have been planted before we try to explode them
 		UPROPERTY()
 		bool BombPlanted;
+
+		// Maximum number of bombs
+		UPROPERTY()
+		int32 MaxBombs;
 
 		//sets jump flag when key is pressed
 		UFUNCTION()

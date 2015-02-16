@@ -67,25 +67,31 @@ void AGPRemoteBomb::Explode()
 {
 	if (ProjectileClass != NULL)
 	{
-		FVector MuzzleLocation = FVector(this->GetActorLocation());
-		FRotator MuzzleRotation = FRotator(90.0f, 0.0f, 0.0f);
 		UWorld* const World = GetWorld();
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this->GetOwner();
 			SpawnParams.Instigator = Instigator;
+			FVector MuzzleLocation = FVector(this->GetActorLocation());
 			// spawn the projectile above the bomb
-			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Projectile)
+			for (int i = 0; i < 8; i++)
 			{
-				// find launch direction
-				FVector const LaunchDir = MuzzleRotation.Vector();
-				Projectile->InitVelocity(LaunchDir);
-			}
-			else
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Failed to launch projectile"));
+				// Pitch, Roll, Yaw
+				float pitch = FMath::FRandRange(15, 60);
+				float roll = FMath::FRandRange(0, 359);
+				FRotator MuzzleRotation = FRotator(pitch, roll, 0.0f);
+				AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Projectile)
+				{
+					// find launch direction
+					FVector const LaunchDir = MuzzleRotation.Vector();
+					Projectile->InitVelocity(LaunchDir);
+				}
+				else
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Failed to launch projectile"));
+				}
 			}
 		}
 	}
