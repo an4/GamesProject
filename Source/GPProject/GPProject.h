@@ -4,3 +4,4 @@
 
 #include "Engine.h"
 #define COLLISION_PROJECTILE    ECC_GameTraceChannel1
+#define COLLISION_REMOTEBOMB    ECC_GameTraceChannel2

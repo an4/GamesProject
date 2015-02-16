@@ -32,9 +32,33 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
 
+		//handles bomb launching
+		UFUNCTION()
+		void OnBombLaunch();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnBombLaunch();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnBombLaunch(FVector CameraLoc, FRotator CameraRot);
+
+		//handles bomb detonation
+		UFUNCTION()
+		void OnBombDetonate();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnBombDetonate();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnBombDetonate();
+
 		// handles damage
 		UFUNCTION()
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
+		// handles points
+		UFUNCTION()
+		void IncreasePoints();
 
         /** Gun muzzle's offset from the camera location */
         UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -43,6 +67,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         /** Projectile class to spawn */
         UPROPERTY(EditDefaultsOnly, Category = Projectile)
         TSubclassOf<class AGPProjectile> ProjectileClass;
+
+		/** RemoteBomb class to spawn */
+		UPROPERTY(EditDefaultsOnly, Category = Placeable)
+		TSubclassOf<class AGPRemoteBomb> RemoteBombClass;
 
         /** First person camera */
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -55,6 +83,22 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		/** Property to store the character's health. */
 		UPROPERTY(Replicated)
 		float Health;
+
+		// Property to store the character's points
+		UPROPERTY()
+		float Point;
+
+		// List of mines
+		UPROPERTY()
+		TArray<AGPRemoteBomb*> RemoteBombList;
+
+		// Check bombs have been planted before we try to explode them
+		UPROPERTY()
+		bool BombPlanted;
+
+		// Maximum number of bombs
+		UPROPERTY()
+		int32 MaxBombs;
 
 		//sets jump flag when key is pressed
 		UFUNCTION()

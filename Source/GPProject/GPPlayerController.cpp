@@ -20,6 +20,9 @@ void AGPPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Released, this, &AGPPlayerController::OnStopJump);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &AGPPlayerController::OnFire);
+
+	InputComponent->BindAction("RemoteBombPlant", IE_Pressed, this, &AGPPlayerController::OnBombLaunch);
+	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
 }
 
 void AGPPlayerController::MoveForward(float Value)
@@ -89,6 +92,22 @@ void AGPPlayerController::OnFire()
 	if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnFire();
+	}
+}
+
+void AGPPlayerController::OnBombLaunch()
+{
+	if (GetCharacter() != NULL)
+	{
+		Cast<AGPCharacter>(GetCharacter())->OnBombLaunch();
+	}
+}
+
+void AGPPlayerController::OnBombDetonate()
+{
+	if (GetCharacter() != NULL)
+	{
+		Cast<AGPCharacter>(GetCharacter())->OnBombDetonate();
 	}
 }
 
