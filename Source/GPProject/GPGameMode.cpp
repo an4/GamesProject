@@ -41,10 +41,6 @@ void AGPGameMode::StartPlay()
         SpawnFlag();
 	}
 
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO WORLD"));
-    }
 }
 
 void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)

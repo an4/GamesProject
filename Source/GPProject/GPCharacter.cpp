@@ -40,7 +40,7 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 		Health -= DamageAmount;
 
-		AGPCharacter* otherPlayer = Cast<AGPCharacter,ACharacter>(EventInstigator->GetCharacter());
+		AGPCharacter* otherPlayer = Cast<AGPCharacter,AActor>(DamageCauser->GetOwner());
 		otherPlayer->IncreasePoints();
 
 		if (GEngine)
@@ -53,7 +53,7 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	}
 	else {
-		return NULL;
+		return 0.0f;
 	}
 }
 
@@ -67,7 +67,7 @@ void AGPCharacter::BeginPlay()
 
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We are using GPCharacter!"));
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("A player has entered the game!"));
     }
 
 	// Set starting health
