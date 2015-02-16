@@ -108,18 +108,12 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = NULL;
-		SpawnParams.bNoCollisionFail = false;	
-		SpawnParams.bNoFail = false;
 
 		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), centre, rotation, SpawnParams);
 
 		if (building != NULL)
 		{
 			building->SetScale(scale);
-		}
-		else {
-
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("FAIL SPAWN")));
 		}
 	}
 }
@@ -139,7 +133,7 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 		if (dist <= minDist)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d in the way..."), bIt->GetUniqueID()));
-			//return false;
+			return false;
 		}
 	}
 
@@ -152,7 +146,7 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 		if (FVector2D::DistSquared(loc, centre) <= minDist)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pawn %d in the way..."), pIt->Get()->GetUniqueID()));
-			//return false;
+			return false;
 		}
 	}
 
@@ -165,17 +159,11 @@ void AGPGameMode::Tick(float DeltaSeconds)
 	if (tickCount >= 10.0) {
 		tickCount = 0.0;
 
-		//FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 112.), FVector(2500., 2500., 112.)));
-		FVector centre = FVector(600., 600., 112.);
-		FVector centre2 = FVector(610., 610., 112.);
+		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 112.), FVector(2500., 2500., 112.)));
+
 		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, FVector())) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
 			SpawnBuilding(centre, FRotator::ZeroRotator, FVector(1.0, 1.0, 1.0));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre2.X, centre2.Y, centre2.Z));
-			SpawnBuilding(centre2, FRotator::ZeroRotator, FVector(1.0, 1.0, 1.0));
-		}
-		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Failed Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
 		}
 	}
 }
