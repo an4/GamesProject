@@ -35,7 +35,7 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 		Health -= DamageAmount;
 
-		AGPCharacter* otherPlayer = Cast<AGPCharacter,ACharacter>(EventInstigator->GetCharacter());
+		AGPCharacter* otherPlayer = Cast<AGPCharacter,AActor>(DamageCauser->GetOwner());
 		otherPlayer->IncreasePoints();
 
 		if (GEngine)
