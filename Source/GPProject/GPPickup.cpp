@@ -25,7 +25,3 @@ AGPPickup::AGPPickup(const FObjectInitializer& ObjectInitializer)
 
     bReplicates = true;
 }
-
-void AGPPickup::OnPickedUp() {
-    // No default implementation.
-}

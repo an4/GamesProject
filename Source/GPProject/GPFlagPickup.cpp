@@ -22,14 +22,13 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 }
 
-void AGPFlagPickup::OnPickedUp() {
-    Super::OnPickedUp();
-}
-
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     GetWorld()->DestroyActor(this, true);
-    SpawnFlag(OtherActor);
+
+    if (Role == ROLE_Authority) {
+        SpawnFlag(OtherActor);
+    }
 
     AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
     if (currentActor) {
@@ -58,6 +57,12 @@ void AGPFlagPickup::SpawnFlag(class AActor* FlagOwner)
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+            }
+        }
+        else {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
             }
         }
     }

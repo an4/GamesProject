@@ -33,6 +33,5 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
         UFUNCTION()
         void SpawnFlag();
-
 };
 

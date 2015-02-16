@@ -39,7 +39,6 @@ void AGPGameMode::StartPlay()
 
         // Spawn flag
         SpawnFlag();
-
 	}
 
     if (GEngine)
@@ -141,6 +140,12 @@ void AGPGameMode::SpawnFlag()
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+            }
+        }
+        else {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
             }
         }
     }

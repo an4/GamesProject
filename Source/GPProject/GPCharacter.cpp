@@ -2,6 +2,7 @@
 #include "GPProject.h"
 #include "GPProjectile.h"
 #include "GPCharacter.h"
+#include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
@@ -185,6 +186,7 @@ void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 void AGPCharacter::OnFlagPickUp() {
     // Increase number of flags
     FlagsPickedUp++;
+
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
 }

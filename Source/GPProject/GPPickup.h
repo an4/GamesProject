@@ -28,7 +28,4 @@ public:
     /** StaticMeshComponent to represent the pickup in the level. */
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pickup)
     UStaticMeshComponent* PickupMesh;
-
-    /** Function to call when the Pickup is collected. */
-    virtual void OnPickedUp();	
 };
