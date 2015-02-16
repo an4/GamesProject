@@ -3,6 +3,7 @@
 #include "GPProjectile.h"
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
+#include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
@@ -25,6 +26,9 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 
     // everyone but the owner can see the regular body mesh
     GetMesh()->SetOwnerNoSee(true);
+
+    // Set number of flags picked up to zero.
+    FlagsPickedUp = 0;
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -305,4 +309,12 @@ void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 
 	// Replicate health to all clients.
 	DOREPLIFETIME(AGPCharacter, Health);
+}
+
+void AGPCharacter::OnFlagPickUp() {
+    // Increase number of flags
+    FlagsPickedUp++;
+
+    // Print total number of flags
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
 }
