@@ -36,6 +36,7 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
 
+	
 	if (EventInstigator != GetController()) {
 
 		Health -= DamageAmount;
@@ -45,9 +46,13 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 		if (GEngine)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We took damage!"));
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Points scored!"));
+
+			if (Health <= 0)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+				Respawn();
+			}
 		}
 
 		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -90,6 +95,27 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
     InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
 
     //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
+}
+
+void AGPCharacter::Respawn()
+{
+    /*bUseControllerRotationPitch = false;
+    bUseControllerRotationRoll = false;
+    bUseControllerRotationYaw = false;
+    GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    FirstPersonCameraComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f), false);*/
+    SetActorLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FRotator::ZeroRotator, false);
+    //GetRootComponent()->SetWorldLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FQuat(FRotator(0.0f, 0.0f, 0.0f)));
+    /*bUseControllerRotationPitch = true;
+    bUseControllerRotationRoll = true;
+    bUseControllerRotationYaw = true;
+    GetCharacterMovement()->bUseControllerDesiredRotation = true;*/
+
+    Health = 100;
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
+    }
 }
 
 //void AGPCharacter::MoveForward(float Value)
