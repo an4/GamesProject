@@ -65,7 +65,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-		virtual void Restart() override;
+		void Respawn();
 
         ////handles moving forward/backward
         //UFUNCTION()
