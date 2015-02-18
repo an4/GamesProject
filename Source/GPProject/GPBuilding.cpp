@@ -31,7 +31,7 @@ void AGPBuilding::BeginPlay()
 
 void AGPBuilding::OnRep_Scale()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
+	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
 	SetActorScale3D(Scale);
 }
 
