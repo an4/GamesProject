@@ -122,13 +122,17 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 {
 	FConstPawnIterator pawns = this->GetWorld()->GetPawnIterator();
 
-	const float minDist = 200. * 200. + 200. * 200.;
+	const float scaledX = 200 * scale.X / 2.0;
+	const float scaledY = 200 * scale.Y / 2.0;
 
 	// Ensure no buildings are in the way.
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
 	{
 		FVector2D loc = FVector2D(bIt->GetActorLocation());
 		float dist = FVector2D::DistSquared(loc, centre);
+
+		const float minDist = FMath::Square(scaledX + (200. * bIt->GetActorScale().X)) + FMath::Square(scaledY + (200. * bIt->GetActorScale().Y));
+
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d dist squared %f"), bIt->GetUniqueID(), dist));
 		if (dist <= minDist)
 		{
@@ -137,13 +141,15 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 		}
 	}
 
+	const float minPawnDist = FMath::Square(scaledX * 2.0) + FMath::Square(scaledY * 2.0);
+
 	// Ensure no player pawns are in the way.
 	for (FConstPawnIterator pIt = GetWorld()->GetPawnIterator(); pIt; ++pIt)
 	{
 		FVector2D loc = FVector2D(pIt->Get()->GetActorLocation()); //TODO: Check bounds
 
 		// For now ignore rotation and scale and just make sure the bounding circle of the mesh around centre is clear.
-		if (FVector2D::DistSquared(loc, centre) <= minDist)
+		if (FVector2D::DistSquared(loc, centre) <= minPawnDist)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pawn %d in the way..."), pIt->Get()->GetUniqueID()));
 			return false;
@@ -156,14 +162,15 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 void AGPGameMode::Tick(float DeltaSeconds)
 {
 	tickCount += DeltaSeconds;
-	if (tickCount >= 10.0) {
+	if (tickCount >= 0.5/*FMath::FRandRange(2.0f, 30.0f)*/) {
 		tickCount = 0.0;
 
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 112.), FVector(2500., 2500., 112.)));
+		FVector scale = FMath::RandPointInBox(FBox(FVector(0.5,0.5,2.0), FVector(4.0, 4.0, 10.0)));
 
-		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, FVector())) {
+		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, scale)) {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
-			SpawnBuilding(centre, FRotator::ZeroRotator, FVector(1.0, 1.0, 1.0));
+			SpawnBuilding(centre, FRotator::ZeroRotator, scale);
 		}
 	}
 }
