@@ -39,6 +39,12 @@ public:
 
 	//handles firing
 	void OnFire();
+
+	//handles bomb launching
+	void OnBombLaunch();
+
+	//handles bomb detonation
+	void OnBombDetonate();
 	//UFUNCTION(Reliable, Server, WithValidation)
 	//void ServerOnFire();
 

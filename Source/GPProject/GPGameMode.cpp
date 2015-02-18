@@ -32,24 +32,16 @@ void AGPGameMode::StartPlay()
 
 	if (Role == ROLE_Authority)
 	{
-		//Should spawn a building at the NW and SE corners of the map...
-		//SpawnBuilding(FVector2D(0.0f, 0.0f), FVector2D(64.0f, 64.0f));
-		//SpawnBuilding(FVector2D(576.0f, 576.0f), FVector2D(640.0f, 640.0f));
-		// Spawn some extra obstacles in game coordinates to test pathfinding
-		//SpawnBuilding(FVector(0.0f, 500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
-		//SpawnBuilding(FVector(-500.0f, -500.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), FVector(1.0f, 25.0f, 2.0f));
-
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
 		SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
 		SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+
+        // Spawn flag
+        SpawnFlag();
 	}
 
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("HELLO WORLD"));
-    }
 }
 
 void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
@@ -178,11 +170,43 @@ void AGPGameMode::Tick(float DeltaSeconds)
 		tickCount = 0.0;
 
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 0.), FVector(2500., 2500., 0.)));
-		FVector scale = FMath::RandPointInBox(FBox(FVector(0.75,0.75,2.0), FVector(4.0, 4.0, 12.0)));
+		FVector scale = FMath::RandPointInBox(FBox(FVector(0.75, 0.75, 2.0), FVector(4.0, 4.0, 12.0)));
 
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
 		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, scale)) {
 			SpawnBuilding(centre, FRotator::ZeroRotator, scale);
 		}
 	}
+}
+
+void AGPGameMode::SpawnFlag()
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = NULL;
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+
+        AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+        if (flag == NULL)
+        {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+            }
+        }
+        else {
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+            }
+        }
+    }
 }

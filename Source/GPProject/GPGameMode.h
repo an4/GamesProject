@@ -2,6 +2,7 @@
 
 #pragma once
 #include "GPBuilding.h"
+#include "GPFlagPickup.h"
 #include "GameFramework/GameMode.h"
 #include "GPGameMode.generated.h"
 
@@ -31,5 +32,12 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
 
 		void Tick(float DeltaSeconds) override;
+
+		/** Flag Pickup class to spawn */
+        UPROPERTY(EditDefaultsOnly, Category = Pickup)
+        TSubclassOf<class AGPFlagPickup> FlagPickupClass;
+
+        UFUNCTION()
+        void SpawnFlag();
 };
 
