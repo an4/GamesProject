@@ -2,6 +2,8 @@
 
 #include "GPProject.h"
 #include "GPProjectile.h"
+#include "GPBuilding.h"
+#include "GPCharacter.h"
 
 AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -29,6 +31,7 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
 	bNetLoadOnClient = true;
 	bReplicates = false;
 	bReplicateMovement = false;
+	hitWall = false;
 }
 
 void AGPProjectile::InitVelocity(const FVector& ShootDirection)
@@ -42,14 +45,21 @@ void AGPProjectile::InitVelocity(const FVector& ShootDirection)
 
 void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
-    {
-        OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
+	if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
+	{
+		OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
 
-		// Damage the other actor! TODO: Is there a proper way to use the damage system in UE4?
-		const float damage = 5.0f;
-		// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
-		FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
-		OtherActor->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
-    }
+		if (OtherActor->IsA(AGPBuilding::StaticClass()) || OtherActor->IsA(AStaticMeshActor::StaticClass())) {
+			hitWall = true;
+		} 
+		else if (OtherActor->IsA(AGPCharacter::StaticClass())) {
+			if (hitWall == true) {
+				// Damage the other actor! TODO: Is there a proper way to use the damage system in UE4?
+				const float damage = 5.0f;
+				// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
+				FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
+				OtherActor->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
+			}
+		}
+	}
 }

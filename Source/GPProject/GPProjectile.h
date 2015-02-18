@@ -22,6 +22,10 @@ class GPPROJECT_API AGPProjectile : public AActor
     public:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
         UProjectileMovementComponent* ProjectileMovement;
+
+		// Flag to check if it has hit a wall
+		UPROPERTY()
+		bool hitWall;
 	
         /** inits velocity of the projectile in the shoot direction */
         void InitVelocity(const FVector& ShootDirection);
