@@ -5,7 +5,7 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "EngineUtils.h"
-
+#include "KinectInterface.h"
 
 AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -24,6 +24,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	
     HUDClass = AGPHUD::StaticClass();
 	tickCount = 0.0;
+
+	kinect = KinectInterface();
 }
 
 void AGPGameMode::StartPlay()
@@ -40,6 +42,9 @@ void AGPGameMode::StartPlay()
 
         // Spawn flag
         SpawnFlag();
+
+		// Run the Kinect code for debugging purposes.
+		kinect.run();
 	}
 
 }
@@ -62,8 +67,8 @@ void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
 	const float sqy_px = FMath::Max(a.Y, b.Y) - FMath::Min(a.Y, b.Y);
 
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = 640.0f;
-	const float worldy_px = 640.0f; // TODO: Switch this for 480 and resize the world so it matches the aspect ratio.
+	const float worldx_px = kinect.GetWidth();
+	const float worldy_px = kinect.GetHeight(); // TODO: Resize the world so it matches the aspect ratio.
 
 	// Get the unscaled centre point.
 	FVector2D centre2D = (a + b) / 2.0f;
