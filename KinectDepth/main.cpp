@@ -54,6 +54,8 @@ void getKinectData(GLubyte* dest, int* rawdest) {
     if (sensor->NuiImageStreamGetNextFrame(depthStream, 0, &imageFrame) < 0) return;
     INuiFrameTexture* texture = imageFrame.pFrameTexture;
     texture->LockRect(0, &LockedRect, NULL, 0);
+	//int dmax, dmin;
+	//dmax = dmin = 0;
     if (LockedRect.Pitch != 0) {
         const USHORT* curr = (const USHORT*) LockedRect.pBits;
         const USHORT* dataEnd = curr + (width*height);
@@ -61,14 +63,30 @@ void getKinectData(GLubyte* dest, int* rawdest) {
 		while (curr < dataEnd) {
 			// Get depth in millimeters
 			USHORT depth = NuiDepthPixelToDepth(*curr++);
-			// Draw a grayscale image of the depth:
-			// B,G,R are all set to depth%256, alpha set to 1.
-			for (int i = 0; i < 3; ++i)
-				*dest++ = (BYTE)depth % 256;
+			//dmax = max(dmax, depth);
+			//dmin = min(dmin, depth);
+			if (depth < 800) {
+				// Show red for out of lower bound pixels.
+				*dest++ = (BYTE)0;
+				*dest++ = (BYTE)0;
+				*dest++ = (BYTE)255;
+			}
+			else if (depth > 4000) {
+				// Show green for out of upper bound pixels.
+				*dest++ = (BYTE)0;
+				*dest++ = (BYTE)255;
+				*dest++ = (BYTE)0;
+			}
+			else {
+				// Greyscale for valid measurements.
+				for (int i = 0; i < 3; ++i)
+					*dest++ = (BYTE)(((float)(depth - 800) / 3200.0) * 256.0); // Scale to 800 - 4000 range (max distance of sensor... appears valid experimentally
+			}
 			*dest++ = 0xff;
 			*rawdest++ = depth;
 		}
     }
+	//cout << dmax << ' ' << dmin << std::endl;
     texture->UnlockRect(0);
     sensor->NuiImageStreamReleaseFrame(depthStream, &imageFrame);
 }
