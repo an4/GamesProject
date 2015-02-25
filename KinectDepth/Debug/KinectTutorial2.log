@@ -1,0 +1,17 @@
+﻿Build started 09/02/2015 13:29:22.
+     1>Project "C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\KinectTutorial2.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files\Microsoft SDKs\Kinect\v1.8\\inc" /I"C:\SDL2-2.0.3\include" /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>main.cpp(48): warning C4800: 'INuiSensor *' : forcing value to bool 'true' or 'false' (performance warning)
+     1>main.cpp(276): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\stdio.h(226) : see declaration of 'freopen'
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\Debug\KinectTutorial2.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\Microsoft SDKs\Kinect\v1.8\\lib\x86" /LIBPATH:"C:\SDL2-2.0.3\lib\x86" kinect10.lib opengl32.lib glu32.lib glut32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\Debug\KinectTutorial2.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"mainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\Debug\KinectTutorial2.lib" /MACHINE:X86 Debug\glut.obj
+         Debug\main.obj
+         KinectTutorial2.vcxproj -> C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\Debug\KinectTutorial2.exe
+     1>Done Building Project "C:\Users\CTyas\Documents\Visual Studio 2013\Projects\KinectDepth\Depth\2_Depth\KinectTutorial2.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.51
