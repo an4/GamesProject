@@ -225,21 +225,19 @@ void dumpData(int** rawdata)
 	smoothFrames(smoothedFrame, filteredFrames);
 	filterArray(smoothedFrame, smoothedFrame, "dump_s.txt");
 	findSquares(smoothedFrame);
-	ofstream dump("dump.txt", ios::trunc);
 	ofstream rawdump("dump.raw", ios::trunc);
-	if (dump.is_open() && rawdump.is_open())
+	ofstream pgmdump("dump.pgm", ios::trunc);
+
+	if (pgmdump.is_open())
 	{
-		// Dump as width*height array of ints space seperated.
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				//dump << fixed << setfill('0');
-				dump << setw(4) << ((rawdata[0][(j + i*width)])/1)*1;
-				dump << " ";
-			}
-			dump << "\n";
-		}
+		// Write some headers
+		pgmdump << "P2\n"; // PGM
+		pgmdump << width << " " << height << "\n"; // dimensions
+		pgmdump << "4000\n"; // max pixel value
+	}
+
+	if (rawdump.is_open() && pgmdump.is_open())
+	{
 		// Dump as raw 16 bit word stream
 		for (int i = 0; i < height; i++)
 		{
@@ -253,8 +251,18 @@ void dumpData(int** rawdata)
 				rawdump.write((char*)bytes, 2);
 			}
 		}
-		dump.close();
+		// Dump in PGM format
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				pgmdump << setw(4) << ((rawdata[0][(j + i*width)]) / 1) * 1;
+				pgmdump << " ";
+			}
+			pgmdump << "\n";
+		}
 		rawdump.close();
+		pgmdump.close();
 	}
 }
 
