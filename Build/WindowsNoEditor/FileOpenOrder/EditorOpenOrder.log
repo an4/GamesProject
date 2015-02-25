@@ -442,64 +442,64 @@
 "../../../Engine/Content/EngineMaterials/DefaultPhysicalMaterial.uasset" 442
 "../../../Engine/Content/EngineFonts/RobotoTiny.uasset" 443
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Intermediate/CachedAssetRegistry.bin" 444
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/GPMenu_Network.uasset" 445
-"../../../Engine/Content/MobileResources/HUD/VirtualJoystick_Thumb.uasset" 446
-"../../../Engine/Content/MobileResources/HUD/VirtualJoystick_Background.uasset" 447
-"../../../Engine/Content/MobileResources/HUD/T_Castle_ThumbstickOutter.uasset" 448
-"../../../Engine/Content/MobileResources/HUD/T_Castle_ThumbstickInner.uasset" 449
-"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionStick.uasset" 450
-"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad3.uasset" 451
-"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad2.uasset" 452
-"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad.uasset" 453
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButtonFire.uasset" 454
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButton3.uasset" 455
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButton2_on.uasset" 456
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButton2_off.uasset" 457
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButton1_on.uasset" 458
-"../../../Engine/Content/MobileResources/HUD/MobileHUDButton1_off.uasset" 459
-"../../../Engine/Content/MobileResources/HUD/LeftVirtualJoystickOnly.uasset" 460
-"../../../Engine/Content/MobileResources/HUD/DefaultVirtualJoysticks.uasset" 461
-"../../../Engine/Content/MobileResources/HUD/AnalogHat.uasset" 462
-"../../../Engine/Content/MobileResources/T_MobileMenu2.uasset" 463
-"../../../Engine/Content/MobileResources/T_MobileControls_texture.uasset" 464
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/FPSMap.umap" 465
-"../../../Engine/Content/EngineSky/BP_Sky_Sphere.uasset" 466
-"../../../Engine/Content/EditorBlueprintResources/StandardMacros.uasset" 467
-"../../../Engine/Content/EngineSky/C_Sky_Cloud_Color.uasset" 468
-"../../../Engine/Content/EngineSky/C_Sky_Horizon_Color.uasset" 469
-"../../../Engine/Content/EngineSky/C_Sky_Zenith_Color.uasset" 470
-"../../../Engine/Content/EngineSky/M_Sky_Panning_Clouds2.uasset" 471
-"../../../Engine/Content/EngineSky/T_Sky_Blue.uasset" 472
-"../../../Engine/Content/EngineSky/T_Sky_Clouds_M.uasset" 473
-"../../../Engine/Content/EngineSky/T_Sky_Stars.uasset" 474
-"../../../Engine/Content/EngineSky/SM_SkySphere.uasset" 475
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/SM_Template_Map_Floor2_Blueprint.uasset" 476
-"../../../Engine/Content/MapTemplates/SM_Template_Map_Floor.uasset" 477
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D83E1C7448548DA29DFC3EA0DB604__94FA985FD55DFAF0A6ADE932DB0517C80226AA6A.udd" 478
+"../../../Engine/Content/MobileResources/HUD/VirtualJoystick_Thumb.uasset" 445
+"../../../Engine/Content/MobileResources/HUD/VirtualJoystick_Background.uasset" 446
+"../../../Engine/Content/MobileResources/HUD/T_Castle_ThumbstickOutter.uasset" 447
+"../../../Engine/Content/MobileResources/HUD/T_Castle_ThumbstickInner.uasset" 448
+"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionStick.uasset" 449
+"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad3.uasset" 450
+"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad2.uasset" 451
+"../../../Engine/Content/MobileResources/HUD/MobileHUDDirectionPad.uasset" 452
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButtonFire.uasset" 453
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButton3.uasset" 454
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButton2_on.uasset" 455
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButton2_off.uasset" 456
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButton1_on.uasset" 457
+"../../../Engine/Content/MobileResources/HUD/MobileHUDButton1_off.uasset" 458
+"../../../Engine/Content/MobileResources/HUD/LeftVirtualJoystickOnly.uasset" 459
+"../../../Engine/Content/MobileResources/HUD/DefaultVirtualJoysticks.uasset" 460
+"../../../Engine/Content/MobileResources/HUD/AnalogHat.uasset" 461
+"../../../Engine/Content/MobileResources/T_MobileMenu2.uasset" 462
+"../../../Engine/Content/MobileResources/T_MobileControls_texture.uasset" 463
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/FPSMap.umap" 464
+"../../../Engine/Content/EngineSky/BP_Sky_Sphere.uasset" 465
+"../../../Engine/Content/EditorBlueprintResources/StandardMacros.uasset" 466
+"../../../Engine/Content/EngineSky/C_Sky_Cloud_Color.uasset" 467
+"../../../Engine/Content/EngineSky/C_Sky_Horizon_Color.uasset" 468
+"../../../Engine/Content/EngineSky/C_Sky_Zenith_Color.uasset" 469
+"../../../Engine/Content/EngineSky/M_Sky_Panning_Clouds2.uasset" 470
+"../../../Engine/Content/EngineSky/T_Sky_Blue.uasset" 471
+"../../../Engine/Content/EngineSky/T_Sky_Clouds_M.uasset" 472
+"../../../Engine/Content/EngineSky/T_Sky_Stars.uasset" 473
+"../../../Engine/Content/EngineSky/SM_SkySphere.uasset" 474
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/SM_Template_Map_Floor2_Blueprint.uasset" 475
+"../../../Engine/Content/MapTemplates/SM_Template_Map_Floor.uasset" 476
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D83E1C7448548DA29DFC3EA0DB604__94FA985FD55DFAF0A6ADE932DB0517C80226AA6A.udd" 477
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/8/0/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_4514AA2E4EBC661365B4B9B03D482E72__1_0_13073_0.udd" 478
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/5/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_557C9B5C4A1D38CB71CEE9A25CDBC__A79C6BF1F3588AE9C2FFDC9FB79155F6077F9EB8.udd" 479
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/8/0/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_4514AA2E4EBC661365B4B9B03D482E72__1_0_13073_0.udd" 480
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/2/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_557C9B5C4A1D38CB71CEE9A25CDBC__7B14DE2B228C93B133A24B113EF8904690A56E07.udd" 481
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/6/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_557C9B5C4A1D38CB71CEE9A25CDBC__97B16CECE9E71D400B7A4A5DF0E92953D007E61D.udd" 482
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/9/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__589AFF3D9578BEB0D977DF3E450143D339CFA0E0.udd" 483
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/6/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__1E614D1B0FE2393983E5320821C201D0654E1673.udd" 484
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/2/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__97D9B41D25A77C0650A71D276417AFC2DC08BFD5.udd" 485
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/9/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_96A31A4049B69133FAB6219E45C58BDC__765B4B449D8FE842A8EF4F1C4E3C3FF376DD62FA.udd" 486
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__BBA34E6E925E8E36424E44803F165C632D6A1F72.udd" 487
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__83F1D7BAF1DCE939CDAD75815A4B2DD4FBF85DD6.udd" 488
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/9/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__ED61B7182CD0628212A8539FF1BA29C15BB0EE32.udd" 489
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__3F62EB899C5309847CCDC5F59803B76053026CD1.udd" 490
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/9/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__ACCE583EBCFA1009369F3B0A55A51ACF764CD275.udd" 491
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/6/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__3FEBCBFEF2CDDAB045DDA4C0596C3FE8EBE6CEC5.udd" 492
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__4FFF6B67383148F5E3EB94B8FB8D01A3D1ACFAD7.udd" 493
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__DEDBD4331D13CE628567259BCADCBDB0C9F53EC7.udd" 494
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/4/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__3C987BC1A0FADA44D8C8D9F3457713E0C29C9150.udd" 495
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__067DFB52CAFEE4A03B5D8BF6025A55E3BD842359.udd" 496
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/8/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__9ABAB5831DBDD45C19EE22064F6358ECDFBEDA33.udd" 497
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__6C0669732E13E63B54640EBB8B96CFE2248EE99A.udd" 498
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_C8304FDC48CF6B8BA8722ABA21A5BA4__4AEB433B04CC76614660C8E3BADF1FFFCFA267E4.udd" 499
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/GPMenuStart.umap" 500
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/GPMenu_Start.uasset" 501
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/GPMenuNetwork.umap" 502
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/2/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_557C9B5C4A1D38CB71CEE9A25CDBC__7B14DE2B228C93B133A24B113EF8904690A56E07.udd" 480
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/6/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_557C9B5C4A1D38CB71CEE9A25CDBC__97B16CECE9E71D400B7A4A5DF0E92953D007E61D.udd" 481
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/9/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__589AFF3D9578BEB0D977DF3E450143D339CFA0E0.udd" 482
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/6/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__1E614D1B0FE2393983E5320821C201D0654E1673.udd" 483
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/2/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_6628BD4C4996B024BD59A788ACBC8__97D9B41D25A77C0650A71D276417AFC2DC08BFD5.udd" 484
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/9/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_96A31A4049B69133FAB6219E45C58BDC__765B4B449D8FE842A8EF4F1C4E3C3FF376DD62FA.udd" 485
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__BBA34E6E925E8E36424E44803F165C632D6A1F72.udd" 486
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__83F1D7BAF1DCE939CDAD75815A4B2DD4FBF85DD6.udd" 487
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/9/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_70243EF74CBD9149267E45BDA529BDF4__ED61B7182CD0628212A8539FF1BA29C15BB0EE32.udd" 488
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__3F62EB899C5309847CCDC5F59803B76053026CD1.udd" 489
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/9/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__ACCE583EBCFA1009369F3B0A55A51ACF764CD275.udd" 490
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/6/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_DBB01E4A42A967D9C1799498922B0B44__3FEBCBFEF2CDDAB045DDA4C0596C3FE8EBE6CEC5.udd" 491
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__4FFF6B67383148F5E3EB94B8FB8D01A3D1ACFAD7.udd" 492
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__067DFB52CAFEE4A03B5D8BF6025A55E3BD842359.udd" 493
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/8/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__9ABAB5831DBDD45C19EE22064F6358ECDFBEDA33.udd" 494
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_EA2301B2463DBBE97EDC19AB722EF7C__6C0669732E13E63B54640EBB8B96CFE2248EE99A.udd" 495
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__DEDBD4331D13CE628567259BCADCBDB0C9F53EC7.udd" 496
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_C8304FDC48CF6B8BA8722ABA21A5BA4__4AEB433B04CC76614660C8E3BADF1FFFCFA267E4.udd" 497
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/4/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BGRA8_2C8837044B9C0D5B864D0B87C3B8F58__3C987BC1A0FADA44D8C8D9F3457713E0C29C9150.udd" 498
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/GPMenuStart.umap" 499
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/GPMenu_Start.uasset" 500
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/GPMenuNetwork.umap" 501
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/GPMenu_Network.uasset" 502
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Maps/GPMenuLobby.umap" 503
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/GPMenu_Lobby.uasset" 504
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Meshes/GP_Wall.uasset" 505
