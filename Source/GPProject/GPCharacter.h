@@ -113,6 +113,17 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION()
         void OnFlagPickUp();
 
+		// handle pausing
+		//handles bomb detonation
+		UFUNCTION()
+		void ReqPause();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerReqPause();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastReqPause();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		virtual void Respawn();

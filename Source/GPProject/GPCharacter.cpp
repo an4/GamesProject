@@ -3,6 +3,7 @@
 #include "GPProjectile.h"
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
+#include "GPPlayerController.h"
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
@@ -343,4 +344,65 @@ void AGPCharacter::OnFlagPickUp() {
 
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
+
+	// Get controller
+	//AController* controller = GetController();
+
+	AGPCharacter::ReqPause();
+		/*
+	AGPPlayerController* pController = Cast<AGPPlayerController>(GetController());
+	if (pController == NULL || !pController)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller"));
+	}
+	else
+	{
+		pController->SetPause(true);
+		pController->ServerPause();
+	}*/
+}
+
+void AGPCharacter::ReqPause()
+{
+	if (true)
+	{
+		ServerReqPause();
+	}
+}
+
+bool AGPCharacter::ServerReqPause_Validate()
+{
+	return true;
+}
+
+void AGPCharacter::ServerReqPause_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastReqPause();
+	}
+}
+
+void AGPCharacter::BroadcastReqPause_Implementation()
+{
+	AGPPlayerController* pController = Cast<AGPPlayerController>(GetController());
+	AController* pC = Controller;
+	if (pC == NULL || !pC)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller1"));
+	}
+	if (pController == NULL || !pController)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller2"));
+	}
+	else
+	{
+		AGPPlayerController* pC = Cast<AGPPlayerController>(Controller);
+		if (pC == NULL || !pC)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller3"));
+		}
+		pController->SetPause(true);
+		pController->ServerPause();
+	}
 }
