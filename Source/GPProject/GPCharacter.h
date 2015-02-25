@@ -18,6 +18,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     virtual void BeginPlay() override;
 
+	void SetupTeam();
+
 	UFUNCTION()
 	bool CanFire();
 	

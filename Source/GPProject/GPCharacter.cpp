@@ -76,10 +76,13 @@ void AGPCharacter::BeginPlay()
     }
 
 	// Set starting health
+
 	Health = 100.0f;
 	Point = 0.0f;
 	BombPlanted = false;
 	MaxBombs = 5;
+	SetupTeam();
+
 }
 
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
@@ -343,4 +346,11 @@ void AGPCharacter::OnFlagPickUp() {
 
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
+}
+
+void AGPCharacter::SetupTeam()
+{
+	//((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
+	((AGPPlayerState*)PlayerState)->Team = 1;
+	((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
 }
