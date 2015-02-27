@@ -2,8 +2,6 @@
 
 #include "GPProject.h"
 #include "GPGameMode.h"
-#include "GPHUD.h"
-#include "GPPlayerController.h"
 #include "EngineUtils.h"
 
 
@@ -14,6 +12,10 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	// the controller class handles a player for the entirety of the game, whereas pawns can be replaced (e.g. death and respawn)
 	// Controller should hold things like score, team that need to be kept across lives! Should handle input and replication.
 	PlayerControllerClass = AGPPlayerController::StaticClass();
+	PlayerStateClass = AGPPlayerState::StaticClass();
+	GameStateClass = AGPGameState::StaticClass();
+	HUDClass = AGPHUD::StaticClass();
+
 
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
@@ -22,7 +24,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
 	
-    HUDClass = AGPHUD::StaticClass();
+    
 	tickCount = 0.0;
 }
 

@@ -4,3 +4,10 @@
 #include "GPPlayerState.h"
 
 
+void AGPPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Replicate to everyone
+	DOREPLIFETIME(AGPPlayerState, Team);
+}

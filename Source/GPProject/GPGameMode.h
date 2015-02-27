@@ -3,6 +3,10 @@
 #pragma once
 #include "GPBuilding.h"
 #include "GPFlagPickup.h"
+#include "GPGameState.h"
+#include "GPHUD.h"
+#include "GPPlayerController.h"
+#include "GPPlayerState.h"
 #include "GameFramework/GameMode.h"
 #include "GPGameMode.generated.h"
 

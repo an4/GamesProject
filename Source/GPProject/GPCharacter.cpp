@@ -81,8 +81,27 @@ void AGPCharacter::BeginPlay()
 	Point = 0.0f;
 	BombPlanted = false;
 	MaxBombs = 5;
-	SetupTeam();
+}
 
+void AGPCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	SetupTeam();
+}
+
+void AGPCharacter::SetupTeam()
+{
+	AGPPlayerState* State = (AGPPlayerState*)PlayerState;
+	if (State != NULL)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("We have a playerstate!"));
+		State->Team = 1;
+		((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("We don't have a playerstate :("));
+	}
 }
 
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
@@ -346,11 +365,4 @@ void AGPCharacter::OnFlagPickUp() {
 
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
-}
-
-void AGPCharacter::SetupTeam()
-{
-	//((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
-	((AGPPlayerState*)PlayerState)->Team = 1;
-	((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
 }

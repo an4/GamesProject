@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GPGameState.h"
+#include "UnrealNetwork.h"
 #include "GameFramework/PlayerState.h"
 #include "GPPlayerState.generated.h"
 
@@ -14,6 +15,7 @@ class GPPROJECT_API AGPPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	public:
+	UPROPERTY(Replicated)
 	int8 Team;
 	
 	void SetupTeam();
