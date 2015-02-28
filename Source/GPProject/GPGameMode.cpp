@@ -25,7 +25,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     HUDClass = AGPHUD::StaticClass();
 	tickCount = 0.0;
 
-	kinect = KinectInterface();
+	// Instantiate the Kinect Interface
+	kinect = new KinectInterface();
 }
 
 void AGPGameMode::StartPlay()
@@ -43,8 +44,8 @@ void AGPGameMode::StartPlay()
         // Spawn flag
         SpawnFlag();
 
-		// Run the Kinect code for debugging purposes.
-		kinect.run();
+		// Run the Kinect code for debugging purposes. TODO: Stop using pointer? Delete? Singleton?
+		kinect->Run();
 	}
 
 }
@@ -67,8 +68,8 @@ void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
 	const float sqy_px = FMath::Max(a.Y, b.Y) - FMath::Min(a.Y, b.Y);
 
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = kinect.GetWidth();
-	const float worldy_px = kinect.GetHeight(); // TODO: Resize the world so it matches the aspect ratio.
+	const float worldx_px = kinect->GetWidth();
+	const float worldy_px = kinect->GetHeight(); // TODO: Resize the world so it matches the aspect ratio.
 
 	// Get the unscaled centre point.
 	FVector2D centre2D = (a + b) / 2.0f;
@@ -171,7 +172,7 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 void AGPGameMode::Tick(float DeltaSeconds)
 {
 	tickCount += DeltaSeconds;
-	if (tickCount >= FMath::FRandRange(5.0f, 45.0f)) {
+	if (false && tickCount >= FMath::FRandRange(5.0f, 45.0f)) {
 		tickCount = 0.0;
 
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 0.), FVector(2500., 2500., 0.)));

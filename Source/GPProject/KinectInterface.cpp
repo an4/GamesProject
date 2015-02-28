@@ -3,9 +3,14 @@
 #include "GPProject.h"
 #include "KinectInterface.h"
 #include "AssertionMacros.h" // To give us log access.
+#include <opencv2/opencv.hpp> // WARNING: modified types.hpp!!!
 
 KinectInterface::KinectInterface()
 {
+	UE_LOG(LogTemp, Warning, TEXT("CONSTRUCTING KINECT INTERFACE"));
+	// TODO: No more LogTemp!
+	// WARNING: We have to build the version string ourselves, as the OpenCV header will use C style (narrow!) strings, and we don't (at least on win64)
+	UE_LOG(LogTemp, Warning, TEXT("OpenCV Version %d.%d.%d%s"), CV_VERSION_MAJOR, CV_VERSION_MINOR, CV_VERSION_REVISION, TEXT(CV_VERSION_STATUS));
 	squaresFound = TArray<FVector2D>();
 }
 
@@ -33,36 +38,84 @@ TArray<FVector2D> KinectInterface::GetSquares()
 // Refreshes depth array from the Kinect.
 void KinectInterface::Rescan()
 {
-	// Use hardcoded depth values for development.
-	for (int i = 0; i < width*height; i++)
+	// TODO: Don't bring in from Raw... Package will break!
+	UE_LOG(LogTemp, Warning, TEXT("DIR: %s"), *FPaths::Combine(*FPaths::GameDir(), TEXT("Raw"), *FString(TEXT("boxbroom_painted.png"))));
+
+	// Use hardcoded depth map for development.
+	cv::Mat src;
+	src = cv::imread(  TCHAR_TO_ANSI(*FPaths::Combine(*FPaths::GameDir(), *FString(TEXT("Raw")), *FString(TEXT("boxbroom_painted.png")))) );
+
+	if (src.data)
 	{
-		depthArray[i] = 200;
-		hasBeenSearched[i] = 0;
+		cv::imshow("test", src);
+		cv::waitKey();
+
+		//// Convert to grayscale
+		//cv::Mat gray;
+		//cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+
+		//// Convert to binary image using Canny
+		//cv::Mat bw;
+		//cv::Canny(gray, bw, 40, 70, 3);
+		//cv::imshow("test", bw);
+		//cv::waitKey();
+
+		//cv::Mat contourImg = bw.clone();
+		//std::vector<std::vector<cv::Point>> contoursFound;
+		//std::vector<std::vector<cv::Point>> approxFakeContours;
+		//std::vector<cv::Point> approxFound;
+		////cv::OutputArray heirarchy;
+		//std::vector<cv::Vec4i> heirarchy;
+
+		//cv::findContours(contourImg, contoursFound, heirarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
+
+		//cv::Mat contourImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+		//cv::Mat approxImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+		//cv::Scalar colors[3];
+		//colors[0] = cv::Scalar(255, 0, 0);
+		//colors[1] = cv::Scalar(0, 255, 0);
+		//colors[2] = cv::Scalar(0, 0, 255);
+		//for (size_t idx = 0; idx < contoursFound.size(); idx++) {
+		//	std::cout << contoursFound.at(idx).size() << std::endl;
+		//	cv::drawContours(contourImage, contoursFound, idx, colors[idx % 3]);
+
+		//	// Approximate a closed poly from contours
+		//	cv::approxPolyDP(cv::Mat(contoursFound.at(idx)), approxFound, 20, true);
+
+		//	// Stick this closed poly into the list of them
+		//	approxFakeContours.push_back(std::vector<cv::Point>(approxFound));
+		//}
+
+		//for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+		//{
+		//	cv::drawContours(approxImage, approxFakeContours, idx, colors[idx % 3]);
+		//}
+
+		//cv::imshow("test", contourImage);
+		//cv::waitKey();
+		//cv::imshow("test", approxImage);
+		//cv::waitKey();
+
+		//// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
+		//for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+		//{
+		//	// Only look at contours with 4 corners
+		//	if (approxFakeContours.at(idx).size() == 4)
+		//	{
+		//		cv::Scalar yellow = cv::Scalar(100, 255, 255);
+		//		cv::RotatedRect box = cv::minAreaRect(approxFakeContours.at(idx));
+		//		cv::Point2f vertices[4]; // The mind boggles why OpenCV doesn't have a function to draw it's shapes...
+		//		box.points(vertices);
+		//		for (int i = 0; i < 4; i++) {
+		//			cv::line(approxImage, vertices[i], vertices[(i + 1) % 4], yellow);
+		//		}
+		//		//cv::rectangle(approxImage, box, yellow);
+		//	}
+		//}
+
+		//cv::imshow("test bbox", approxImage);
+		//cv::waitKey();
 	}
-	depthArray[2 + 2 * width] = 100;
-	depthArray[2 + 3 * width] = 100;
-	depthArray[3 + 2 * width] = 100;
-	depthArray[3 + 3 * width] = 100;
-	depthArray[5 + 4 * width] = 100;
-	depthArray[6 + 4 * width] = 100;
-	depthArray[7 + 4 * width] = 100;
-	depthArray[6 + 5 * width] = 100;
-	depthArray[6 + 3 * width] = 100;
-	depthArray[8 + 9 * width] = 100;
-	depthArray[8 + 10 * width] = 100;
-	depthArray[8 + 11 * width] = 100;
-	depthArray[9 + 9 * width] = 100;
-	depthArray[9 + 10 * width] = 100;
-	depthArray[9 + 11 * width] = 100;
-	depthArray[10 + 3 * width] = 100;
-	depthArray[11 + 3 * width] = 100;
-	depthArray[13 + 3 * width] = 100;
-	depthArray[14 + 3 * width] = 100;
-	depthArray[10 + 4 * width] = 100;
-	depthArray[11 + 4 * width] = 100;
-	depthArray[12 + 4 * width] = 100;
-	depthArray[13 + 4 * width] = 100;
-	depthArray[14 + 4 * width] = 100;
 }
 
 void KinectInterface::FindSquares()
