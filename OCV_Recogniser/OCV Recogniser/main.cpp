@@ -4,7 +4,7 @@ void main()
 {
 	std::cout << "OpenCV Version: " << CV_VERSION << std::endl;
 
-	cv::Mat src = cv::imread("boxbroom_simple_painted.png");
+	cv::Mat src = cv::imread("boxbroom_painted.png");
 	cv::imshow("test", src);
 	cv::waitKey();
 
@@ -20,6 +20,7 @@ void main()
 
 	cv::Mat contourImg = bw.clone();
 	std::vector<std::vector<cv::Point>> contoursFound;
+	std::vector<std::vector<cv::Point>> approxFakeContours;
 	std::vector<cv::Point> approxFound;
 	//cv::OutputArray heirarchy;
 	std::vector<cv::Vec4i> heirarchy;
@@ -35,16 +36,41 @@ void main()
 	for (size_t idx = 0; idx < contoursFound.size(); idx++) {
 		std::cout << contoursFound.at(idx).size() << std::endl;
 		cv::drawContours(contourImage, contoursFound, idx, colors[idx % 3]);
+
+		// Approximate a closed poly from contours
 		cv::approxPolyDP(cv::Mat(contoursFound.at(idx)), approxFound, 20, true);
+
+		// Stick this closed poly into the list of them
+		approxFakeContours.push_back(std::vector<cv::Point>(approxFound));
 	}
 
-	std::vector<std::vector<cv::Point>> approxFakeContours;
-	approxFakeContours.push_back(approxFound);
-	cv::drawContours(approxImage, approxFakeContours, 0, colors[1]);
+	for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+	{
+		cv::drawContours(approxImage, approxFakeContours, idx, colors[idx%3]);
+	}
 
 	cv::imshow("test", contourImage);
 	cv::waitKey();
 	cv::imshow("test", approxImage);
 	cv::waitKey();
 
+	// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
+	for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+	{
+		// Only look at contours with 4 corners
+		if (approxFakeContours.at(idx).size() == 4)
+		{
+			cv::Scalar yellow = cv::Scalar(100, 255, 255);
+			cv::RotatedRect box = cv::minAreaRect(approxFakeContours.at(idx));
+			cv::Point2f vertices[4]; // The mind boggles why OpenCV doesn't have a function to draw it's shapes...
+			box.points(vertices);
+			for (int i = 0; i < 4; i++) {
+				cv::line(approxImage, vertices[i], vertices[(i + 1) % 4], yellow);
+			}
+			//cv::rectangle(approxImage, box, yellow);
+		}
+	}
+
+	cv::imshow("test bbox", approxImage);
+	cv::waitKey();
 }
