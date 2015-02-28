@@ -29,6 +29,14 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 
     // Set number of flags picked up to zero.
     FlagsPickedUp = 0;
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material1(TEXT("Material'/Game/Materials/Red.Red'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material2(TEXT("Material'/Game/Materials/Green.Green'"));
+	if (Material1.Object != NULL)
+		RedMaterial = (UMaterial*)Material1.Object;
+	if (Material2.Object != NULL)
+		GreenMaterial = (UMaterial*)Material2.Object;
+	GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -36,7 +44,22 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
 
+	//&& ((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team != ((AGPPlayerState*)PlayerState)->Team
 	
+	((AGPPlayerState*)PlayerState)->Team;
+	((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
+	AGPPlayerController* OtherState = (AGPPlayerController*)EventInstigator;
+	/*if (OtherState == NULL)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Oh dear, it appears that other bastard has no state!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("That bastard was from team %d"), OtherState->Team);
+	}*/
+
 	if (EventInstigator != GetController()) {
 
 		Health -= DamageAmount;
@@ -87,6 +110,18 @@ void AGPCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	SetupTeam();
+
+	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding green material"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+	}
+	
 }
 
 void AGPCharacter::SetupTeam()
