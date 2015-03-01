@@ -47,28 +47,30 @@ void KinectInterface::Rescan()
 
 	if (src.data)
 	{
-		/*cv::imshow("test", src);
-		cv::waitKey();*/
+		cv::imshow("test", src);
+		cv::waitKey();
 
 		// Convert to grayscale
 		cv::Mat gray;
 		cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
 
 		// Free src
-		src.release();
+		//src.release();
 
 		// Convert to binary image using Canny
 		cv::Mat bw;
 		cv::Canny(gray, bw, 40, 70, 3);
 
 		// Free gray
-		gray.release();
+		//gray.release();
 
-		/*cv::imshow("test", bw);
-		cv::waitKey();*/
+		cv::imshow("test", bw);
+		cv::waitKey();
 
-		//cv::Mat contourImg = bw.clone();
+		cv::Mat contourImg = bw.clone();
 
+		//cv::imshow("test", contourImg);
+		//cv::waitKey();
 
 		std::vector<std::vector<cv::Point>> contoursFound;
 		std::vector<std::vector<cv::Point>> approxFakeContours;
@@ -77,12 +79,12 @@ void KinectInterface::Rescan()
 		std::vector<cv::Vec4i> heirarchy;
 
 		// Causing segfault - smashing the stack???
-		//cv::findContours(bw, contoursFound, heirarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
+		cv::findContours(contourImg, contoursFound, heirarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
 
-		cv::Mat contourImage(bw.size(), CV_8UC3, cv::Scalar(0, 0, 0));
-		cv::Mat approxImage(bw.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+		cv::Mat contourImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+		cv::Mat approxImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
 
-		bw.release();
+		//bw.release();
 
 		cv::Scalar colors[3];
 		colors[0] = cv::Scalar(255, 0, 0);
@@ -104,12 +106,12 @@ void KinectInterface::Rescan()
 			cv::drawContours(approxImage, approxFakeContours, idx, colors[idx % 3]);
 		}
 
-		/*cv::imshow("test", contourImage);
+		cv::imshow("test", contourImage);
 		cv::waitKey();
 		cv::imshow("test", approxImage);
-		cv::waitKey();*/
+		cv::waitKey();
 
-		contourImage.release();
+		//contourImage.release();
 
 		// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
 		for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
