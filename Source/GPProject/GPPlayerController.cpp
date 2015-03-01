@@ -3,6 +3,7 @@
 #include "GPProject.h"
 #include "GPPlayerController.h"
 #include "GPCharacter.h"
+#include "KinectInterface.h"
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -97,6 +98,10 @@ void AGPPlayerController::OnFire()
 
 void AGPPlayerController::OnBombLaunch()
 {
+
+
+	// Instantiate the Kinect Interface
+	KinectInterface::JoyInit(this);
 	if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnBombLaunch();

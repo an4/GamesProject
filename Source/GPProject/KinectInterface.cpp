@@ -5,18 +5,46 @@
 #include "AssertionMacros.h" // To give us log access.
 #include <opencv2/opencv.hpp> // WARNING: modified types.hpp!!!
 
-KinectInterface::KinectInterface()
+//***********************************************************
+//Thread Worker Starts as NULL, prior to being instanced
+//		This line is essential! Compiler error without it
+KinectInterface* KinectInterface::Runnable = NULL;
+//***********************************************************
+
+KinectInterface::KinectInterface(AGPPlayerController *pc)
+	: ThePC(pc)
+	, StopTaskCounter(0)
 {
 	UE_LOG(LogTemp, Warning, TEXT("CONSTRUCTING KINECT INTERFACE"));
 	// TODO: No more LogTemp!
 	// WARNING: We have to build the version string ourselves, as the OpenCV header will use C style (narrow!) strings, and we don't (at least on win64)
 	UE_LOG(LogTemp, Warning, TEXT("OpenCV Version %d.%d.%d%s"), CV_VERSION_MAJOR, CV_VERSION_MINOR, CV_VERSION_REVISION, TEXT(CV_VERSION_STATUS));
-	squaresFound = TArray<FVector2D>();
+	
+
+	const bool bAutoDeleteSelf = false;
+	const bool bAutoDeleteRunnable = false;
+	Thread = FRunnableThread::Create(this, TEXT("KinectInterface"), bAutoDeleteSelf, bAutoDeleteRunnable, 33554432, TPri_BelowNormal); //windows default = 8mb for thread, could specify more
 }
 
 KinectInterface::~KinectInterface()
 {
-	squaresFound.Empty();
+	delete Thread;
+	Thread = NULL;
+	//squaresFound.Empty();
+}
+
+//Init
+bool KinectInterface::Init()
+{
+	squaresFound = TArray<FVector2D>();
+
+	if (ThePC)
+	{
+		ThePC->ClientMessage("**********************************");
+		ThePC->ClientMessage("Prime Number Thread Started!");
+		ThePC->ClientMessage("**********************************");
+	}
+	return true;
 }
 
 float KinectInterface::GetWidth()
@@ -198,9 +226,64 @@ void KinectInterface::FindSquares()
 	}
 }
 
-void KinectInterface::Run()
+uint32 KinectInterface::Run()
 {
+	//Initial wait before starting
+	FPlatformProcess::Sleep(0.03);
+
 	UE_LOG(LogTemp, Warning, TEXT("Running Kinect..."));
 
-	Rescan();
+	//While not told to stop this thread 
+	//		and not yet finished finding Prime Numbers
+	while (StopTaskCounter.GetValue() == 0)
+	{
+
+
+		Rescan();
+
+		//***************************************
+		//Show Incremental Results in Main Game Thread!
+
+		//	Please note you should not create, destroy, or modify UObjects here.
+		//	  Do those sort of things after all thread are completed.
+
+		//	  All calcs for making stuff can be done in the threads
+		//	     But the actual making/modifying of the UObjects should be done in main game thread.
+		//ThePC->ClientMessage(FString::FromInt(PrimeNumbers->Last()));
+		//***************************************
+
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//prevent thread from using too many resources
+		//FPlatformProcess::Sleep(0.01);
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	}
+
+	//Run FPrimeNumberWorker::Shutdown() from the timer in Game Thread that is watching
+	//to see when FPrimeNumberWorker::IsThreadFinished()
+
+	return 0;
+}
+
+//stop
+void KinectInterface::Stop()
+{
+	StopTaskCounter.Increment();
+}
+
+KinectInterface* KinectInterface::JoyInit(AGPPlayerController* IN_PC)
+{
+	//Create new instance of thread if it does not exist
+	//		and the platform supports multi threading!
+	if (!Runnable && FPlatformProcess::SupportsMultithreading())
+	{
+		Runnable = new KinectInterface(IN_PC);
+	}
+	return Runnable;
+}
+
+
+bool KinectInterface::IsThreadFinished()
+{
+	if (Runnable) return Runnable->IsFinished();
+	return true;
 }
