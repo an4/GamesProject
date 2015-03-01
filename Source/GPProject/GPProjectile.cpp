@@ -69,7 +69,15 @@ void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 				const float damage = 5.0f;
 				// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
 				FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
-				OtherActor->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
+
+                APawn* something = ((APawn*)GetOwner());
+                AController* somethingelse = something->GetController();
+                if (somethingelse) {
+                    OtherActor->TakeDamage(damage, *DamageEvent, somethingelse, this);
+                }
+                else {
+                    UE_LOG(LogTemp, Warning, TEXT("Somethingelse is NULL"));
+                }
 			}
 		}
 	}

@@ -52,43 +52,41 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 	//&& ((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team != ((AGPPlayerState*)PlayerState)->Team
 	
-	((AGPPlayerState*)PlayerState)->Team;
-	((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
+	//((AGPPlayerState*)PlayerState)->Team;
+	//((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
 	
 	UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
-	AGPPlayerController* OtherState = (AGPPlayerController*)EventInstigator;
-	/*if (OtherState == NULL)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Oh dear, it appears that other bastard has no state!"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("That bastard was from team %d"), OtherState->Team);
-	}*/
+    if (PlayerState != NULL && EventInstigator->PlayerState != NULL)
+    {
+        int32 OurTeam = ((AGPPlayerState*)PlayerState)->Team;
+        UE_LOG(LogTemp, Warning, TEXT("WE ARE %d"), OurTeam);
+        
+        int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
+        if (TheirTeam != OurTeam) {
 
-	if (EventInstigator != GetController()) {
+            Health -= DamageAmount;
 
-		Health -= DamageAmount;
+            AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+            otherPlayer->IncreasePoints();
 
-		AGPCharacter* otherPlayer = Cast<AGPCharacter,AActor>(DamageCauser->GetOwner());
-		otherPlayer->IncreasePoints();
+            if (GEngine)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
 
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+                if (Health <= 0)
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+                    Respawn();
+                }
+            }
 
-			if (Health <= 0)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-				Respawn();
-			}
-		}
-
-		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	}
-	else {
-		return 0.0f;
-	}
+            return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+        }
+        else {
+            return 0.0f;
+        }
+    }
+    return 0.0f;
 }
 
 void AGPCharacter::IncreasePoints() {
@@ -115,7 +113,10 @@ void AGPCharacter::BeginPlay()
 void AGPCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	SetupTeam();
+    if (Role == ROLE_Authority) 
+    {
+        SetupTeam();
+    }
 }
 
 void AGPCharacter::SetupTeam()
@@ -124,7 +125,6 @@ void AGPCharacter::SetupTeam()
 	if (State != NULL)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("We have a playerstate!"));
-		State->Team = 1;
 		((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
 		if (((AGPPlayerState*)PlayerState)->Team == 0)
 		{
