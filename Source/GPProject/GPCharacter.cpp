@@ -5,6 +5,7 @@
 #include "GPCharacter.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
+#include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
@@ -163,6 +164,7 @@ void AGPCharacter::OnStopJump()
 bool AGPCharacter::CanFire()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(gs->GetState()));
 	return (Health > 0.0f && gs->GetState() == 1);
 }
 
@@ -350,17 +352,6 @@ void AGPCharacter::OnFlagPickUp() {
 	//AController* controller = GetController();
 
 	AGPCharacter::SetPauseState();
-		/*
-	AGPPlayerController* pController = Cast<AGPPlayerController>(GetController());
-	if (pController == NULL || !pController)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller"));
-	}
-	else
-	{
-		pController->SetPause(true);
-		pController->ServerPause();
-	}*/
 }
 
 void AGPCharacter::SetPauseState()
@@ -395,14 +386,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
-		BroadcastSetPauseState();
 	}
-}
-
-void AGPCharacter::BroadcastSetPauseState_Implementation()
-{
-	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	gs->SetState(2);
 }
 
 void AGPCharacter::SetPauseStateOff()
@@ -425,15 +409,19 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
+		// Do reset
+		UWorld * const World = GetWorld();
+		AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+		if (gm == NULL || !gm)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+		}
+		else
+		{
+			gm->ResetBuildings();
+		}
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(1);
-		BroadcastSetPauseStateOff();
 	}
-}
-
-void AGPCharacter::BroadcastSetPauseStateOff_Implementation()
-{
-	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	gs->SetState(1);
 }

@@ -13,6 +13,7 @@ class GPPROJECT_API AGPGameState : public AGameState
 {
 	GENERATED_BODY()
 
+	UPROPERTY(Replicated)
 	int32 gameState;
 	
 	AGPGameState(const class FObjectInitializer& ObjectInitializer);

@@ -213,3 +213,23 @@ void AGPGameMode::SpawnFlag()
         }
     }
 }
+
+void AGPGameMode::ResetBuildings()
+{
+	bool doOnce = false;
+	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
+	{
+		if (!doOnce)
+		{
+			++bIt;
+			++bIt;
+			++bIt;
+			++bIt;
+			doOnce = true;
+		}
+		if (bIt != NULL && bIt)
+		{
+			bIt->Destroy();
+		}
+	}
+}
