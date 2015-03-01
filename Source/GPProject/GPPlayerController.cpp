@@ -3,6 +3,7 @@
 #include "GPProject.h"
 #include "GPPlayerController.h"
 #include "GPCharacter.h"
+#include "GPGameState.h"
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -27,8 +28,8 @@ void AGPPlayerController::SetupInputComponent()
 
 void AGPPlayerController::MoveForward(float Value)
 {
-	// TODO: Health test - forward disabled when health gone
-    if (GetCharacter() != NULL && (Value != 0.0f) /*&& (Health > 0.0f)*/)
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    if (GetCharacter() != NULL && (Value != 0.0f) && (gs->GetState() == 1))
     {
         // find out which way is forward
         FRotator Rotation = GetControlRotation();
@@ -45,7 +46,8 @@ void AGPPlayerController::MoveForward(float Value)
 
 void AGPPlayerController::MoveRight(float Value)
 {
-    if ((GetCharacter() != NULL) && (Value != 0.0f))
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    if ((GetCharacter() != NULL) && (Value != 0.0f) && (gs->GetState() == 1))
     {
         // find out which way is right
         const FRotator Rotation = GetControlRotation();
@@ -73,7 +75,8 @@ void AGPPlayerController::AddControllerPitchInput(float Value)
 
 void AGPPlayerController::OnStartJump()
 {
-	if (GetCharacter() != NULL)
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	if (GetCharacter() != NULL && gs->GetState() == 1)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnStartJump();
 	}
