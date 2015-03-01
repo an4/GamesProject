@@ -219,6 +219,7 @@ void AGPGameMode::ResetBuildings()
 	bool doOnce = false;
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
 	{
+		// Skip the 4 walls
 		if (!doOnce)
 		{
 			++bIt;

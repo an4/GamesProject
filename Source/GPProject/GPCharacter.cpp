@@ -354,6 +354,7 @@ void AGPCharacter::OnFlagPickUp() {
 	AGPCharacter::SetPauseState();
 }
 
+// Check game state = 1 before setting to 2 and starting the reset timer
 void AGPCharacter::SetPauseState()
 {
 	UWorld* const World = GetWorld();
@@ -385,6 +386,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
+		// Start timer to go back to normal state
 		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
 	}
 }

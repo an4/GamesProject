@@ -28,6 +28,7 @@ void AGPPlayerController::SetupInputComponent()
 
 void AGPPlayerController::MoveForward(float Value)
 {
+	// Check that the game is not paused before allowing movement
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
     if (GetCharacter() != NULL && (Value != 0.0f) && (gs->GetState() == 1))
     {

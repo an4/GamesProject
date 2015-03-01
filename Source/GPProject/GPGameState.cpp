@@ -14,7 +14,7 @@ void AGPGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// Replicate to everyone
+	// Replicate to everyone so that we don't have to broadcast server functions
 	DOREPLIFETIME(AGPGameState, gameState);
 }
 
