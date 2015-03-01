@@ -33,9 +33,15 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material1(TEXT("Material'/Game/Materials/Red.Red'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> Material2(TEXT("Material'/Game/Materials/Green.Green'"));
 	if (Material1.Object != NULL)
+	{
 		RedMaterial = (UMaterial*)Material1.Object;
+		UE_LOG(LogTemp, Warning, TEXT("RedMaterial has a value"));
+	}
 	if (Material2.Object != NULL)
+	{
 		GreenMaterial = (UMaterial*)Material2.Object;
+		UE_LOG(LogTemp, Warning, TEXT("GreenMaterial has a value"));
+	}
 	GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
 }
 
@@ -110,18 +116,6 @@ void AGPCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	SetupTeam();
-
-	if (((AGPPlayerState*)PlayerState)->Team == 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding green material"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-	}
-	
 }
 
 void AGPCharacter::SetupTeam()
@@ -132,6 +126,18 @@ void AGPCharacter::SetupTeam()
 		UE_LOG(LogTemp, Warning, TEXT("We have a playerstate!"));
 		State->Team = 1;
 		((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
+		if (((AGPPlayerState*)PlayerState)->Team == 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
+			GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+			FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
+			GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+			FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		}
 	}
 	else
 	{

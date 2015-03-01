@@ -25,10 +25,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 	bool CanFire();
 	
     public:
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Materials)
+		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterial* GreenMaterial;
 		
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Materials)
+		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterial* RedMaterial;
         
 		//handles firing
