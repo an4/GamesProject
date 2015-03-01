@@ -22,7 +22,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 	bool CanFire();
 	
     public:
-        //handles firing
+		//handles firing
         UFUNCTION()
         void OnFire();
 
@@ -116,13 +116,24 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		// handle pausing
 		//handles bomb detonation
 		UFUNCTION()
-		void ReqPause();
+		void SetPauseState();
 
 		UFUNCTION(Server, Reliable, WithValidation)
-		void ServerReqPause();
+		void ServerSetPauseState();
 
 		UFUNCTION(NetMulticast, Reliable)
-		void BroadcastReqPause();
+		void BroadcastSetPauseState();
+
+		UFUNCTION()
+		void SetPauseStateOff();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseStateOff();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastSetPauseStateOff();
+
+		
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

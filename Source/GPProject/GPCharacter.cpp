@@ -4,7 +4,7 @@
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
 #include "GPPlayerController.h"
-#include "GPGameMode.h"
+#include "GPGameState.h"
 #include "UnrealNetwork.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
@@ -162,7 +162,8 @@ void AGPCharacter::OnStopJump()
 // Abstract fire conditions to a function, as if the client attempts to fire erroneously they will be dropped!
 bool AGPCharacter::CanFire()
 {
-	return Health > 0.0f;
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (Health > 0.0f && gs->GetState() == 1);
 }
 
 void AGPCharacter::OnFire()
@@ -348,7 +349,7 @@ void AGPCharacter::OnFlagPickUp() {
 	// Get controller
 	//AController* controller = GetController();
 
-	AGPCharacter::ReqPause();
+	AGPCharacter::SetPauseState();
 		/*
 	AGPPlayerController* pController = Cast<AGPPlayerController>(GetController());
 	if (pController == NULL || !pController)
@@ -362,47 +363,77 @@ void AGPCharacter::OnFlagPickUp() {
 	}*/
 }
 
-void AGPCharacter::ReqPause()
+void AGPCharacter::SetPauseState()
 {
-	if (true)
+	UWorld* const World = GetWorld();
+	if (World == NULL || !World)
 	{
-		ServerReqPause();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game world"));
+	}
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs == NULL || !gs)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game state"));
+	}
+	if (gs->GetState() == 1)
+	{
+		ServerSetPauseState();
 	}
 }
 
-bool AGPCharacter::ServerReqPause_Validate()
+bool AGPCharacter::ServerSetPauseState_Validate()
 {
-	return true;
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 1);
 }
 
-void AGPCharacter::ServerReqPause_Implementation()
+void AGPCharacter::ServerSetPauseState_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
-		BroadcastReqPause();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(2);
+		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
+		BroadcastSetPauseState();
 	}
 }
 
-void AGPCharacter::BroadcastReqPause_Implementation()
+void AGPCharacter::BroadcastSetPauseState_Implementation()
 {
-	AGPPlayerController* pController = Cast<AGPPlayerController>(GetController());
-	AController* pC = Controller;
-	if (pC == NULL || !pC)
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(2);
+}
+
+void AGPCharacter::SetPauseStateOff()
+{
+	UWorld* const World = GetWorld();
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs->GetState() == 2)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller1"));
+		ServerSetPauseStateOff();
 	}
-	if (pController == NULL || !pController)
+}
+
+bool AGPCharacter::ServerSetPauseStateOff_Validate()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 2);
+}
+
+void AGPCharacter::ServerSetPauseStateOff_Implementation()
+{
+	if (Role == ROLE_Authority)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller2"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
+		BroadcastSetPauseStateOff();
 	}
-	else
-	{
-		AGPPlayerController* pC = Cast<AGPPlayerController>(Controller);
-		if (pC == NULL || !pC)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find player controller3"));
-		}
-		pController->SetPause(true);
-		pController->ServerPause();
-	}
+}
+
+void AGPCharacter::BroadcastSetPauseStateOff_Implementation()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(1);
 }
