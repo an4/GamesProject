@@ -47,74 +47,91 @@ void KinectInterface::Rescan()
 
 	if (src.data)
 	{
-		cv::imshow("test", src);
-		cv::waitKey();
+		/*cv::imshow("test", src);
+		cv::waitKey();*/
 
-		//// Convert to grayscale
-		//cv::Mat gray;
-		//cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+		// Convert to grayscale
+		cv::Mat gray;
+		cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
 
-		//// Convert to binary image using Canny
-		//cv::Mat bw;
-		//cv::Canny(gray, bw, 40, 70, 3);
-		//cv::imshow("test", bw);
-		//cv::waitKey();
+		// Free src
+		src.release();
+
+		// Convert to binary image using Canny
+		cv::Mat bw;
+		cv::Canny(gray, bw, 40, 70, 3);
+
+		// Free gray
+		gray.release();
+
+		/*cv::imshow("test", bw);
+		cv::waitKey();*/
 
 		//cv::Mat contourImg = bw.clone();
-		//std::vector<std::vector<cv::Point>> contoursFound;
-		//std::vector<std::vector<cv::Point>> approxFakeContours;
-		//std::vector<cv::Point> approxFound;
-		////cv::OutputArray heirarchy;
-		//std::vector<cv::Vec4i> heirarchy;
 
-		//cv::findContours(contourImg, contoursFound, heirarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
 
-		//cv::Mat contourImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
-		//cv::Mat approxImage(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
-		//cv::Scalar colors[3];
-		//colors[0] = cv::Scalar(255, 0, 0);
-		//colors[1] = cv::Scalar(0, 255, 0);
-		//colors[2] = cv::Scalar(0, 0, 255);
-		//for (size_t idx = 0; idx < contoursFound.size(); idx++) {
-		//	std::cout << contoursFound.at(idx).size() << std::endl;
-		//	cv::drawContours(contourImage, contoursFound, idx, colors[idx % 3]);
+		std::vector<std::vector<cv::Point>> contoursFound;
+		std::vector<std::vector<cv::Point>> approxFakeContours;
+		std::vector<cv::Point> approxFound;
+		//cv::OutputArray heirarchy;
+		std::vector<cv::Vec4i> heirarchy;
 
-		//	// Approximate a closed poly from contours
-		//	cv::approxPolyDP(cv::Mat(contoursFound.at(idx)), approxFound, 20, true);
+		// Causing segfault - smashing the stack???
+		//cv::findContours(bw, contoursFound, heirarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_TC89_KCOS);
 
-		//	// Stick this closed poly into the list of them
-		//	approxFakeContours.push_back(std::vector<cv::Point>(approxFound));
-		//}
+		cv::Mat contourImage(bw.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+		cv::Mat approxImage(bw.size(), CV_8UC3, cv::Scalar(0, 0, 0));
 
-		//for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
-		//{
-		//	cv::drawContours(approxImage, approxFakeContours, idx, colors[idx % 3]);
-		//}
+		bw.release();
 
-		//cv::imshow("test", contourImage);
-		//cv::waitKey();
-		//cv::imshow("test", approxImage);
-		//cv::waitKey();
+		cv::Scalar colors[3];
+		colors[0] = cv::Scalar(255, 0, 0);
+		colors[1] = cv::Scalar(0, 255, 0);
+		colors[2] = cv::Scalar(0, 0, 255);
+		for (size_t idx = 0; idx < contoursFound.size(); idx++) {
+			//std::cout << contoursFound.at(idx).size() << std::endl;
+			cv::drawContours(contourImage, contoursFound, idx, colors[idx % 3]);
 
-		//// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
-		//for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
-		//{
-		//	// Only look at contours with 4 corners
-		//	if (approxFakeContours.at(idx).size() == 4)
-		//	{
-		//		cv::Scalar yellow = cv::Scalar(100, 255, 255);
-		//		cv::RotatedRect box = cv::minAreaRect(approxFakeContours.at(idx));
-		//		cv::Point2f vertices[4]; // The mind boggles why OpenCV doesn't have a function to draw it's shapes...
-		//		box.points(vertices);
-		//		for (int i = 0; i < 4; i++) {
-		//			cv::line(approxImage, vertices[i], vertices[(i + 1) % 4], yellow);
-		//		}
-		//		//cv::rectangle(approxImage, box, yellow);
-		//	}
-		//}
+			// Approximate a closed poly from contours
+			cv::approxPolyDP(cv::Mat(contoursFound.at(idx)), approxFound, 20, true);
 
-		//cv::imshow("test bbox", approxImage);
-		//cv::waitKey();
+			// Stick this closed poly into the list of them
+			approxFakeContours.push_back(std::vector<cv::Point>(approxFound));
+		}
+
+		for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+		{
+			cv::drawContours(approxImage, approxFakeContours, idx, colors[idx % 3]);
+		}
+
+		/*cv::imshow("test", contourImage);
+		cv::waitKey();
+		cv::imshow("test", approxImage);
+		cv::waitKey();*/
+
+		contourImage.release();
+
+		// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
+		for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
+		{
+			// Only look at contours with 4 corners
+			if (approxFakeContours.at(idx).size() == 4)
+			{
+				cv::Scalar yellow = cv::Scalar(100, 255, 255);
+				cv::RotatedRect box = cv::minAreaRect(approxFakeContours.at(idx));
+				cv::Point2f vertices[4]; // The mind boggles why OpenCV doesn't have a function to draw it's shapes...
+				box.points(vertices);
+				for (int i = 0; i < 4; i++) {
+					cv::line(approxImage, vertices[i], vertices[(i + 1) % 4], yellow);
+				}
+				//cv::rectangle(approxImage, box, yellow);
+			}
+		}
+
+		cv::imshow("test bbox", approxImage);
+		cv::waitKey();
+
+		approxImage.release();
 	}
 }
 
@@ -182,28 +199,6 @@ void KinectInterface::FindSquares()
 void KinectInterface::Run()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Running Kinect..."));
-	//AllocConsole();
-	//FILE *stream;
-	//freopen_s(&stream, "CONOUT$", "w", stdout);
+
 	Rescan();
-	FindSquares();
-	//int x;
-	//cout << "\n";
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			//cout << hasBeenSearched[j + i*width] << " ";
-		}
-		//cout << "\n";
-	}
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			//cout << depthArray[j + i*width] << " ";
-		}
-		//cout << "\n";
-	}
-	//cin >> x;
 }
