@@ -1,6 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "Networking.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include <Runtime/Networking/Public/Networking.h>
+#include <Runtime/Sockets/Public/Sockets.h>
 #include "GPPlayerController.h"
 
 /**
@@ -14,19 +19,14 @@ class GPPROJECT_API KinectInterface : public FRunnable
 	/** Thread to run the worker FRunnable on */
 	FRunnableThread* Thread;
 
-	/** The Data Ptr */
-	TArray<uint32>* PrimeNumbers;
-
 	/** The PC */
 	AGPPlayerController* ThePC;
 
 	/** Stop this thread? Uses Thread Safe Counter */
 	FThreadSafeCounter StopTaskCounter;
 
-	static const int width = 16;
-	static const int height = 12;
-	int depthArray[width*height];
-	int hasBeenSearched[width*height];
+	static const int width = 640;
+	static const int height = 480;
 
 	TArray<FVector2D> squaresFound;
 
@@ -63,11 +63,33 @@ public:
 	static float GetWidth();
 	static float GetHeight();
 
-	TArray<FVector2D> GetSquares();
-
 	void Rescan();
 
-	void FindSquares();
+	FSocket* ListenerSocket;
+	FSocket* ConnectionSocket;
+	FIPv4Endpoint RemoteAddressForConnection;
 
-	//void Run();
+	bool StartTCPReceiver(
+		const FString& YourChosenSocketName,
+		const FString& TheIP,
+		const int32 ThePort
+		);
+
+	FSocket* CreateTCPConnectionListener(
+		const FString& YourChosenSocketName,
+		const FString& TheIP,
+		const int32 ThePort,
+		const int32 ReceiveBufferSize = 2 * 1024 * 1024
+		);
+
+	//Timer functions, could be threads
+	void TCPConnectionListener(); 	//can thread this eventually
+	void TCPSocketListener();		//can thread this eventually
+
+
+	//Format String IP4 to number array
+	bool FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4]);
+
+	//Rama's StringFromBinaryArray
+	FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
 };
