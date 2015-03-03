@@ -87,9 +87,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OCVSlaveProtocol.cpp" />
+    <ClCompile Include="OCVSPacket.cpp" />
+    <ClCompile Include="OCVSPacketAck.cpp" />
+    <ClCompile Include="OCVSPacketChallenge.cpp" />
+    <ClCompile Include="OCVSPacketScanHeader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
+    <ClInclude Include="OCVSlaveProtocol.h" />
+    <ClInclude Include="OCVSPacket.h" />
+    <ClInclude Include="OCVSPacketAck.h" />
+    <ClInclude Include="OCVSPacketChallenge.h" />
+    <ClInclude Include="OCVSPacketScanHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

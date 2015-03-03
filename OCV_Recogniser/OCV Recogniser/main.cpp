@@ -1,7 +1,9 @@
 #include "main.h"
+#include "OCVSPacketScanHeader.h"
 
-void main()
-{
+using asio::ip::tcp;
+
+void runOpenCV() {
 	std::cout << "OpenCV Version: " << CV_VERSION << std::endl;
 
 	cv::Mat src = cv::imread("boxbroom_painted.png");
@@ -46,7 +48,7 @@ void main()
 
 	for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
 	{
-		cv::drawContours(approxImage, approxFakeContours, idx, colors[idx%3]);
+		cv::drawContours(approxImage, approxFakeContours, idx, colors[idx % 3]);
 	}
 
 	cv::imshow("test", contourImage);
@@ -73,4 +75,50 @@ void main()
 
 	cv::imshow("test bbox", approxImage);
 	cv::waitKey();
+}
+
+int main(int argc, char* argv[])
+{
+	try
+	{
+		if (argc != 2)
+		{
+			std::cerr << "Usage: client <host>" << std::endl;
+			return 1;
+		}
+
+		OCVSPacketScanHeader ackPack(64,32);
+
+		asio::io_service io_service;
+		tcp::resolver resolver(io_service);
+		tcp::resolver::query query(argv[1], "25599");
+		tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+		tcp::socket socket(io_service);
+		asio::connect(socket, endpoint_iterator);
+		for (;;)
+		{
+			std::vector<char> buf(128);
+			asio::error_code error;
+
+			size_t len = socket.read_some(asio::buffer(buf), error);
+			if (error == asio::error::eof)
+				break; // Connection closed cleanly by peer.
+			else if (error)
+				throw asio::system_error(error); // Some other error.
+
+			std::cout.write(buf.data(), len);
+
+			ackPack.Pack(buf);
+
+			socket.write_some(asio::buffer(buf), error);
+			if (error == asio::error::eof)
+				break; // Connection closed cleanly by peer.
+			else if (error)
+				throw asio::system_error(error); // Some other error.
+		}
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 }
