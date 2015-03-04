@@ -23,4 +23,7 @@ public:
     /* Spawns a flag in a random location */
     UFUNCTION()
     void SpawnFlag(class AActor* FlagOwner);
+
+    UPROPERTY(EditDefaultsOnly, Category = Sounds)
+    USoundCue* PickUpSound;
 };

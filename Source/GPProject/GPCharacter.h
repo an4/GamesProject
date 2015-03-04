@@ -113,6 +113,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION()
         void OnFlagPickUp();
 
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* ShotGunSound;
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		virtual void Respawn();

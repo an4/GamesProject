@@ -29,6 +29,9 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 
     // Set number of flags picked up to zero.
     FlagsPickedUp = 0;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> soundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
+    ShotGunSound = soundCueLoader.Object;
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -211,7 +214,10 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-				// find launch direction
+                // Play Sound
+                Projectile->PlaySoundOnActor(ShotGunSound, 0.5f, 0.5f);
+                
+                // find launch direction
 				FVector const LaunchDir = MuzzleRotation.Vector();
 				Projectile->InitVelocity(LaunchDir);
 			}
