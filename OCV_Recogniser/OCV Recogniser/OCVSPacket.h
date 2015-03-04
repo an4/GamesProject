@@ -1,6 +1,6 @@
 #pragma once
 
-#define OCVS_PROTOCOL_VERSION (unsigned char)0;
+#define OCVS_PROTOCOL_VERSION (unsigned char)'m';
 
 #include <vector>
 

@@ -25,6 +25,7 @@ OCVSPacketScanHeader::~OCVSPacketScanHeader()
 {
 }
 
+
 void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 {
 	buff.clear();

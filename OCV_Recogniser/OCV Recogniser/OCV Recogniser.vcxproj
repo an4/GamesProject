@@ -55,7 +55,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -86,19 +86,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="KinectInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OCVSlaveProtocol.cpp" />
     <ClCompile Include="OCVSPacket.cpp" />
     <ClCompile Include="OCVSPacketAck.cpp" />
     <ClCompile Include="OCVSPacketChallenge.cpp" />
+    <ClCompile Include="OCVSPacketScanChunk.cpp" />
     <ClCompile Include="OCVSPacketScanHeader.cpp" />
+    <ClCompile Include="OCVSPacketScanReq.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="KinectInterface.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="OCVSlaveProtocol.h" />
     <ClInclude Include="OCVSPacket.h" />
     <ClInclude Include="OCVSPacketAck.h" />
     <ClInclude Include="OCVSPacketChallenge.h" />
+    <ClInclude Include="OCVSPacketRequest.h" />
+    <ClInclude Include="OCVSPacketScanChunk.h" />
     <ClInclude Include="OCVSPacketScanHeader.h" />
   </ItemGroup>
   <ItemGroup>
