@@ -30,8 +30,11 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     // Set number of flags picked up to zero.
     FlagsPickedUp = 0;
 
-    static ConstructorHelpers::FObjectFinder<USoundCue> soundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
-    ShotGunSound = soundCueLoader.Object;
+    static ConstructorHelpers::FObjectFinder<USoundCue> GunShotSoundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
+    ShotGunSound = GunShotSoundCueLoader.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> RespawnSoundCueLoader(TEXT("SoundCue'/Game/Audio/Respawn_Cue.Respawn_Cue'"));
+    RespawnSound = RespawnSoundCueLoader.Object;
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -102,6 +105,9 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 
 void AGPCharacter::Respawn()
 {
+    // Play Sound
+    this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
+
     /*bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
     bUseControllerRotationYaw = false;
@@ -215,7 +221,7 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			if (Projectile)
 			{
                 // Play Sound
-                Projectile->PlaySoundOnActor(ShotGunSound, 0.5f, 0.5f);
+                Projectile->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
                 
                 // find launch direction
 				FVector const LaunchDir = MuzzleRotation.Vector();
@@ -320,7 +326,7 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 			AGPRemoteBomb* CurRB = NULL;
 			for (int i = 0; i < RemoteBombList.Num(); i++)
 			{
-				CurRB = RemoteBombList[i];
+                CurRB = RemoteBombList[i];
 				// Check make sure our actor exists
 				if (!CurRB) continue;
 				if (!CurRB->IsValidLowLevel()) continue;

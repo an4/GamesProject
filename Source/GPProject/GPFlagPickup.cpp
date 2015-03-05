@@ -21,8 +21,8 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 
-    static ConstructorHelpers::FObjectFinder<USoundCue> soundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
-    PickUpSound = soundCueLoader.Object;
+    static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
+    PickUpSound = PickUpSoundCueLoader.Object;
 }
 
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
