@@ -44,8 +44,6 @@ void AGPGameMode::StartPlay()
 		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 
-		SpawnBuilding(FVector2D(50., 50.), FVector2D(50., 90.));
-
         // Spawn flag
 		SpawnFlag();
 
@@ -467,9 +465,15 @@ void AGPGameMode::TCPSocketListener()
 		// Read the chunk(s)
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
 			OCVSPacketScanChunk scanChnk(somestuff, scanHd.GetPackedSize());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f to %f,%f"), scanChnk.c1_x, scanChnk.c1_y, scanChnk.c2_x, scanChnk.c2_y));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y));
 
-			SpawnBuilding(FVector2D(scanChnk.c1_x, scanChnk.c1_y), FVector2D(scanChnk.c2_x, scanChnk.c2_y));
+			// TODO: Send corners, or change the spawnbuilding method
+			float c1x = scanChnk.centre_x - (scanChnk.scale_x / 2);
+			float c1y = scanChnk.centre_y - (scanChnk.scale_y / 2);
+			float c2x = scanChnk.centre_x + (scanChnk.scale_x / 2);
+			float c2y = scanChnk.centre_y + (scanChnk.scale_y / 2);
+
+			SpawnBuilding(FVector2D(c1x, c1y), FVector2D(c2x, c2y));
 		}
 
 		commstate = 0;
