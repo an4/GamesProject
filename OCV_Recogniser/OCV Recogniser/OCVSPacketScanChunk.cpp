@@ -2,25 +2,17 @@
 
 #include "OCVSPacketScanChunk.h"
 
-//
-//OCVSPacketScanChunk::OCVSPacketScanChunk(uint32_t index, cv::RotatedRect rect)
-//	: index(index)
-//	, c1_x(rect.center.x)
-//	, c1_y(rect.center.y)
-//	, c2_x(rect.angle)
-//	, c2_y(rect.size.width)
-//{
-//	rect.points
-//}
 
-OCVSPacketScanChunk::OCVSPacketScanChunk(uint32_t index, cv::Point2f *corners)
+OCVSPacketScanChunk::OCVSPacketScanChunk(uint32_t index, cv::RotatedRect rect)
 	: index(index)
-	, c1_x(corners[0].x)
-	, c1_y(corners[0].y)
-	, c2_x(corners[2].x)
-	, c2_y(corners[2].y)
+	, centre_x(rect.center.x)
+	, centre_y(rect.center.y)
+	, rotation(rect.angle)
+	, scale_x(rect.size.width)
+	, scale_y(rect.size.height)
 {
 }
+
 
 OCVSPacketScanChunk::~OCVSPacketScanChunk()
 {
@@ -35,17 +27,21 @@ void OCVSPacketScanChunk::Pack(std::vector<char> &buff)
 	char *asBytes = reinterpret_cast<char *>(&index);
 	buff.insert(buff.end(), asBytes, asBytes + sizeof(index));
 
-	// Send corner 1
-	asBytes = reinterpret_cast<char *>(&c1_x);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c1_x));
-	asBytes = reinterpret_cast<char *>(&c1_y);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c1_y));
+	// Send the centre
+	asBytes = reinterpret_cast<char *>(&centre_x);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(centre_x));
+	asBytes = reinterpret_cast<char *>(&centre_y);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(centre_y));
 
-	// Send corner 2
-	asBytes = reinterpret_cast<char *>(&c2_x);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c2_x));
-	asBytes = reinterpret_cast<char *>(&c2_y);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c2_y));
+	// Send rotation
+	asBytes = reinterpret_cast<char *>(&rotation);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(rotation));
+
+	// Send the scale
+	asBytes = reinterpret_cast<char *>(&scale_x);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(scale_x));
+	asBytes = reinterpret_cast<char *>(&scale_y);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(scale_y));
 
 	assert(buff.size() == GetPackedSize());
 }
@@ -53,6 +49,6 @@ void OCVSPacketScanChunk::Pack(std::vector<char> &buff)
 
 size_t OCVSPacketScanChunk::GetPackedSize() const
 {
-	// Fixed length of one 32 bit field, 4 32 bit floats
-	return 20;
+	// Fixed length of one 32 bit field, 5 32 bit floats
+	return 24;
 }

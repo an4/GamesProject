@@ -8,8 +8,7 @@ class OCVSPacketScanChunk :
 	public OCVSPacket
 {
 public:
-	//OCVSPacketScanChunk(uint32_t index, cv::RotatedRect rect);
-	OCVSPacketScanChunk(uint32_t index, cv::Point2f *corners);
+	OCVSPacketScanChunk(uint32_t index, cv::RotatedRect rect);
 
 	~OCVSPacketScanChunk();
 
@@ -19,8 +18,9 @@ public:
 
 private:
 	uint32_t index;
-	float c1_x;
-	float c1_y;
-	float c2_x;
-	float c2_y;
+	float centre_x;
+	float centre_y;
+	float rotation;
+	float scale_x;
+	float scale_y;
 };

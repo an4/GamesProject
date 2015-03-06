@@ -13,15 +13,6 @@
 //{
 //}
 
-//OCVSPacketScanChunk::OCVSPacketScanChunk(uint32_t index, cv::Point2f *corners)
-//	: index(index)
-//	, c1_x(corners[0].x)
-//	, c1_y(corners[0].y)
-//	, c2_x(corners[2].x)
-//	, c2_y(corners[2].y)
-//{
-//}
-
 // This is not the way to pass an iterator. TODO: NOPE NOPE NOPE
 OCVSPacketScanChunk::OCVSPacketScanChunk(std::vector<char> &begin, int offset)
 {
@@ -45,22 +36,27 @@ OCVSPacketScanChunk::OCVSPacketScanChunk(std::vector<char> &begin, int offset)
 	// Get pointer and interpret as float.
 	float *thefloat;
 	thefloat = reinterpret_cast<float *>(&(*it));
-	c1_x = *thefloat;
+	centre_x = *thefloat;
 
 	it += sizeof(float);
 
 	thefloat = reinterpret_cast<float *>(&(*it));
-	c1_y = *thefloat;
+	centre_y = *thefloat;
 
 	it += sizeof(float);
 
 	thefloat = reinterpret_cast<float *>(&(*it));
-	c2_x = *thefloat;
+	rotation = *thefloat;
 
 	it += sizeof(float);
 
 	thefloat = reinterpret_cast<float *>(&(*it));
-	c2_y = *thefloat;
+	scale_x = *thefloat;
+
+	it += sizeof(float);
+
+	thefloat = reinterpret_cast<float *>(&(*it));
+	scale_y = *thefloat;
 }
 
 OCVSPacketScanChunk::~OCVSPacketScanChunk()
@@ -76,17 +72,21 @@ void OCVSPacketScanChunk::Pack(std::vector<char> &buff)
 	char *asBytes = reinterpret_cast<char *>(&index);
 	buff.insert(buff.end(), asBytes, asBytes + sizeof(index));
 
-	// Send corner 1
-	asBytes = reinterpret_cast<char *>(&c1_x);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c1_x));
-	asBytes = reinterpret_cast<char *>(&c1_y);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c1_y));
+	// Send the centre
+	asBytes = reinterpret_cast<char *>(&centre_x);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(centre_x));
+	asBytes = reinterpret_cast<char *>(&centre_y);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(centre_y));
 
-	// Send corner 2
-	asBytes = reinterpret_cast<char *>(&c2_x);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c2_x));
-	asBytes = reinterpret_cast<char *>(&c2_y);
-	buff.insert(buff.end(), asBytes, asBytes + sizeof(c2_y));
+	// Send rotation
+	asBytes = reinterpret_cast<char *>(&rotation);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(rotation));
+
+	// Send the scale
+	asBytes = reinterpret_cast<char *>(&scale_x);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(scale_x));
+	asBytes = reinterpret_cast<char *>(&scale_y);
+	buff.insert(buff.end(), asBytes, asBytes + sizeof(scale_y));
 
 	//assert(buff.size() == GetPackedSize());
 }
@@ -95,6 +95,6 @@ void OCVSPacketScanChunk::Pack(std::vector<char> &buff)
 size_t OCVSPacketScanChunk::GetPackedSize() const
 {
 	// Fixed length of one 32 bit field, 5 32 bit floats
-	return 20;
+	return 24;
 }
 
