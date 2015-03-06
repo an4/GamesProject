@@ -19,7 +19,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 	double tickCount;
 
-	bool IsClear(FVector2D centre, FRotator rotation, FVector scale);
+	bool IsClear(FVector2D ctr, FRotator rot, FVector scl);
 
 	virtual void StartPlay() override;
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
@@ -31,7 +31,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
 
-		void SpawnBuilding(FVector2D a, FVector2D b);
+		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale);
 
 		UFUNCTION()
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
