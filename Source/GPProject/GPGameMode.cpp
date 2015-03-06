@@ -56,7 +56,8 @@ void AGPGameMode::StartPlay()
 
 }
 
-void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
+
+void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 {
 	// World size TODO: Calculate this!
 	const float worldx = 5000.0f;
@@ -69,39 +70,31 @@ void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
 	const float meshx = 200.0f;
 	const float meshy = 200.0f;
 
-	// Dimensions of the building rectangle (in pixels!)
-	const float sqx_px = FMath::Max(a.X, b.X) - FMath::Min(a.X, b.X);
-	const float sqy_px = FMath::Max(a.Y, b.Y) - FMath::Min(a.Y, b.Y);
-
 	// Dimensions of the entire input space (in pixels!)
 	const float worldx_px = KinectInterface::GetWidth();
 	const float worldy_px = KinectInterface::GetHeight(); // TODO: Resize the world so it matches the aspect ratio.
-
-	// Get the unscaled centre point.
-	FVector2D centre2D = (a + b) / 2.0f;
-	FVector centre = FVector(centre2D, 0.0f);
-
-	FRotator rot = centre.Rotation();
-	// Offset the rotation by 45 as we got this from the diagonal.
-	rot.Yaw -= 45.0f;
-
-	// Scale factors for mesh scaling.
-	const float scalex = (sqx_px * worldx) / (worldx_px * meshx);
-	const float scaley = (sqy_px * worldy) / (worldy_px * meshy);
-	const float scalez = 5.0f;
 
 	// Scale factors for points in the world.
 	const float cscalex = worldx / worldx_px;
 	const float cscaley = worldy / worldy_px;
 
-	// Scale the centre points up into game coordinates.
-	centre.X *= cscalex;
-	centre.Y *= cscaley;
+	// Scale factors for mesh scaling.
+	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
+	const float scaley = (scl.Y * worldy) / (worldy_px * meshy);
+	const float scalez = 5.0f;
 
-	// Offset the centre for differing input vs game origins
+	// Wrap the rotation into a rotator
+	FRotator rotation(0.0f, rot, 0.0f);
+
+	// Scale the centre into the world space.
+	FVector centre(ctr.X * cscalex, ctr.Y * cscaley, 0.0f);
+	// Offset the centre into the world space.
 	centre += worldOffset;
 
-	return SpawnBuilding(centre, rot, FVector(scalex, scaley, scalez));
+	// Convert the scale to world space.
+	FVector scale(scalex, scaley, scalez);
+
+	return SpawnBuilding(centre, rotation, scale);
 }
 
 void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale)
@@ -467,13 +460,8 @@ void AGPGameMode::TCPSocketListener()
 			OCVSPacketScanChunk scanChnk(somestuff, scanHd.GetPackedSize());
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y));
 
-			// TODO: Send corners, or change the spawnbuilding method
-			float c1x = scanChnk.centre_x - (scanChnk.scale_x / 2);
-			float c1y = scanChnk.centre_y - (scanChnk.scale_y / 2);
-			float c2x = scanChnk.centre_x + (scanChnk.scale_x / 2);
-			float c2y = scanChnk.centre_y + (scanChnk.scale_y / 2);
-
-			SpawnBuilding(FVector2D(c1x, c1y), FVector2D(c2x, c2y));
+			// Spawn the received building.
+			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
 		}
 
 		commstate = 0;
