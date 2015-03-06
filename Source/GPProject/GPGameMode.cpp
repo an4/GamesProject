@@ -41,8 +41,6 @@ void AGPGameMode::StartPlay()
         // Spawn flag
         SpawnFlag();
 
-		// Run the Kinect code for debugging purposes. TODO: Stop using pointer? Delete? Singleton?
-		//kinect->Run();
 	}
 
 }
