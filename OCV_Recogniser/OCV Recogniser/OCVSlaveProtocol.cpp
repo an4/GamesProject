@@ -30,7 +30,10 @@ void OCVSlaveProtocol::Connect()
 
 		// Dummy Scan Data
 		OCVSPacketScanHeader pktScanHead(24, 1); // TODO: Empty constructor?
-		OCVSPacketScanChunk pktScanChunk(100, cv::RotatedRect(cv::Point2f(50.0, 50.0), cv::Size2f(100.0,50.0), 0.0));
+		cv::RotatedRect rr(cv::Point2f(50.0, 50.0), cv::Size2f(100.0, 50.0), 45.0);
+		cv::Point2f rrp[4];
+		rr.points(rrp);
+		OCVSPacketScanChunk pktScanChunk(100, rrp);
 
 		asio::io_service io_service;
 		tcp::resolver resolver(io_service);

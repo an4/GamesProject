@@ -20,12 +20,11 @@ public:
 
 	size_t GetPackedSize() const override;
 
-	// TODO: Getters 
-	float centre_x;
-	float centre_y;
-	float rotation;
-	float scale_x;
-	float scale_y;
+	// TODO: Getters
+	float c1_x;
+	float c1_y;
+	float c2_x;
+	float c2_y;
 
 private:
 	uint32_t index;
