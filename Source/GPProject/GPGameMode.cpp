@@ -224,11 +224,17 @@ void AGPGameMode::SpawnFlag()
 
 void AGPGameMode::EndPlay(EEndPlayReason::Type reason)
 {
-	/*GetWorldTimerManager().ClearAllTimersForObject(this);
-	ConnectionSocket->Close();
-	ListenerSocket->Close();
-	delete ListenerSocket;
-	delete ConnectionSocket;*/
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+
+	if (ConnectionSocket != NULL) {
+		ConnectionSocket->Close();
+		delete ConnectionSocket;
+	}
+
+	if (ListenerSocket != NULL) {
+		ListenerSocket->Close();
+		delete ListenerSocket;
+	}
 }
 
 //void AGPGameMode::Laaaaaauuuunch()
