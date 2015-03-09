@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include "KinectInterface.h"
 
 int main(int argc, char* argv[])
 {
@@ -9,8 +9,28 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	OCVSlaveProtocol client(argv[1], argv[2]);
-	client.Connect();
+	KinectInterface *k = new KinectInterface();
+	int *wut = (int *)calloc(640*480,sizeof(int));
+	uint8_t *imgarr = (uint8_t *)calloc(640 * 480, sizeof(uint8_t));
+	if (!k->initKinect()) {
+		return 1;
+	}
+
+	// Loop until we get some kinect data... it takes some time to come up.
+	bool haveImg = false;
+	while (!k->getKinectData(wut, imgarr)) { std::cout << 'I'; } // TODO: Sleep here to throttle!
+
+	cv::Mat test(480, 640, CV_8U, imgarr);
+	cv::imshow("test", test);
+	cv::waitKey();
+	
+	k->getKinectData(wut, imgarr);
+	test.release(); // Shouldn't delete imgarr
+	cv::Mat test2(480, 640, CV_8U, imgarr);
+	cv::imshow("test", test2);
+	cv::waitKey();
+	//OCVSlaveProtocol client(argv[1], argv[2]);
+	//client.Connect();
 
 	return 0;
 }

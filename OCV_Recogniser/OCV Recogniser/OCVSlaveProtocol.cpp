@@ -29,8 +29,18 @@ void OCVSlaveProtocol::Connect()
 		OCVSPacketAck pktAck;
 
 		// Dummy Scan Data
-		OCVSPacketScanHeader pktScanHead(24, 1); // TODO: Empty constructor?
-		OCVSPacketScanChunk pktScanChunk(100, cv::RotatedRect(cv::Point2f(50.0, 50.0), cv::Size2f(100.0,50.0), 45.0));
+		std::vector<OCVSPacket *> chunks;
+		std::vector<cv::RotatedRect> found;
+		kinect.RunOpenCV(found);
+		for (size_t i = 0; i < found.size(); i++)
+		{
+			chunks.push_back(new OCVSPacketScanChunk(i, found.at(i)));
+		}
+
+		std::cout << "Found" << found.size() << std::endl;
+
+		OCVSPacketScanHeader pktScanHead(chunks); // TODO: Empty constructor?
+		//OCVSPacketScanChunk pktScanChunk(100, cv::RotatedRect(cv::Point2f(50.0, 50.0), cv::Size2f(100.0,50.0), 45.0));
 
 		asio::io_service io_service;
 		tcp::resolver resolver(io_service);
@@ -80,12 +90,14 @@ void OCVSlaveProtocol::Connect()
 				else if (error)
 					throw asio::system_error(error); // Some other error.
 
-				pktScanChunk.Pack(buf);
-				socket.write_some(asio::buffer(buf), error);
-				if (error == asio::error::eof)
-					break; // Connection closed cleanly by peer.
-				else if (error)
-					throw asio::system_error(error); // Some other error.
+				for (size_t i = 0; i < chunks.size(); i++) {
+					chunks.at(i)->Pack(buf);
+					socket.write_some(asio::buffer(buf), error);
+					if (error == asio::error::eof)
+						break; // Connection closed cleanly by peer.
+					else if (error)
+						throw asio::system_error(error); // Some other error.
+				}
 			}
 			else {
 				std::cout << "Bad response, closing." << std::endl;

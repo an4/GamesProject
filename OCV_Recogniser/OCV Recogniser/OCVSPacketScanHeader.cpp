@@ -9,14 +9,14 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(uint32_t length, uint32_t chunk_count
 }
 
 
-OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket> &scanChunks)
+OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scanChunks)
 	: chunk_count(scanChunks.size())
 {
 	length = 0;
 
 	for each (const auto &pkt in scanChunks)
 	{
-		length += pkt.GetPackedSize();
+		length += pkt->GetPackedSize();
 	}
 }
 

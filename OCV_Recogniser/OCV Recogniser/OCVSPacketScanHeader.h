@@ -8,7 +8,7 @@ class OCVSPacketScanHeader :
 public:
 	OCVSPacketScanHeader(uint32_t length, uint32_t chunk_count);
 
-	OCVSPacketScanHeader(const std::vector<OCVSPacket> &scanChunks);
+	OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scanChunks);
 
 	~OCVSPacketScanHeader();
 
