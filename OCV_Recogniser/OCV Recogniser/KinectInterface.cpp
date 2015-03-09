@@ -38,6 +38,7 @@ bool KinectInterface::getKinectData(/*GLubyte* dest,*/ int *rawdest, uint8_t *sc
 	//int dmax, dmin;
 	//dmax = dmin = 0;
 	if (LockedRect.Pitch != 0) {
+		bool first = true;
 		const USHORT* curr = (const USHORT*)LockedRect.pBits;
 		const USHORT* dataEnd = curr + (width*height);
 		frameCounter = (frameCounter + 1) % 4;
@@ -72,7 +73,16 @@ bool KinectInterface::getKinectData(/*GLubyte* dest,*/ int *rawdest, uint8_t *sc
 			if (rawdest != NULL) {
 				*rawdest++ = depth;
 			}
-			*scaled_dest++ = (uint8_t)(((float)(depth - 800) / 3200.0) * 256.0); // Scale to 800 - 4000 range (max distance of sensor... appears valid experimentally
+
+			// TODO: Don't filter here!!!
+			if (depth < 800 || depth > 4000) {
+				first ? *scaled_dest++ = (uint8_t)128 : *scaled_dest++ = *(scaled_dest - 1);
+			}
+			else {
+				*scaled_dest++ = (uint8_t)(((float)(depth - 800) / 3200.0) * 256.0); // Scale to 800 - 4000 range (max distance of sensor... appears valid experimentally
+			}
+
+			first = false;
 		}
 	}
 	//cout << dmax << ' ' << dmin << std::endl;
@@ -172,20 +182,18 @@ void KinectInterface::filterArray(int *depthArray, int *filteredData)
 	}
 }
 
-void KinectInterface::RunOpenCV(std::vector<cv::RotatedRect> &found) {
+void KinectInterface::RunOpenCV(cv::Mat &src, std::vector<cv::RotatedRect> &found) {
 	std::cout << "OpenCV Version: " << CV_VERSION << std::endl;
 
-	cv::Mat src = cv::imread("boxbroom_painted.png");
-	cv::imshow("test", src);
-	cv::waitKey();
-
-	// Convert to grayscale
-	cv::Mat gray;
-	cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+	// As it turns out, the blur operation is far more effective than just filtering erroneous values
+	// TODO: compare to/combine with averaging frames and other blur methods/sizes, and windowed filtering?
+	cv::Mat srcb;
+	cv::medianBlur(src, srcb, 5);
+	cv::imshow("blurred", srcb);
 
 	// Convert to binary image using Canny
 	cv::Mat bw;
-	cv::Canny(gray, bw, 40, 70, 3);
+	cv::Canny(srcb, bw, 40, 70, 3);
 	cv::imshow("test", bw);
 	cv::waitKey();
 
@@ -225,6 +233,9 @@ void KinectInterface::RunOpenCV(std::vector<cv::RotatedRect> &found) {
 	cv::imshow("test", approxImage);
 	cv::waitKey();
 
+	cv::Mat outputdisp;
+	cv::cvtColor(src, outputdisp, cv::COLOR_GRAY2BGR);
+
 	// Use the min area bounding rectangle to get us a quick approx that we can use. TODO: This is not ideal in the slightest if our bounding contour is off... we should check them!
 	for (size_t idx = 0; idx < approxFakeContours.size(); idx++)
 	{
@@ -237,12 +248,12 @@ void KinectInterface::RunOpenCV(std::vector<cv::RotatedRect> &found) {
 			cv::Point2f vertices[4]; // The mind boggles why OpenCV doesn't have a function to draw it's own shapes...
 			box.points(vertices);
 			for (int i = 0; i < 4; i++) {
-				cv::line(approxImage, vertices[i], vertices[(i + 1) % 4], yellow);
+				cv::line(outputdisp, vertices[i], vertices[(i + 1) % 4], yellow);
 			}
 			//cv::rectangle(approxImage, box, yellow);
 		}
 	}
 
-	cv::imshow("test bbox", approxImage);
+	cv::imshow("test bbox", outputdisp);
 	cv::waitKey();
 }

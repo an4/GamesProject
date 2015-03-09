@@ -18,5 +18,5 @@ private:
 	std::vector<char> recvBuff;
 	std::vector<OCVSPacket> pktSendBuff;
 
-	KinectInterface kinect;
+	KinectInterface *kinect;
 };

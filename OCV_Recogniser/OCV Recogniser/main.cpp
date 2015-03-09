@@ -18,17 +18,22 @@ int main(int argc, char* argv[])
 
 	// Loop until we get some kinect data... it takes some time to come up.
 	bool haveImg = false;
-	while (!k->getKinectData(wut, imgarr)) { std::cout << 'I'; } // TODO: Sleep here to throttle!
+	while (!k->getKinectData(wut, imgarr)) { std::cout << '.'; } // TODO: Sleep here to throttle!
 
 	cv::Mat test(480, 640, CV_8U, imgarr);
-	cv::imshow("test", test);
+	cv::imshow("src", test);
 	cv::waitKey();
 	
 	k->getKinectData(wut, imgarr);
 	test.release(); // Shouldn't delete imgarr
+
 	cv::Mat test2(480, 640, CV_8U, imgarr);
-	cv::imshow("test", test2);
+	cv::imshow("src", test2);
 	cv::waitKey();
+
+	std::vector<cv::RotatedRect> rect;
+	k->RunOpenCV(test2, rect);
+
 	//OCVSlaveProtocol client(argv[1], argv[2]);
 	//client.Connect();
 

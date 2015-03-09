@@ -31,7 +31,7 @@ void OCVSlaveProtocol::Connect()
 		// Dummy Scan Data
 		std::vector<OCVSPacket *> chunks;
 		std::vector<cv::RotatedRect> found;
-		kinect.RunOpenCV(found);
+		//kinect.RunOpenCV(found);
 		for (size_t i = 0; i < found.size(); i++)
 		{
 			chunks.push_back(new OCVSPacketScanChunk(i, found.at(i)));

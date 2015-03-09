@@ -15,7 +15,7 @@ public:
 	KinectInterface();
 	~KinectInterface();
 
-	void RunOpenCV(std::vector<cv::RotatedRect> &found);
+	void RunOpenCV(cv::Mat &gray, std::vector<cv::RotatedRect> &found);
 
 	bool initKinect();
 
