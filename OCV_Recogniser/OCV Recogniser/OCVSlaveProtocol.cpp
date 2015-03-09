@@ -14,7 +14,15 @@ using asio::ip::tcp;
 OCVSlaveProtocol::OCVSlaveProtocol(char *host, char *port)
 	: host(host)
 	, port(port)
+	, kinect(new KinectInterface())
 {
+	// TODO: Do we really want to be doing this here?
+	// TODO: Handle init errors
+	if (kinect->initKinect()) {
+		uint8_t *imgarr = (uint8_t *)malloc(640 * 480 * sizeof(uint8_t));
+		while (!kinect->getKinectData(NULL, imgarr)) { std::cout << '.'; } // TODO: Sleep here to throttle!
+		free(imgarr);
+	}
 }
 
 OCVSlaveProtocol::~OCVSlaveProtocol()
@@ -25,13 +33,20 @@ void OCVSlaveProtocol::Connect()
 {
 	try
 	{
+		uint8_t *imgarr = (uint8_t *)calloc(640 * 480, sizeof(uint8_t));
+		kinect->getKinectData(NULL, imgarr);
+		cv::Mat test(480, 640, CV_8U, imgarr);
+		cv::imshow("src", test);
+		cv::waitKey();
+		std::vector<cv::RotatedRect> found;
+		kinect->RunOpenCV(test, found);
+
+
 		OCVSPacketChallenge pktChallenge;
 		OCVSPacketAck pktAck;
 
 		// Dummy Scan Data
 		std::vector<OCVSPacket *> chunks;
-		std::vector<cv::RotatedRect> found;
-		//kinect.RunOpenCV(found);
 		for (size_t i = 0; i < found.size(); i++)
 		{
 			chunks.push_back(new OCVSPacketScanChunk(i, found.at(i)));
