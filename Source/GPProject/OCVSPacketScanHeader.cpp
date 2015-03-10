@@ -42,17 +42,19 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scan
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<char> &packet)
 {
-	int i;
-	// First 4 bytes is the length.
+	int i = 0;
+	// First byte is the result.
+	result = packet.at(i);
+	// Next 4 bytes are the length.
 	// TODO: Cheeky reinterpret maybe???
 	length = 0;
-	for (i = sizeof(uint32_t) - 1; i >= 0; i--) {
+	for (i = sizeof(uint32_t); i >= 1; i--) {
 		length = length << 8;
 		length = length | packet.at(i);
 	}
-	const int start = sizeof(uint32_t) + sizeof(uint32_t) - 1;
+	const int start = sizeof(uint32_t) + sizeof(uint32_t);
 	chunk_count = 0;
-	for (i = start; i >= sizeof(uint32_t); i--) {
+	for (i = start; i > sizeof(uint32_t); i--) {
 		chunk_count = chunk_count << 8;
 		chunk_count = chunk_count | packet.at(i);
 	}
