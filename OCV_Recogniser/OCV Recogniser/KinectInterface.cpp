@@ -32,7 +32,7 @@ bool KinectInterface::initKinect() {
 bool KinectInterface::getKinectData(/*GLubyte* dest,*/ int *rawdest, uint8_t *scaled_dest) {
 	NUI_IMAGE_FRAME imageFrame;
 	NUI_LOCKED_RECT LockedRect;
-	if (sensor->NuiImageStreamGetNextFrame(depthStream, 0, &imageFrame) < 0) return false;
+	if (sensor == NULL || sensor->NuiImageStreamGetNextFrame(depthStream, 0, &imageFrame) < 0) return false;
 	INuiFrameTexture* texture = imageFrame.pFrameTexture;
 	texture->LockRect(0, &LockedRect, NULL, 0);
 	//int dmax, dmin;

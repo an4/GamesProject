@@ -44,6 +44,10 @@ public:
 
 	//handles bomb detonation
 	void OnBombDetonate();
+
+	// Handles rescan requesting
+	void OnRequestRescan();
+
 	//UFUNCTION(Reliable, Server, WithValidation)
 	//void ServerOnFire();
 

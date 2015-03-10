@@ -19,4 +19,6 @@ private:
 	std::vector<OCVSPacket> pktSendBuff;
 
 	KinectInterface *kinect;
+
+	bool initSuccess = false;
 };

@@ -9,6 +9,9 @@
 
 #include "OCVSlaveProtocol.h"
 
+// Use image file input in case a Kinect is not connected (for debugging use!)
+#define FIXED_FALLBACK 1
+
 using asio::ip::tcp;
 
 OCVSlaveProtocol::OCVSlaveProtocol(char *host, char *port)
@@ -18,7 +21,8 @@ OCVSlaveProtocol::OCVSlaveProtocol(char *host, char *port)
 {
 	// TODO: Do we really want to be doing this here?
 	// TODO: Handle init errors
-	if (kinect->initKinect()) {
+	initSuccess = kinect->initKinect();
+	if (initSuccess) {
 		uint8_t *imgarr = (uint8_t *)malloc(640 * 480 * sizeof(uint8_t));
 		while (!kinect->getKinectData(NULL, imgarr)) { std::cout << '.'; } // TODO: Sleep here to throttle!
 		free(imgarr);
@@ -33,13 +37,29 @@ void OCVSlaveProtocol::Connect()
 {
 	try
 	{
-		uint8_t *imgarr = (uint8_t *)calloc(640 * 480, sizeof(uint8_t));
-		kinect->getKinectData(NULL, imgarr);
-		cv::Mat test(480, 640, CV_8U, imgarr);
-		cv::imshow("src", test);
-		cv::waitKey();
 		std::vector<cv::RotatedRect> found;
-		kinect->RunOpenCV(test, found);
+
+		if (initSuccess) {
+			uint8_t *imgarr = (uint8_t *)calloc(640 * 480, sizeof(uint8_t));
+			kinect->getKinectData(NULL, imgarr);
+			cv::Mat test(480, 640, CV_8U, imgarr);
+			cv::imshow("src", test);
+			cv::waitKey();
+			kinect->RunOpenCV(test, found);
+		}
+		else if (FIXED_FALLBACK) {
+			cv::Mat src = cv::imread("boxbroom_painted.png");
+			cv::imshow("test", src);
+			cv::waitKey();
+			// Convert to grayscale
+			cv::Mat test;
+			cv::cvtColor(src, test, cv::COLOR_BGR2GRAY);
+			src.release();
+			kinect->RunOpenCV(test, found);
+		}
+		else {
+			throw std::exception();
+		}
 
 
 		OCVSPacketChallenge pktChallenge;
@@ -62,7 +82,7 @@ void OCVSlaveProtocol::Connect()
 		tcp::resolver::query query(host, port);
 		tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 		tcp::socket socket(io_service);
-		
+
 		asio::connect(socket, endpoint_iterator);
 
 		for (;;)
@@ -90,6 +110,20 @@ void OCVSlaveProtocol::Connect()
 
 			if (pktChallenge.VerifyReceived(buf)) {
 				std::cout << "Good response, ACK'ing." << std::endl;
+
+
+				len = socket.read_some(asio::buffer(buf), error);
+				if (error == asio::error::eof)
+					break; // Connection closed cleanly by peer.
+				else if (error)
+					throw asio::system_error(error); // Some other error.
+
+				// TODO: Proper checking
+				// Assume that if we receive a single byte it is a scan req -> so continue.
+				if (len != 1) {
+					// NEEDS IMPLEMENTATION
+					throw asio::system_error(asio::error_code());
+				}
 
 				pktAck.Pack(buf);
 				socket.write_some(asio::buffer(buf), error);

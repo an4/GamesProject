@@ -68,7 +68,7 @@
     <ClInclude Include="OCVSPacketScanChunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OCVSPacketRequest.h">
+    <ClInclude Include="OCVSPacketScanReq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
