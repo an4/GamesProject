@@ -113,6 +113,12 @@ void OCVSlaveProtocol::Connect()
 			if (pktChallenge.VerifyReceived(buf)) {
 				std::cout << "Good response, ACK'ing." << std::endl;
 
+				pktAck.Pack(buf);
+				socket.write_some(asio::buffer(buf), error);
+				if (error == asio::error::eof)
+					break; // Connection closed cleanly by peer.
+				else if (error)
+					throw asio::system_error(error); // Some other error.
 
 				len = socket.read_some(asio::buffer(buf), error);
 				if (error == asio::error::eof)
@@ -126,13 +132,6 @@ void OCVSlaveProtocol::Connect()
 					// NEEDS IMPLEMENTATION
 					throw asio::system_error(asio::error_code());
 				}
-
-				pktAck.Pack(buf);
-				socket.write_some(asio::buffer(buf), error);
-				if (error == asio::error::eof)
-					break; // Connection closed cleanly by peer.
-				else if (error)
-					throw asio::system_error(error); // Some other error.
 
 				pktScanHead.Pack(buf);
 				socket.write_some(asio::buffer(buf), error);
