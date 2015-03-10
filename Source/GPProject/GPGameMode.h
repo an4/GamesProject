@@ -78,40 +78,5 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		//Format String IP4 to number array
 		bool FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4]);
-
-		//Rama's StringFromBinaryArray
-		FString StringFromBinaryArray(const TArray<uint8>& BinaryArray);
-
-		//~~~ VShow ~~~
-		FORCEINLINE void VShow(const TCHAR* Str)
-		{
-			//ClientMessage(FString(Str));
-		}
-		FORCEINLINE void VShow(const FString& Str)
-		{
-			//ClientMessage(Str);
-		}
-		FORCEINLINE void VShow(const FString& Str, const FString& Str2)
-		{
-			//ClientMessage(Str + FString(" ") + Str2);
-		}
-		FORCEINLINE void VShow(FString Str, const float& Value)
-		{
-			Str += " ";
-			Str += FString::SanitizeFloat(Value);
-			//ClientMessage(Str);
-		}
-		FORCEINLINE void VShow(FString Str, const int32& Value)
-		{
-			Str += " ";
-			Str += FString::FromInt(Value);
-			//ClientMessage(Str);
-		}
-		FORCEINLINE void VShow(FString Str, const uint32& Value)
-		{
-			Str += " ";
-			Str += FString::FromInt(Value);
-			//ClientMessage(Str);
-		}
 };
 
