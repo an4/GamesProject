@@ -41,6 +41,8 @@ void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 	buff.clear();
 
 	// Send the result code.
+	buff.push_back(result);
+
 	char *asBytes = reinterpret_cast<char *>(&length);
 
 	// Send the total length
