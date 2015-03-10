@@ -1,7 +1,13 @@
-
+#ifdef IN_UE4
 #include "GPProject.h"
+#include "AssertionMacros.h"
+#endif IN_UE4
+
 #include "OCVSPacketScanHeader.h"
-//#include <cassert>
+
+#ifndef IN_UE4
+#include <cassert>
+#endif
 
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(uint8_t result)
@@ -10,6 +16,7 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(uint8_t result)
 	, chunk_count(0)
 {
 }
+
 
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(uint32_t length, uint32_t chunk_count)
@@ -25,11 +32,11 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scan
 	, chunk_count(scanChunks.size())
 {
 	length = 0;
-
-	//for each (const auto &pkt in scanChunks)
-	//{
-	//	length += pkt->GetPackedSize();
-	//}
+	
+	for (auto &pkt : scanChunks)
+	{
+		length += pkt->GetPackedSize();
+	}
 }
 
 
@@ -75,7 +82,11 @@ void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 	// Send the chunk count
 	buff.insert(buff.end(), asBytes, asBytes + sizeof(chunk_count));
 
-	//assert(buff.size() == GetPackedSize());
+#ifdef IN_UE4
+	check(buff.size() == GetPackedSize());
+#else
+	assert(buff.size() == GetPackedSize());
+#endif
 }
 
 
