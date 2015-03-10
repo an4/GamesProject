@@ -12,6 +12,8 @@ public class GPProject : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
+        Definitions.Add("IN_UE4");
+
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		

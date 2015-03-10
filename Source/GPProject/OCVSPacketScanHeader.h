@@ -1,5 +1,9 @@
 #pragma once
+
+#ifdef IN_UE4
 #include "GPProject.h"
+#endif
+
 #include "OCVSPacket.h"
 #include <stdint.h>
 
