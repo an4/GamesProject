@@ -2,15 +2,25 @@
 #include <cassert>
 
 
+OCVSPacketScanHeader::OCVSPacketScanHeader(uint8_t result)
+	: result(result)
+	, length(0)
+	, chunk_count(0)
+{
+}
+
+
 OCVSPacketScanHeader::OCVSPacketScanHeader(uint32_t length, uint32_t chunk_count)
-	: length(length)
+	: result(RESULT_SUCCESS)
+	, length(length)
 	, chunk_count(chunk_count)
 {
 }
 
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scanChunks)
-	: chunk_count(scanChunks.size())
+	: result(RESULT_SUCCESS)
+	, chunk_count(scanChunks.size())
 {
 	length = 0;
 
@@ -30,6 +40,7 @@ void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 {
 	buff.clear();
 
+	// Send the result code.
 	char *asBytes = reinterpret_cast<char *>(&length);
 
 	// Send the total length
@@ -46,6 +57,6 @@ void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 
 size_t OCVSPacketScanHeader::GetPackedSize() const
 {
-	// Fixed length of two 32 bit fields
-	return 8;
+	// Fixed length of one 8 bit field and two 32 bit fields
+	return 9;
 }

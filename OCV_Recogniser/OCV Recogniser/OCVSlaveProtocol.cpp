@@ -25,6 +25,7 @@ OCVSlaveProtocol::OCVSlaveProtocol(char *host, char *port)
 	if (initSuccess) {
 		uint8_t *imgarr = (uint8_t *)malloc(640 * 480 * sizeof(uint8_t));
 		while (!kinect->getKinectData(NULL, imgarr)) { std::cout << '.'; } // TODO: Sleep here to throttle!
+		std::cout << std::endl;
 		free(imgarr);
 	}
 }
@@ -41,11 +42,12 @@ void OCVSlaveProtocol::Connect()
 
 		if (initSuccess) {
 			uint8_t *imgarr = (uint8_t *)calloc(640 * 480, sizeof(uint8_t));
-			kinect->getKinectData(NULL, imgarr);
-			cv::Mat test(480, 640, CV_8U, imgarr);
-			cv::imshow("src", test);
-			cv::waitKey();
-			kinect->RunOpenCV(test, found);
+			if (kinect->getKinectData(NULL, imgarr)) {
+				cv::Mat test(480, 640, CV_8U, imgarr);
+				cv::imshow("src", test);
+				cv::waitKey();
+				kinect->RunOpenCV(test, found);
+			}
 		}
 		else if (FIXED_FALLBACK) {
 			cv::Mat src = cv::imread("boxbroom_painted.png");
