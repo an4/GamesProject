@@ -48,7 +48,7 @@ void AGPGameMode::StartPlay()
 		SpawnFlag();
 
 		// Start listener for Kinect input
-		if (!StartTCPReceiver("RamaSocketListener", "127.0.0.1", 25599))
+		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
 		{
 			return;
 		}
@@ -237,19 +237,6 @@ void AGPGameMode::EndPlay(EEndPlayReason::Type reason)
 	}
 }
 
-//void AGPGameMode::Laaaaaauuuunch()
-//{
-//	//IP = 127.0.0.1, Port = 8890 for my Python test case
-//	if (!StartTCPReceiver("RamaSocketListener", "127.0.0.1", 8890))
-//	{
-//		//UE_LOG  "TCP Socket Listener Created!"
-//		return;
-//	}
-//
-//	//UE_LOG  "TCP Socket Listener Created! Yay!"
-//}
-
-//Rama's Start TCP Receiver
 bool AGPGameMode::StartTCPReceiver(
 	const FString& YourChosenSocketName,
 	const FString& TheIP,
@@ -265,20 +252,17 @@ bool AGPGameMode::StartTCPReceiver(
 		return false;
 	}
 
-	//Start the Listener! //thread this eventually
-	GetWorldTimerManager().SetTimer(this,
-		&AGPGameMode::TCPConnectionListener, 0.01, true);
+	//Start the Listener! // TODO: Threading?
+	GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPConnectionListener, 0.01, true);
 
 	return true;
 }
+
 //Format IP String as Number Parts
 bool AGPGameMode::FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4])
 {
 	//IP Formatting
 	TheIP.Replace(TEXT(" "), TEXT(""));
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//						   IP 4 Parts
 
 	//String Parts
 	TArray<FString> Parts;
@@ -294,17 +278,15 @@ bool AGPGameMode::FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4])
 
 	return true;
 }
+
 //Rama's Create TCP Connection Listener
 FSocket* AGPGameMode::CreateTCPConnectionListener(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort, const int32 ReceiveBufferSize)
 {
 	uint8 IP4Nums[4];
 	if (!FormatIP4ToNumber(TheIP, IP4Nums))
 	{
-		VShow("Invalid IP! Expecting 4 parts separated by .");
 		return false;
 	}
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	//Create Socket
 	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), ThePort);
@@ -317,9 +299,9 @@ FSocket* AGPGameMode::CreateTCPConnectionListener(const FString& YourChosenSocke
 	int32 NewSize = 0;
 	ListenSocket->SetReceiveBufferSize(ReceiveBufferSize, NewSize);
 
-	//Done!
 	return ListenSocket;
 }
+
 //Rama's TCP Connection Listener
 void AGPGameMode::TCPConnectionListener()
 {
@@ -338,6 +320,9 @@ void AGPGameMode::TCPConnectionListener()
 		//Already have a Connection? destroy previous
 		if (ConnectionSocket)
 		{
+			// Need to reset the comms state on disconnect.
+			commstate = 0;
+
 			ConnectionSocket->Close();
 			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
 		}
@@ -353,21 +338,13 @@ void AGPGameMode::TCPConnectionListener()
 
 			//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
 
+			// Ensure commstate is reset.
+			commstate = 0;
+
 			//can thread this too
-			GetWorldTimerManager().SetTimer(this,
-				&AGPGameMode::TCPSocketListener, 0.01, true);
+			GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPSocketListener, 0.01, true);
 		}
 	}
-}
-
-//Rama's String From Binary Array
-//This function requires TODO: Not needed?
-//		#include <string>
-FString AGPGameMode::StringFromBinaryArray(const TArray<uint8>& BinaryArray)
-{
-	//Create a string from a byte array!
-	std::string cstr(reinterpret_cast<const char*>(BinaryArray.GetData()), BinaryArray.Num());
-	return FString(cstr.c_str());
 }
 
 void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
@@ -384,25 +361,18 @@ void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
 //Rama's TCP Socket Listener
 void AGPGameMode::TCPSocketListener()
 {
-	//~~~~~~~~~~~~~
 	if (!ConnectionSocket) return;
-	//~~~~~~~~~~~~~
 
-
-	//Binary Array!
 	TArray<uint8> ReceivedData;
-
 	uint32 Size;
+
 	while (ConnectionSocket->HasPendingData(Size))
 	{
 		ReceivedData.Init(FMath::Min(Size, 65507u));
 
 		int32 Read = 0;
 		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
-
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Read! %d"), ReceivedData.Num()));
 	}
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	if (ReceivedData.Num() <= 0)
 	{
@@ -410,18 +380,7 @@ void AGPGameMode::TCPSocketListener()
 		return;
 	}
 
-	VShow("Total Data read!", ReceivedData.Num());
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
-
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	//						Rama's String From Binary Array
-	const FString ReceivedUE4String = StringFromBinaryArray(ReceivedData);
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-	VShow("As String!!!!! ~>", ReceivedUE4String);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("As String Data ~> %s"), *ReceivedUE4String));
 
 	// TODO: This needs to be tidied considerably!
 	// TODO: Need to anticipate incoming packet size and buffer accordingly.
@@ -438,7 +397,6 @@ void AGPGameMode::TCPSocketListener()
 			int32 sent = 0;
 			ConnectionSocket->Send(ReceivedData.GetData(), ReceivedData.Num(), sent);
 
-			VShow("Sent bytes ~>", sent);
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
 			commstate = 1;
@@ -458,7 +416,6 @@ void AGPGameMode::TCPSocketListener()
 		// Read the scan head.
 		OCVSPacketScanHeader scanHd(somestuff);
 
-		VShow("Got Scan with chunks = ~>", scanHd.GetChunkCount());
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
 
 		// Read the chunk(s)
