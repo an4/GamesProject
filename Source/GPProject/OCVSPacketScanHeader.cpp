@@ -46,13 +46,13 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<char> &packet)
 	// First 4 bytes is the length.
 	// TODO: Cheeky reinterpret maybe???
 	length = 0;
-	for (i = sizeof(uint32) - 1; i >= 0; i--) {
+	for (i = sizeof(uint32_t) - 1; i >= 0; i--) {
 		length = length << 8;
 		length = length | packet.at(i);
 	}
-	const int start = sizeof(uint32) + sizeof(uint32) - 1;
+	const int start = sizeof(uint32_t) + sizeof(uint32_t) - 1;
 	chunk_count = 0;
-	for (i = start; i >= sizeof(uint32); i--) {
+	for (i = start; i >= sizeof(uint32_t); i--) {
 		chunk_count = chunk_count << 8;
 		chunk_count = chunk_count | packet.at(i);
 	}
@@ -97,8 +97,8 @@ size_t OCVSPacketScanHeader::GetPackedSize() const
 }
 
 
-uint32 OCVSPacketScanHeader::GetChunkCount() const
+uint32_t OCVSPacketScanHeader::GetChunkCount() const
 {
 	// TODO: Type crying!
-	return (uint32)chunk_count;
+	return chunk_count;
 }
