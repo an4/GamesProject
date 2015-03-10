@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef IN_UE4
+#include "GPProject.h"
+#endif
+
 #include "OCVSPacket.h"
 #include <stdint.h>
 
@@ -12,11 +17,16 @@ public:
 
 	OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scanChunks);
 
+	OCVSPacketScanHeader(const std::vector<char> &packet);
+
 	~OCVSPacketScanHeader();
 
 	void Pack(std::vector<char> &buff) override;
 
 	size_t GetPackedSize() const override;
+
+	// _t versions... polluting UE or not?
+	uint32_t GetChunkCount() const;
 
 	// TODO: An enum would be nice here... but conversion to/from is annoying
 	static const uint8_t RESULT_SUCCESS = 0x00;

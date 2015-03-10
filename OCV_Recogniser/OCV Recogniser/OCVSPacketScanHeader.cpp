@@ -1,5 +1,13 @@
+#ifdef IN_UE4
+#include "GPProject.h"
+#include "AssertionMacros.h"
+#endif IN_UE4
+
 #include "OCVSPacketScanHeader.h"
+
+#ifndef IN_UE4
 #include <cassert>
+#endif
 
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(uint8_t result)
@@ -8,6 +16,7 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(uint8_t result)
 	, chunk_count(0)
 {
 }
+
 
 
 OCVSPacketScanHeader::OCVSPacketScanHeader(uint32_t length, uint32_t chunk_count)
@@ -23,11 +32,31 @@ OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<OCVSPacket *> &scan
 	, chunk_count(scanChunks.size())
 {
 	length = 0;
-
-	for each (const auto &pkt in scanChunks)
+	
+	for (auto &pkt : scanChunks)
 	{
 		length += pkt->GetPackedSize();
 	}
+}
+
+
+OCVSPacketScanHeader::OCVSPacketScanHeader(const std::vector<char> &packet)
+{
+	int i;
+	// First 4 bytes is the length.
+	// TODO: Cheeky reinterpret maybe???
+	length = 0;
+	for (i = sizeof(uint32_t) - 1; i >= 0; i--) {
+		length = length << 8;
+		length = length | packet.at(i);
+	}
+	const int start = sizeof(uint32_t) + sizeof(uint32_t) - 1;
+	chunk_count = 0;
+	for (i = start; i >= sizeof(uint32_t); i--) {
+		chunk_count = chunk_count << 8;
+		chunk_count = chunk_count | packet.at(i);
+	}
+	// TODO: Check!
 }
 
 
@@ -53,7 +82,11 @@ void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
 	// Send the chunk count
 	buff.insert(buff.end(), asBytes, asBytes + sizeof(chunk_count));
 
+#ifdef IN_UE4
+	check(buff.size() == GetPackedSize());
+#else
 	assert(buff.size() == GetPackedSize());
+#endif
 }
 
 
@@ -61,4 +94,11 @@ size_t OCVSPacketScanHeader::GetPackedSize() const
 {
 	// Fixed length of one 8 bit field and two 32 bit fields
 	return 9;
+}
+
+
+uint32_t OCVSPacketScanHeader::GetChunkCount() const
+{
+	// TODO: Type crying!
+	return chunk_count;
 }

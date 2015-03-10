@@ -26,7 +26,7 @@ public:
 	size_t GetPackedSize() const override;
 
 	// _t versions... polluting UE or not?
-	uint32 GetChunkCount() const;
+	uint32_t GetChunkCount() const;
 
 	// TODO: An enum would be nice here... but conversion to/from is annoying
 	static const uint8_t RESULT_SUCCESS = 0x00;
