@@ -10,6 +10,7 @@
 
 #include "OCVSPacketAck.h"
 #include "OCVSPacketChallenge.h"
+#include "OCVSPacketScanReq.h"
 #include "OCVSPacketScanHeader.h"
 #include "OCVSPacketScanChunk.h"
 
@@ -321,7 +322,7 @@ void AGPGameMode::TCPConnectionListener()
 		if (ConnectionSocket)
 		{
 			// Need to reset the comms state on disconnect.
-			commstate = 0;
+			commstate = OCVSProtocolState::INIT;
 
 			ConnectionSocket->Close();
 			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
@@ -339,7 +340,7 @@ void AGPGameMode::TCPConnectionListener()
 			//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
 
 			// Ensure commstate is reset.
-			commstate = 0;
+			commstate = OCVSProtocolState::INIT;
 
 			//can thread this too
 			GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPSocketListener, 0.01, true);
@@ -374,7 +375,7 @@ void AGPGameMode::TCPSocketListener()
 		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
 	}
 
-	if (ReceivedData.Num() <= 0)
+	if (ReceivedData.Num() <= 0 && commstate != OCVSProtocolState::REQUEST)
 	{
 		//No Data Received
 		return;
@@ -386,7 +387,7 @@ void AGPGameMode::TCPSocketListener()
 	// TODO: Need to anticipate incoming packet size and buffer accordingly.
 	switch (commstate)
 	{
-	case 0:
+	case OCVSProtocolState::INIT:
 	{
 		// Need to send challenge response
 		OCVSPacketChallenge pktChallenge;
@@ -399,11 +400,29 @@ void AGPGameMode::TCPSocketListener()
 
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
-			commstate = 1;
+			commstate = OCVSProtocolState::REQUEST;
 		}
 	}
 	break;
-	case 1:
+	case OCVSProtocolState::REQUEST:
+	// Need to send request, if we want a scan.
+	if (wantScan) {
+		OCVSPacketScanReq pktReq;
+		std::vector<char> somestuff;
+		VectorFromTArray(ReceivedData, somestuff);
+		pktReq.Pack(somestuff);
+
+		int32 sent = 0;
+		// TODO: This reinterpret cast is nice but smelly...
+		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
+
+		commstate = OCVSProtocolState::RECEIVE;
+		wantScan = false;
+	}
+	break;
+	case OCVSProtocolState::RECEIVE:
 	{
 		// Should have received an ACK, then scan head, then the lone scan chunk.
 		// TODO: This should be functionality of PacketAck?
@@ -427,7 +446,7 @@ void AGPGameMode::TCPSocketListener()
 			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
 		}
 
-		commstate = 0;
+		commstate = OCVSProtocolState::INIT;
 	}
 	break;
 	default:
