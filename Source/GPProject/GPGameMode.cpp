@@ -362,7 +362,7 @@ void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
 //Rama's TCP Socket Listener
 void AGPGameMode::TCPSocketListener()
 {
-	if (!ConnectionSocket) return;
+	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && !wantScan)) return;
 
 	TArray<uint8> ReceivedData;
 	uint32 Size;
@@ -445,6 +445,15 @@ void AGPGameMode::TCPSocketListener()
 			// Spawn the received building.
 			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
 		}
+
+		OCVSPacketAck pktAck;
+		somestuff.clear();
+		VectorFromTArray(ReceivedData, somestuff);
+		pktAck.Pack(somestuff);
+
+		int32 sent = 0;
+		// TODO: This reinterpret cast is nice but smelly...
+		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
 		commstate = OCVSProtocolState::INIT;
 	}
