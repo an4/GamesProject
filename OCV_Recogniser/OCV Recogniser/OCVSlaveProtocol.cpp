@@ -50,7 +50,7 @@ void OCVSlaveProtocol::Connect()
 			}
 		}
 		else if (FIXED_FALLBACK) {
-			cv::Mat src = cv::imread("boxbroom_painted.png");
+			cv::Mat src = cv::imread("boxbroom_painted_2.png");
 			cv::imshow("test", src);
 			cv::waitKey();
 			// Convert to grayscale

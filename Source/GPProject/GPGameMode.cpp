@@ -6,7 +6,6 @@
 #include "GPPlayerController.h"
 #include "EngineUtils.h"
 #include "KinectInterface.h"
-#include <string>
 
 #include "OCVSPacketAck.h"
 #include "OCVSPacketChallenge.h"
@@ -362,7 +361,7 @@ void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
 //Rama's TCP Socket Listener
 void AGPGameMode::TCPSocketListener()
 {
-	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && !wantScan)) return;
+	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && !wantScan)) return; // TODO: We may want to do some keepalive comms whilst in request state
 
 	TArray<uint8> ReceivedData;
 	uint32 Size;
@@ -398,7 +397,7 @@ void AGPGameMode::TCPSocketListener()
 			int32 sent = 0;
 			ConnectionSocket->Send(ReceivedData.GetData(), ReceivedData.Num(), sent);
 
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
+			check(sent == pktChallenge.GetPackedSize());
 
 			commstate = OCVSProtocolState::REQUEST;
 		}
@@ -437,20 +436,23 @@ void AGPGameMode::TCPSocketListener()
 
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
 
-		// Read the chunk(s)
+		int offset = scanHd.GetPackedSize();
+
+		// TODO: Ensure we actually have all of the promised data... or block between chunks
+
+		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
-			OCVSPacketScanChunk scanChnk(somestuff, scanHd.GetPackedSize());
+			OCVSPacketScanChunk scanChnk(somestuff, offset);
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y));
 
 			// Spawn the received building.
 			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
+
+			// Move the offset by the last chunk.
+			offset += scanChnk.GetPackedSize();
 		}
 
-		OCVSPacketAck pktAck;
-		somestuff.clear();
-		VectorFromTArray(ReceivedData, somestuff);
-		pktAck.Pack(somestuff);
-
+		OCVSPacketAck::getInstance()->Pack(somestuff);
 		int32 sent = 0;
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
@@ -459,6 +461,6 @@ void AGPGameMode::TCPSocketListener()
 	}
 	break;
 	default:
-		break;
+	break;
 	}
 }

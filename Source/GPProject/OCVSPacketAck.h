@@ -9,11 +9,15 @@ public:
 	OCVSPacketAck();
 	~OCVSPacketAck();
 
-	void Pack(std::vector<char> &buff) override;
+	void Pack(std::vector<char> &buff) const override;
 
 	size_t GetPackedSize() const override;
 
+	static const OCVSPacketAck *getInstance();
+
 private:
 	const char content = -1;
+
+	static const OCVSPacketAck *static_instance;
 };
 
