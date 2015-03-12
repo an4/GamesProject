@@ -67,19 +67,19 @@ OCVSPacketScanHeader::~OCVSPacketScanHeader()
 }
 
 
-void OCVSPacketScanHeader::Pack(std::vector<char> &buff)
+void OCVSPacketScanHeader::Pack(std::vector<char> &buff) const
 {
 	buff.clear();
 
 	// Send the result code.
 	buff.push_back(result);
 
-	char *asBytes = reinterpret_cast<char *>(&length);
+	const char *asBytes = reinterpret_cast<const char *>(&length);
 
 	// Send the total length
 	buff.insert(buff.end(), asBytes, asBytes+sizeof(length));
 
-	asBytes = reinterpret_cast<char *>(&chunk_count);
+	asBytes = reinterpret_cast<const char *>(&chunk_count);
 
 	// Send the chunk count
 	buff.insert(buff.end(), asBytes, asBytes + sizeof(chunk_count));

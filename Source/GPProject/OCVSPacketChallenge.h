@@ -12,7 +12,7 @@ public:
 
 	~OCVSPacketChallenge();
 
-	void Pack(std::vector<char> &buff) override;
+	void Pack(std::vector<char> &buff) const override;
 
 	size_t GetPackedSize() const override;
 

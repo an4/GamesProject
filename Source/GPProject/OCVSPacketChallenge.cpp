@@ -13,7 +13,7 @@ OCVSPacketChallenge::~OCVSPacketChallenge()
 }
 
 
-void OCVSPacketChallenge::Pack(std::vector<char> &buff)
+void OCVSPacketChallenge::Pack(std::vector<char> &buff) const
 {
 	buff.clear();
 	// Send the protcol version

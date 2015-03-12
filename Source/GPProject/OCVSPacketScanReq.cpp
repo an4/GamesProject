@@ -12,7 +12,7 @@ OCVSPacketScanReq::~OCVSPacketScanReq()
 }
 
 
-void OCVSPacketScanReq::Pack(std::vector<char> &buff)
+void OCVSPacketScanReq::Pack(std::vector<char> &buff) const
 {
 	// Simply a single byte, 0x53
 	buff.clear();
