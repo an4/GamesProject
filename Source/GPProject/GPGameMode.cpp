@@ -7,11 +7,11 @@
 #include "EngineUtils.h"
 #include "KinectInterface.h"
 
-#include "OCVSPacketAck.h"
-#include "OCVSPacketChallenge.h"
-#include "OCVSPacketScanReq.h"
-#include "OCVSPacketScanHeader.h"
-#include "OCVSPacketScanChunk.h"
+#include "GPKinectAPI/OCVSPacketAck.h"
+#include "GPKinectAPI/OCVSPacketChallenge.h"
+#include "GPKinectAPI/OCVSPacketScanReq.h"
+#include "GPKinectAPI/OCVSPacketScanHeader.h"
+#include "GPKinectAPI/OCVSPacketScanChunk.h"
 
 AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
