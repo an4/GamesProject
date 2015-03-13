@@ -2,10 +2,10 @@
 #include <iostream>
 #include <asio.hpp>
 
-#include "OCVSPacketAck.h"
-#include "OCVSPacketChallenge.h"
-#include "OCVSPacketScanHeader.h"
-#include "OCVSPacketScanChunk.h"
+#include "GPKinectAPI/OCVSPacketAck.h"
+#include "GPKinectAPI/OCVSPacketChallenge.h"
+#include "GPKinectAPI/OCVSPacketScanHeader.h"
+#include "GPKinectAPI/OCVSPacketScanChunk.h"
 
 #include "OCVSlaveProtocol.h"
 

@@ -1,6 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
-#include "OCVSPacket.h"
+#include "GPKinectAPI/OCVSPacket.h"
 #include "KinectInterface.h"
 
 class OCVSlaveProtocol

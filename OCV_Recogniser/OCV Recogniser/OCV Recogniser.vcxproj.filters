@@ -21,25 +21,25 @@
     <ClCompile Include="OCVSlaveProtocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OCVSPacket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OCVSPacketAck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OCVSPacketChallenge.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OCVSPacketScanHeader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="KinectInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OCVSPacketScanChunk.cpp">
+    <ClCompile Include="GPKinectAPI\OCVSPacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OCVSPacketScanReq.cpp">
+    <ClCompile Include="GPKinectAPI\OCVSPacketAck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPKinectAPI\OCVSPacketChallenge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanHeader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanReq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,25 +50,25 @@
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OCVSPacket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OCVSPacketAck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OCVSPacketChallenge.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OCVSPacketScanHeader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="KinectInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OCVSPacketScanChunk.h">
+    <ClInclude Include="GPKinectAPI\OCVSPacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OCVSPacketScanReq.h">
+    <ClInclude Include="GPKinectAPI\OCVSPacketAck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPKinectAPI\OCVSPacketChallenge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanHeader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanReq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -86,26 +86,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GPKinectAPI\OCVSPacket.cpp" />
+    <ClCompile Include="GPKinectAPI\OCVSPacketAck.cpp" />
+    <ClCompile Include="GPKinectAPI\OCVSPacketChallenge.cpp" />
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanChunk.cpp" />
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanHeader.cpp" />
+    <ClCompile Include="GPKinectAPI\OCVSPacketScanReq.cpp" />
     <ClCompile Include="KinectInterface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OCVSlaveProtocol.cpp" />
-    <ClCompile Include="OCVSPacket.cpp" />
-    <ClCompile Include="OCVSPacketAck.cpp" />
-    <ClCompile Include="OCVSPacketChallenge.cpp" />
-    <ClCompile Include="OCVSPacketScanChunk.cpp" />
-    <ClCompile Include="OCVSPacketScanHeader.cpp" />
-    <ClCompile Include="OCVSPacketScanReq.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GPKinectAPI\OCVSPacket.h" />
+    <ClInclude Include="GPKinectAPI\OCVSPacketAck.h" />
+    <ClInclude Include="GPKinectAPI\OCVSPacketChallenge.h" />
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanChunk.h" />
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanHeader.h" />
+    <ClInclude Include="GPKinectAPI\OCVSPacketScanReq.h" />
     <ClInclude Include="KinectInterface.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="OCVSlaveProtocol.h" />
-    <ClInclude Include="OCVSPacket.h" />
-    <ClInclude Include="OCVSPacketAck.h" />
-    <ClInclude Include="OCVSPacketChallenge.h" />
-    <ClInclude Include="OCVSPacketScanReq.h" />
-    <ClInclude Include="OCVSPacketScanChunk.h" />
-    <ClInclude Include="OCVSPacketScanHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
