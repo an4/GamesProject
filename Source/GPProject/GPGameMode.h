@@ -6,7 +6,6 @@
 #include "GPBuilding.h"
 #include "GPFlagPickup.h"
 #include "GameFramework/GameMode.h"
-#include "KinectInterface.h"
 #include "GPGameMode.generated.h"
 
 /**
@@ -23,8 +22,6 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 	virtual void StartPlay() override;
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
-
-	//KinectInterface *kinect = NULL;
 
 	public:
 		/** Building class to spawn */

@@ -5,7 +5,6 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "EngineUtils.h"
-#include "KinectInterface.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -71,8 +70,8 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	const float meshy = 200.0f;
 
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = KinectInterface::GetWidth();
-	const float worldy_px = KinectInterface::GetHeight(); // TODO: Resize the world so it matches the aspect ratio.
+	const float worldx_px = 640.0f; // TODO: Bring back Kinect Interface with resolution constants
+	const float worldy_px = 480.0f; // TODO: Resize the world so it matches the aspect ratio.
 
 	// Scale factors for points in the world.
 	const float cscalex = worldx / worldx_px;

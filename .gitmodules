@@ -1,6 +1,3 @@
 [submodule "Source/GPProject/GPKinectAPI"]
 	path = Source/GPProject/GPKinectAPI
 	url = git@github.com:ks07/GPKinectAPI
-[submodule "OCV_Recogniser/OCV Recogniser/GPKinectAPI"]
-	path = OCV_Recogniser/OCV Recogniser/GPKinectAPI
-	url = git@github.com:ks07/GPKinectAPI

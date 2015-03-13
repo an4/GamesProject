@@ -79,7 +79,7 @@ void AGPCharacter::BeginPlay()
 	Health = 100.0f;
 	Point = 0.0f;
 	BombPlanted = false;
-	MaxBombs = 1000;
+	MaxBombs = 5;
 }
 
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
