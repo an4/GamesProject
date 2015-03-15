@@ -28,9 +28,14 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnFire();
+        // Added for 4.7
+        bool ServerOnFire_Validate();
+        void ServerOnFire_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
+        // Added for 4.7
+        void BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb launching
 		UFUNCTION()
@@ -38,9 +43,14 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombLaunch();
+        // Added for 4.7
+        bool ServerOnBombLaunch_Validate();
+        void ServerOnBombLaunch_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombLaunch(FVector CameraLoc, FRotator CameraRot);
+        // Added for 4.7
+        void BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb detonation
 		UFUNCTION()
@@ -48,9 +58,14 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombDetonate();
+        // Added for 4.7
+        bool ServerOnBombDetonate_Validate();
+        void ServerOnBombDetonate_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombDetonate();
+        // Added for 4.7
+        void BroadcastOnBombDetonate_Implementation();
 
 		// handles damage
 		UFUNCTION()
