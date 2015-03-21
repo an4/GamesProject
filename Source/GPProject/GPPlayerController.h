@@ -16,6 +16,12 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
 public:
 	virtual void SetupInputComponent() override;
 
+	UFUNCTION()
+	void JoinTeam0();
+
+	UFUNCTION()
+	void JoinTeam1();
+
 	//handles moving forward/backward
     UFUNCTION()
     void MoveForward(float Val);

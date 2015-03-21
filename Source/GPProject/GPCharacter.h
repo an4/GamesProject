@@ -30,7 +30,21 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterial* RedMaterial;
-        
+
+		bool CanJoinTeam(int8 Team);
+
+		UFUNCTION()
+		void JoinTeam(int8 Team);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerJoinTeam(int8 Team);
+		bool ServerJoinTeam_Validate(int8 Team);
+		void ServerJoinTeam_Implementation(int8 Team);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastJoinTeam(int8 Team);
+		void BroadcastJoinTeam_Implementation(int8 Team);
+
 		//handles firing
         UFUNCTION()
         void OnFire();

@@ -45,6 +45,47 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
 }
 
+bool AGPCharacter::CanJoinTeam(int8 Team)
+{
+	return true;
+}
+
+void AGPCharacter::JoinTeam(int8 Team)
+{
+	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
+	if (CanJoinTeam(Team))
+	{
+		ServerJoinTeam(Team);
+	}
+
+}
+
+bool AGPCharacter::ServerJoinTeam_Validate(int8 Team)
+{
+	return CanJoinTeam(Team);
+}
+
+void AGPCharacter::ServerJoinTeam_Implementation(int8 Team)
+{
+	// If we have been validated by the server, then we need to broadcast the change team to all clients.
+	if (Role == ROLE_Authority) {
+		BroadcastJoinTeam(Team);
+	}
+}
+
+void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
+{
+
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		State->Team = Team;
+		// TODO:
+		// Put Material stuffs here!
+	}
+}
+
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// TODO: Implement this properly ourselves (with damage type handlers!)
