@@ -3,6 +3,8 @@
 #include "GPProjectile.h"
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
+#include "GPPlayerController.h"
+#include "GPGameState.h"
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
@@ -170,7 +172,9 @@ void AGPCharacter::OnStopJump()
 // Abstract fire conditions to a function, as if the client attempts to fire erroneously they will be dropped!
 bool AGPCharacter::CanFire()
 {
-	return Health > 0.0f;
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(gs->GetState()));
+	return (Health > 0.0f && gs->GetState() == 1);
 }
 
 void AGPCharacter::OnFire()
@@ -355,4 +359,83 @@ void AGPCharacter::OnFlagPickUp() {
 
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
+
+	// Get controller
+	//AController* controller = GetController();
+
+	AGPCharacter::SetPauseState();
+}
+
+// Check game state = 1 before setting to 2 and starting the reset timer
+void AGPCharacter::SetPauseState()
+{
+	UWorld* const World = GetWorld();
+	if (World == NULL || !World)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game world"));
+	}
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs == NULL || !gs)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game state"));
+	}
+	if (gs->GetState() == 1)
+	{
+		ServerSetPauseState();
+	}
+}
+
+bool AGPCharacter::ServerSetPauseState_Validate()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 1);
+}
+
+void AGPCharacter::ServerSetPauseState_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(2);
+		// Start timer to go back to normal state
+		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
+	}
+}
+
+void AGPCharacter::SetPauseStateOff()
+{
+	UWorld* const World = GetWorld();
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs->GetState() == 2)
+	{
+		ServerSetPauseStateOff();
+	}
+}
+
+bool AGPCharacter::ServerSetPauseStateOff_Validate()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 2);
+}
+
+void AGPCharacter::ServerSetPauseStateOff_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		// Do reset
+		UWorld * const World = GetWorld();
+		AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+		if (gm == NULL || !gm)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+		}
+		else
+		{
+			gm->ResetBuildings();
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
+	}
 }

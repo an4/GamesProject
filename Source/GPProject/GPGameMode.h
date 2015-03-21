@@ -42,6 +42,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         UFUNCTION()
         void SpawnFlag();
 
+		UFUNCTION()
+		void ResetBuildings();
+
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////
 		//////////////////////////////////

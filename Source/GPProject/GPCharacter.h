@@ -22,7 +22,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 	bool CanFire();
 	
     public:
-        //handles firing
+		//handles firing
         UFUNCTION()
         void OnFire();
 
@@ -112,6 +112,20 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
         UFUNCTION()
         void OnFlagPickUp();
+
+		// handle pausing
+		//handles bomb detonation
+		UFUNCTION()
+		void SetPauseState();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseState();
+
+		UFUNCTION()
+		void SetPauseStateOff();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseStateOff();
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* ShotGunSound;
