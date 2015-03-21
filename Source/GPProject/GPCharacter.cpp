@@ -81,8 +81,7 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
-		// TODO:
-		// Put Material stuffs here!
+		setMaterial(Team);
 	}
 }
 
@@ -165,24 +164,29 @@ void AGPCharacter::SetupTeam()
 	AGPPlayerState* State = (AGPPlayerState*)PlayerState;
 	if (State != NULL)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("We have a playerstate!"));
-		((AGPPlayerState*)PlayerState)->Team = ((AGPGameState*)(GetWorld()->GameState))->GetSetTeam();
-		if (((AGPPlayerState*)PlayerState)->Team == 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
-			GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-			FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
-			GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-			FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-		}
+		setMaterial(((AGPPlayerState*)PlayerState)->Team);
+
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("We don't have a playerstate :("));
+	}
+}
+
+// 0 for green, 1 for read
+void AGPCharacter::setMaterial(int8 Team)
+{
+	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 }
 

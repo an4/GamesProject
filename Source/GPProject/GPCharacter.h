@@ -19,6 +19,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
     virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	void setMaterial(int8 Team);
 	void SetupTeam();
 
 	UFUNCTION()
