@@ -4,6 +4,7 @@
 #include "GPPlayerController.h"
 #include "GPCharacter.h"
 #include "GPGameState.h"
+#include "GPGameMode.h"
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -24,6 +25,8 @@ void AGPPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("RemoteBombPlant", IE_Pressed, this, &AGPPlayerController::OnBombLaunch);
 	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
+
+	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
 }
 
 void AGPPlayerController::MoveForward(float Value)
@@ -112,6 +115,18 @@ void AGPPlayerController::OnBombDetonate()
 	if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnBombDetonate();
+	}
+}
+
+void AGPPlayerController::OnRequestRescan()
+{
+	// Only server may rescan and access the game mode.
+	if (Role == ROLE_Authority) {
+		// TODO: Need to ensure this cast will succeed.
+		AGPGameMode *gmode = Cast<AGPGameMode>(GetWorld()->GetAuthGameMode());
+		if (gmode != NULL) {
+			gmode->wantScan = true;
+		}
 	}
 }
 

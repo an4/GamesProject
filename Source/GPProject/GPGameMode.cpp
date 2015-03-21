@@ -7,6 +7,11 @@
 #include "GPGameState.h"
 #include "EngineUtils.h"
 
+#include "GPKinectAPI/OCVSPacketAck.h"
+#include "GPKinectAPI/OCVSPacketChallenge.h"
+#include "GPKinectAPI/OCVSPacketScanReq.h"
+#include "GPKinectAPI/OCVSPacketScanHeader.h"
+#include "GPKinectAPI/OCVSPacketScanChunk.h"
 
 AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -42,12 +47,19 @@ void AGPGameMode::StartPlay()
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 
         // Spawn flag
-        SpawnFlag();
+		SpawnFlag();
+
+		// Start listener for Kinect input
+		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
+		{
+			return;
+		}
 	}
 
 }
 
-void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
+
+void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 {
 	// World size TODO: Calculate this!
 	const float worldx = 5000.0f;
@@ -60,39 +72,31 @@ void AGPGameMode::SpawnBuilding(FVector2D const a, FVector2D const b)
 	const float meshx = 200.0f;
 	const float meshy = 200.0f;
 
-	// Dimensions of the building rectangle (in pixels!)
-	const float sqx_px = FMath::Max(a.X, b.X) - FMath::Min(a.X, b.X);
-	const float sqy_px = FMath::Max(a.Y, b.Y) - FMath::Min(a.Y, b.Y);
-
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = 640.0f;
-	const float worldy_px = 640.0f; // TODO: Switch this for 480 and resize the world so it matches the aspect ratio.
-
-	// Get the unscaled centre point.
-	FVector2D centre2D = (a + b) / 2.0f;
-	FVector centre = FVector(centre2D, 0.0f);
-
-	FRotator rot = centre.Rotation();
-	// Offset the rotation by 45 as we got this from the diagonal.
-	rot.Yaw -= 45.0f;
-
-	// Scale factors for mesh scaling.
-	const float scalex = (sqx_px * worldx) / (worldx_px * meshx);
-	const float scaley = (sqy_px * worldy) / (worldy_px * meshy);
-	const float scalez = 5.0f;
+	const float worldx_px = 640.0f; // TODO: Bring back Kinect Interface with resolution constants
+	const float worldy_px = 480.0f; // TODO: Resize the world so it matches the aspect ratio.
 
 	// Scale factors for points in the world.
 	const float cscalex = worldx / worldx_px;
 	const float cscaley = worldy / worldy_px;
 
-	// Scale the centre points up into game coordinates.
-	centre.X *= cscalex;
-	centre.Y *= cscaley;
+	// Scale factors for mesh scaling.
+	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
+	const float scaley = (scl.Y * worldy) / (worldy_px * meshy);
+	const float scalez = 5.0f;
 
-	// Offset the centre for differing input vs game origins
+	// Wrap the rotation into a rotator
+	FRotator rotation(0.0f, rot, 0.0f);
+
+	// Scale the centre into the world space.
+	FVector centre(ctr.X * cscalex, ctr.Y * cscaley, 0.0f);
+	// Offset the centre into the world space.
 	centre += worldOffset;
 
-	return SpawnBuilding(centre, rot, FVector(scalex, scaley, scalez));
+	// Convert the scale to world space.
+	FVector scale(scalex, scaley, scalez);
+
+	return SpawnBuilding(centre, rotation, scale);
 }
 
 void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale)
@@ -169,7 +173,7 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 void AGPGameMode::Tick(float DeltaSeconds)
 {
 	tickCount += DeltaSeconds;
-	if (tickCount >= FMath::FRandRange(5.0f, 45.0f)) {
+	if (false && tickCount >= FMath::FRandRange(5.0f, 45.0f)) {
 		tickCount = 0.0;
 
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 0.), FVector(2500., 2500., 0.)));
@@ -232,5 +236,252 @@ void AGPGameMode::ResetBuildings()
 		{
 			bIt->Destroy();
 		}
+	}
+}
+
+/////////////////////////////////////////////////////
+//////////////////// HERE BE DRAGONS ////////////////
+/////////////////////////////////////////////////////
+
+void AGPGameMode::EndPlay(EEndPlayReason::Type reason)
+{
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+
+	if (ConnectionSocket != NULL) {
+		ConnectionSocket->Close();
+		delete ConnectionSocket;
+	}
+
+	if (ListenerSocket != NULL) {
+		ListenerSocket->Close();
+		delete ListenerSocket;
+	}
+}
+
+bool AGPGameMode::StartTCPReceiver(
+	const FString& YourChosenSocketName,
+	const FString& TheIP,
+	const int32 ThePort
+	){
+	//Rama's CreateTCPConnectionListener
+	ListenerSocket = CreateTCPConnectionListener(YourChosenSocketName, TheIP, ThePort);
+
+	//Not created?
+	if (!ListenerSocket)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StartTCPReceiver>> Listen socket could not be created! ~> %s %d"), *TheIP, ThePort));
+		return false;
+	}
+
+	//Start the Listener! // TODO: Threading?
+	GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPConnectionListener, 0.01, true);
+
+	return true;
+}
+
+//Format IP String as Number Parts
+bool AGPGameMode::FormatIP4ToNumber(const FString& TheIP, uint8(&Out)[4])
+{
+	//IP Formatting
+	TheIP.Replace(TEXT(" "), TEXT(""));
+
+	//String Parts
+	TArray<FString> Parts;
+	TheIP.ParseIntoArray(&Parts, TEXT("."), true);
+	if (Parts.Num() != 4)
+		return false;
+
+	//String to Number Parts
+	for (int32 i = 0; i < 4; ++i)
+	{
+		Out[i] = FCString::Atoi(*Parts[i]);
+	}
+
+	return true;
+}
+
+//Rama's Create TCP Connection Listener
+FSocket* AGPGameMode::CreateTCPConnectionListener(const FString& YourChosenSocketName, const FString& TheIP, const int32 ThePort, const int32 ReceiveBufferSize)
+{
+	uint8 IP4Nums[4];
+	if (!FormatIP4ToNumber(TheIP, IP4Nums))
+	{
+		return false;
+	}
+
+	//Create Socket
+	FIPv4Endpoint Endpoint(FIPv4Address(IP4Nums[0], IP4Nums[1], IP4Nums[2], IP4Nums[3]), ThePort);
+	FSocket* ListenSocket = FTcpSocketBuilder(*YourChosenSocketName)
+		.AsReusable()
+		.BoundToEndpoint(Endpoint)
+		.Listening(8);
+
+	//Set Buffer Size
+	int32 NewSize = 0;
+	ListenSocket->SetReceiveBufferSize(ReceiveBufferSize, NewSize);
+
+	return ListenSocket;
+}
+
+//Rama's TCP Connection Listener
+void AGPGameMode::TCPConnectionListener()
+{
+	//~~~~~~~~~~~~~
+	if (!ListenerSocket) return;
+	//~~~~~~~~~~~~~
+
+	//Remote address
+	TSharedRef<FInternetAddr> RemoteAddress = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+	bool Pending;
+
+	// handle incoming connections
+	if (ListenerSocket->HasPendingConnection(Pending) && Pending)
+	{
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		//Already have a Connection? destroy previous
+		if (ConnectionSocket)
+		{
+			// Need to reset the comms state on disconnect.
+			commstate = OCVSProtocolState::INIT;
+
+			ConnectionSocket->Close();
+			ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(ConnectionSocket);
+		}
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+		//New Connection receive!
+		ConnectionSocket = ListenerSocket->Accept(*RemoteAddress, TEXT("RamaTCP Received Socket Connection"));
+
+		if (ConnectionSocket != NULL)
+		{
+			//Global cache of current Remote Address
+			RemoteAddressForConnection = FIPv4Endpoint(RemoteAddress);
+
+			//UE_LOG "Accepted Connection! WOOOHOOOO!!!";
+
+			// Ensure commstate is reset.
+			commstate = OCVSProtocolState::INIT;
+
+			//can thread this too
+			GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPSocketListener, 0.01, true);
+		}
+	}
+}
+
+void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
+{
+	vec.clear();
+	for (auto Iter(arr.CreateConstIterator()); Iter; Iter++)
+	{
+		// *Iter to access what this iterator is pointing to.
+		uint8 the_thing = *Iter;
+		vec.push_back((char)the_thing);
+	}
+}
+
+//Rama's TCP Socket Listener
+void AGPGameMode::TCPSocketListener()
+{
+	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && !wantScan)) return; // TODO: We may want to do some keepalive comms whilst in request state
+
+	TArray<uint8> ReceivedData;
+	uint32 Size;
+
+	while (ConnectionSocket->HasPendingData(Size))
+	{
+		ReceivedData.Init(FMath::Min(Size, 65507u));
+
+		int32 Read = 0;
+		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+	}
+
+	if (ReceivedData.Num() <= 0 && commstate != OCVSProtocolState::REQUEST)
+	{
+		//No Data Received
+		return;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
+
+	// TODO: This needs to be tidied considerably!
+	// TODO: Need to anticipate incoming packet size and buffer accordingly.
+	switch (commstate)
+	{
+	case OCVSProtocolState::INIT:
+	{
+		// Need to send challenge response
+		OCVSPacketChallenge pktChallenge;
+		std::vector<char> somestuff;
+		VectorFromTArray(ReceivedData, somestuff);
+
+		if (pktChallenge.VerifyReceived(somestuff)) {
+			int32 sent = 0;
+			ConnectionSocket->Send(ReceivedData.GetData(), ReceivedData.Num(), sent);
+
+			check(sent == pktChallenge.GetPackedSize());
+
+			commstate = OCVSProtocolState::REQUEST;
+		}
+	}
+	break;
+	case OCVSProtocolState::REQUEST:
+	// Need to send request, if we want a scan.
+	if (wantScan) {
+		OCVSPacketScanReq pktReq;
+		std::vector<char> somestuff;
+		VectorFromTArray(ReceivedData, somestuff);
+		pktReq.Pack(somestuff);
+
+		int32 sent = 0;
+		// TODO: This reinterpret cast is nice but smelly...
+		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
+
+		commstate = OCVSProtocolState::RECEIVE;
+		wantScan = false;
+	}
+	break;
+	case OCVSProtocolState::RECEIVE:
+	{
+		// Should have received an ACK, then scan head, then the lone scan chunk.
+		// TODO: This should be functionality of PacketAck?
+		//Eat the ACK byte
+		ReceivedData.RemoveAt(0);
+
+		std::vector<char> somestuff;
+		VectorFromTArray(ReceivedData, somestuff);
+
+		// Read the scan head.
+		OCVSPacketScanHeader scanHd(somestuff);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
+
+		int offset = scanHd.GetPackedSize();
+
+		// TODO: Ensure we actually have all of the promised data... or block between chunks
+
+		// Read the chunk(s) TODO: Don't block on it here!!!
+		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
+			OCVSPacketScanChunk scanChnk(somestuff, offset);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y));
+
+			// Spawn the received building.
+			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
+
+			// Move the offset by the last chunk.
+			offset += scanChnk.GetPackedSize();
+		}
+
+		OCVSPacketAck::getInstance()->Pack(somestuff);
+		int32 sent = 0;
+		// TODO: This reinterpret cast is nice but smelly...
+		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
+
+		commstate = OCVSProtocolState::INIT;
+	}
+	break;
+	default:
+	break;
 	}
 }

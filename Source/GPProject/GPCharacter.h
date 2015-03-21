@@ -127,7 +127,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseStateOff();
 
-		
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* ShotGunSound;
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* RespawnSound;
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
