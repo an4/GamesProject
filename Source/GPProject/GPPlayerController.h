@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "GameFramework/PlayerController.h"
 #include "GPPlayerController.generated.h"
 
@@ -51,6 +50,10 @@ public:
 
 	//handles bomb detonation
 	void OnBombDetonate();
+
+	// Handles rescan requesting
+	void OnRequestRescan();
+
 	//UFUNCTION(Reliable, Server, WithValidation)
 	//void ServerOnFire();
 

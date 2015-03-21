@@ -20,10 +20,16 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     PickupMesh->SetMaterial(0, Material_Green.Object);
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
+    PickUpSound = PickUpSoundCueLoader.Object;
 }
 
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    // Play Sound
+    this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
+
     GetWorld()->DestroyActor(this, true);
 
     if (Role == ROLE_Authority) {

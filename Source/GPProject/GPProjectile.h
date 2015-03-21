@@ -34,4 +34,7 @@ class GPPROJECT_API AGPProjectile : public AActor
         /** called when projectile hits something */
         UFUNCTION()
         void OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* OnHitSound;
 };

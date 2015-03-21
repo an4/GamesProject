@@ -3,6 +3,8 @@
 #include "GPProjectile.h"
 #include "GPRemoteBomb.h"
 #include "GPCharacter.h"
+#include "GPPlayerController.h"
+#include "GPGameState.h"
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
 
@@ -42,12 +44,41 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 		GreenMaterial = (UMaterial*)Material2.Object;
 		UE_LOG(LogTemp, Warning, TEXT("GreenMaterial has a value"));
 	}
-	GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> GunShotSoundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
+    ShotGunSound = GunShotSoundCueLoader.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> RespawnSoundCueLoader(TEXT("SoundCue'/Game/Audio/Respawn_Cue.Respawn_Cue'"));
+    RespawnSound = RespawnSoundCueLoader.Object;
 }
 
 bool AGPCharacter::CanJoinTeam(int8 Team)
 {
 	return true;
+}
+
+void AGPCharacter::SetMaterial(int8 Team)
+{
+	if (CanJoinTeam(Team))
+	{
+		SetMaterial(Team);
+	}
+}
+
+void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
+{
+	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+	}
 }
 
 void AGPCharacter::JoinTeam(int8 Team)
@@ -56,6 +87,7 @@ void AGPCharacter::JoinTeam(int8 Team)
 	if (CanJoinTeam(Team))
 	{
 		ServerJoinTeam(Team);
+		SetMaterial(Team);
 	}
 
 }
@@ -81,7 +113,7 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
-		setMaterial(Team);
+		SetMaterial(Team);
 	}
 }
 
@@ -164,29 +196,12 @@ void AGPCharacter::SetupTeam()
 	AGPPlayerState* State = (AGPPlayerState*)PlayerState;
 	if (State != NULL)
 	{
-		setMaterial(((AGPPlayerState*)PlayerState)->Team);
-
+		SetMaterial(((AGPPlayerState*)PlayerState)->Team);
+		UE_LOG(LogTemp, Warning, TEXT("We should be all colourfull"));
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("We don't have a playerstate :("));
-	}
-}
-
-// 0 for green, 1 for read
-void AGPCharacter::setMaterial(int8 Team)
-{
-	if (((AGPPlayerState*)PlayerState)->Team == 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 }
 
@@ -207,6 +222,9 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 
 void AGPCharacter::Respawn()
 {
+    // Play Sound
+    this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
+
     /*bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
     bUseControllerRotationYaw = false;
@@ -269,7 +287,9 @@ void AGPCharacter::OnStopJump()
 // Abstract fire conditions to a function, as if the client attempts to fire erroneously they will be dropped!
 bool AGPCharacter::CanFire()
 {
-	return Health > 0.0f;
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(gs->GetState()));
+	return (Health > 0.0f && gs->GetState() == 1);
 }
 
 void AGPCharacter::OnFire()
@@ -319,7 +339,10 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-				// find launch direction
+                // Play Sound
+                Projectile->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
+                
+                // find launch direction
 				FVector const LaunchDir = MuzzleRotation.Vector();
 				Projectile->InitVelocity(LaunchDir);
 			}
@@ -422,7 +445,7 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 			AGPRemoteBomb* CurRB = NULL;
 			for (int i = 0; i < RemoteBombList.Num(); i++)
 			{
-				CurRB = RemoteBombList[i];
+                CurRB = RemoteBombList[i];
 				// Check make sure our actor exists
 				if (!CurRB) continue;
 				if (!CurRB->IsValidLowLevel()) continue;
@@ -451,4 +474,83 @@ void AGPCharacter::OnFlagPickUp() {
 
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
+
+	// Get controller
+	//AController* controller = GetController();
+
+	AGPCharacter::SetPauseState();
+}
+
+// Check game state = 1 before setting to 2 and starting the reset timer
+void AGPCharacter::SetPauseState()
+{
+	UWorld* const World = GetWorld();
+	if (World == NULL || !World)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game world"));
+	}
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs == NULL || !gs)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game state"));
+	}
+	if (gs->GetState() == 1)
+	{
+		ServerSetPauseState();
+	}
+}
+
+bool AGPCharacter::ServerSetPauseState_Validate()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 1);
+}
+
+void AGPCharacter::ServerSetPauseState_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(2);
+		// Start timer to go back to normal state
+		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
+	}
+}
+
+void AGPCharacter::SetPauseStateOff()
+{
+	UWorld* const World = GetWorld();
+	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+	if (gs->GetState() == 2)
+	{
+		ServerSetPauseStateOff();
+	}
+}
+
+bool AGPCharacter::ServerSetPauseStateOff_Validate()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	return (gs->GetState() == 2);
+}
+
+void AGPCharacter::ServerSetPauseStateOff_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		// Do reset
+		UWorld * const World = GetWorld();
+		AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+		if (gm == NULL || !gm)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+		}
+		else
+		{
+			gm->ResetBuildings();
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
+	}
 }
