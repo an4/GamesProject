@@ -344,3 +344,14 @@ void AGPCharacter::OnFlagPickUp() {
     // Print total number of flags
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
 }
+
+
+void AGPCharacter::Tick(float deltaSeconds)
+{
+	FVector ActorLocation = GetActorLocation();
+	if (GetActorLocation().Z <= -5000)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
+		Respawn();
+	}
+}
