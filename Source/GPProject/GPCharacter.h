@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -76,12 +76,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
         UCameraComponent* FirstPersonCameraComponent;
 
+
         /** Pawn mesh: 1st person view (arms; seen only by self) */
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         USkeletalMeshComponent* FirstPersonMesh;
 
 		/** Property to store the character's health. */
-		UPROPERTY(Replicated)
+		UPROPERTY(Replicated, BlueprintReadOnly, Category = "Character", meta = (FriendlyName = "Health"))
 		float Health;
 
 		// Property to store the character's points
