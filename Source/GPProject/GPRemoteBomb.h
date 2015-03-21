@@ -32,4 +32,10 @@ class GPPROJECT_API AGPRemoteBomb : public AActor
 		/** Projectile class to spawn */
 		UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AGPProjectile> ProjectileClass;
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* BombDetonateSound;
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* BombDropSound;
 };
