@@ -15,6 +15,11 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
 public:
 	virtual void SetupInputComponent() override;
 
+	UFUNCTION()
+	void NextWeapon();
+	UFUNCTION()
+	void PrevWeapon();
+
 	//handles moving forward/backward
     UFUNCTION()
     void MoveForward(float Val);

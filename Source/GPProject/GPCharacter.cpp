@@ -11,6 +11,7 @@
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+	Weapon = 0;
     // Create a CameraComponent 
     FirstPersonCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
     FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
@@ -101,8 +102,6 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 
     InputComponent->BindAction("Jump", IE_Pressed, this, &AGPCharacter::OnStartJump);
     InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
-
-    //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
 }
 
 void AGPCharacter::Respawn()
@@ -207,7 +206,7 @@ void AGPCharacter::ServerOnFire_Implementation()
 
 void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot)
 {
-	if (ProjectileClass != NULL)
+	if (Weapon == 0 && ProjectileClass != NULL)
 	{
 		// Get the camera transform
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the camera to find the final muzzle position
@@ -232,6 +231,20 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 				Projectile->InitVelocity(LaunchDir);
 			}
 		}
+	}
+	else if (Weapon == 1)
+	{
+		//Hitscan things
+		FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
+		FRotator MuzzleRotation = CameraRot;
+		UWorld* World = GetWorld();
+		FHitResult* OutHit;
+
+		//5000 * 5000 units long at most
+		FVector End = FVector(2000.0f, 0, 0);
+		End = MuzzleRotation.RotateVector(End);
+		End += MuzzleLocation;
+		//World->LineTraceSingle(OutHit, MuzzleLocation, End, , );
 	}
 }
 
@@ -448,5 +461,19 @@ void AGPCharacter::Tick(float deltaSeconds)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
 		Respawn();
+	}
+}
+
+void AGPCharacter::NextWeapon()
+{
+	Weapon = (Weapon + 1) % 2;
+}
+
+void AGPCharacter::PrevWeapon()
+{
+	Weapon -= 1;
+	if (Weapon = -1)
+	{
+		Weapon = 1;
 	}
 }

@@ -13,10 +13,16 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
     
+	UFUNCTION()
+	void NextWeapon();
+	UFUNCTION()
+	void PrevWeapon();
+
     // Constructor for AGPCharacter
     AGPCharacter(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
+	int Weapon;
 
 	void Tick(float DeltaSeconds) override;
 

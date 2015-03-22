@@ -27,6 +27,19 @@ void AGPPlayerController::SetupInputComponent()
 	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
 
 	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
+
+	InputComponent->BindAction("NextWeapon", IE_Pressed, this, &AGPPlayerController::NextWeapon);
+	InputComponent->BindAction("PrevWeapon", IE_Pressed, this, &AGPPlayerController::PrevWeapon);
+}
+
+void AGPPlayerController::NextWeapon()
+{
+	Cast<AGPCharacter>(GetCharacter())->NextWeapon();
+}
+
+void AGPPlayerController::PrevWeapon()
+{
+	Cast<AGPCharacter>(GetCharacter())->PrevWeapon();
 }
 
 void AGPPlayerController::MoveForward(float Value)
