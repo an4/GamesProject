@@ -22,6 +22,7 @@ bool AGPPlayerState::GetHasFlag()
 	return hasFlag;
 }
 
+// TODO: Add winstate for flag number (add to game mode / game state?)
 void AGPPlayerState::IncrementFlags()
 {
 	numFlags += 1;

@@ -32,14 +32,18 @@ AGPCaptureZone::AGPCaptureZone(const FObjectInitializer& ObjectInitializer)
 
 void AGPCaptureZone::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Check we have an actor
 	AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
 	if (currentActor)
 	{
+		// Check that actor has a state
 		AGPPlayerState* PState = (AGPPlayerState*)currentActor->PlayerState;
 		if (PState)
 		{
+			// Check we have the flag
 			if (PState->GetHasFlag()) {
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We have a flag!"));
+				// Tell actor to cap it!
 				currentActor->OnFlagCapture();
 			}
 			else

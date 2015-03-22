@@ -356,9 +356,8 @@ void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 
 bool AGPCharacter::CanPickupFlag()
 {
+	// Make sure we're actually looking at the right player before sending through
 	if ((AGPPlayerState*)PlayerState != NULL) {
-		FString outputstring = ((AGPPlayerState*)PlayerState)->GetHasFlag() ? TEXT("true") : TEXT("false");
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, outputstring);
 		return !(((AGPPlayerState*)PlayerState)->GetHasFlag());
 	}
 	else
@@ -372,49 +371,12 @@ bool AGPCharacter::CanCaptureFlag()
 	return true;
 }
 
+// Defer to server
 void AGPCharacter::OnFlagPickup() {
 	if (CanPickupFlag())
 	{
 		ServerOnFlagPickup();
 	}
-    // Increase number of flags
-    /*FlagsPickedUp++;
-	if (GetController() != NULL)
-	{
-		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
-		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
-		if (State == NULL)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
-		}
-		else {
-			State->SetHasFlag(true);
-			TArray<UActorComponent*> components;
-			GetComponents(components);
-			for (int32 i = 0; i < components.Num(); i++)
-			{
-				UActorComponent* comp = components[i];
-				if (components[i]->GetName() == "FlagLight")
-				{
-					USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
-					if (spotlight) {
-						spotlight->SetIntensity(100000.0f);
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
-					}
-				}
-			}
-		}
-	}
-    // Print total number of flags
-	if ((AGPPlayerState*)PlayerState != NULL) {
-		FString outputstring = ((AGPPlayerState*)PlayerState)->GetHasFlag() ? TEXT("true") : TEXT("false");
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, outputstring);
-	}
-    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
-	// Get controller
-	//AController* controller = GetController();
-
-	AGPCharacter::SetPauseState(); */
 }
 
 bool AGPCharacter::ServerOnFlagPickup_Validate()
@@ -426,7 +388,9 @@ void AGPCharacter::ServerOnFlagPickup_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
+		// Tell all that a flag has been picked up
 		BroadcastOnFlagPickup();
+		// And spawn a new flag as the server
 		UWorld* const World = GetWorld();
 
 		if (World)
@@ -465,6 +429,7 @@ void AGPCharacter::ServerOnFlagPickup_Implementation()
 
 void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 {
+	// If we're that player, change our playerstate (which will replicate automatically)
 	if (GetController() != NULL)
 	{
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
@@ -477,13 +442,16 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 			State->SetHasFlag(true);
 		}
 	}
+	// Get all the components of the actor
 	TArray<UActorComponent*> components;
 	GetComponents(components);
 	for (int32 i = 0; i < components.Num(); i++)
 	{
+		// Find the spotlight component
 		UActorComponent* comp = components[i];
 		if (components[i]->GetName() == "FlagLight")
 		{
+			// Set the intensity on all clients so everyone can see we have a flag
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
 				spotlight->SetIntensity(100000.0f);
@@ -510,13 +478,16 @@ void AGPCharacter::ServerOnFlagCapture_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
+		// Tell everyone a flag has been captured
 		BroadcastOnFlagCapture();
+		// Then pause the game as the server
 		SetPauseState();
 	}
 }
 
 void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 {
+	// If we're that player, change our playerstate (which will replicate automatically)
 	if (GetController() != NULL)
 	{
 		FlagsPickedUp++;
@@ -526,18 +497,22 @@ void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
 		}
+		// Remove flag state and increment our count
 		else {
 			State->SetHasFlag(false);
 			State->IncrementFlags();
 		}
 	}
+	// Get all components of the actor
 	TArray<UActorComponent*> components;
 	GetComponents(components);
 	for (int32 i = 0; i < components.Num(); i++)
 	{
+		// Find the spotlight component
 		UActorComponent* comp = components[i];
 		if (components[i]->GetName() == "FlagLight")
 		{
+			// Set the intensity on all clients so everyone can see we no longer have a flag
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
 				spotlight->SetIntensity(0.0f);
@@ -580,6 +555,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		// Start timer to go back to normal state
+		// TODO: Display this in the hud to clients
 		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
 	}
 }
@@ -624,6 +600,8 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 
 void AGPCharacter::Tick(float deltaSeconds)
 {
+	// Check player hasn't fallen below the map
+	// TODO: Test if just using the maps kill Z variable works better
 	FVector ActorLocation = GetActorLocation();
 	if (GetActorLocation().Z <= -5000)
 	{

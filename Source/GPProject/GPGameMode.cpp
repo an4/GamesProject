@@ -33,6 +33,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
+	// Get the Capture zone blueprint class
 	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
 	if (CaptureZoneBP.Object != NULL)
 	{
@@ -53,6 +54,7 @@ void AGPGameMode::StartPlay()
 		SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+		// Spawn the capture zone in the center
 		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
 
         // Spawn flag

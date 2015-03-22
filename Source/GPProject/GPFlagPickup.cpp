@@ -28,7 +28,7 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // Play Sound
+	// Check we have an actor that can pick up a flag before doing so
 	AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
 	if (currentActor)
 	{
@@ -37,6 +37,7 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 
 			GetWorld()->DestroyActor(this, true);
 
+			// Moved flag spawning into the actor so that we can call the server to do it without needing flags to have an owner
 			currentActor->OnFlagPickup();
 		}
 	}
