@@ -271,6 +271,7 @@ void AGPCharacter::BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRota
 				RemoteBomb->InitVelocity(LaunchDir);
 				BombPlanted = true;
 				RemoteBombList.Add(RemoteBomb);
+				RemoteBomb->SetActorRotation(FRotator(FMath::RandRange(0, 360), FMath::RandRange(0, 360), FMath::RandRange(0,360)));
 			}
 		}
 	}
