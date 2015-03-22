@@ -12,11 +12,6 @@ UCLASS()
 class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
-    
-	UFUNCTION()
-	void NextWeapon();
-	UFUNCTION()
-	void PrevWeapon();
 
     // Constructor for AGPCharacter
     AGPCharacter(const FObjectInitializer& ObjectInitializer);
@@ -30,6 +25,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 	bool CanFire();
 	
     public:
+
+		UFUNCTION()
+		void NextWeapon();
+		UFUNCTION()
+		void PrevWeapon();
+
 		//handles firing
         UFUNCTION()
         void OnFire();

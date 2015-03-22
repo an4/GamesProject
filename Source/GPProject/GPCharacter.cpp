@@ -47,11 +47,19 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 	
 	if (EventInstigator != GetController()) {
-
+		AGPCharacter* otherPlayer;
 		Health -= DamageAmount;
 
-		AGPCharacter* otherPlayer = Cast<AGPCharacter,AActor>(DamageCauser->GetOwner());
-		otherPlayer->IncreasePoints();
+		if (DamageCauser->IsA(AStaticMeshActor::StaticClass()))			//Hitscan
+		{
+			otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser);
+			otherPlayer->IncreasePoints();
+		}
+		else if (DamageCauser->IsA(AGPProjectile::StaticClass()))	//Projectile
+		{
+			otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+			otherPlayer->IncreasePoints();
+		}
 
 		if (GEngine)
 		{
@@ -94,11 +102,6 @@ void AGPCharacter::BeginPlay()
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Setting up input"));
-    // set up gameplay key bindings
-    //InputComponent->BindAxis("MoveForward", this, &AGPCharacter::MoveForward);
-    //InputComponent->BindAxis("MoveRight", this, &AGPCharacter::MoveRight);
-    //InputComponent->BindAxis("Turn", this, &AGPCharacter::AddControllerYawInput);
-    //InputComponent->BindAxis("LookUp", this, &AGPCharacter::AddControllerPitchInput);
 
     InputComponent->BindAction("Jump", IE_Pressed, this, &AGPCharacter::OnStartJump);
     InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
@@ -109,17 +112,7 @@ void AGPCharacter::Respawn()
     // Play Sound
     this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
 
-    /*bUseControllerRotationPitch = false;
-    bUseControllerRotationRoll = false;
-    bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bUseControllerDesiredRotation = false;
-    FirstPersonCameraComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f), false);*/
     SetActorLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FRotator::ZeroRotator, false);
-    //GetRootComponent()->SetWorldLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FQuat(FRotator(0.0f, 0.0f, 0.0f)));
-    /*bUseControllerRotationPitch = true;
-    bUseControllerRotationRoll = true;
-    bUseControllerRotationYaw = true;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;*/
 
     Health = 100;
     if (GEngine)
@@ -127,36 +120,6 @@ void AGPCharacter::Respawn()
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
     }
 }
-
-//void AGPCharacter::MoveForward(float Value)
-//{
-//	// TODO: Health test - forward disabled when health gone
-//    if ((Controller != NULL) && (Value != 0.0f) && (Health > 0.0f))
-//    {
-//        // find out which way is forward
-//        FRotator Rotation = Controller->GetControlRotation();
-//        // Limit pitch when walking or falling
-//        if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
-//        {
-//            Rotation.Pitch = 0.0f;
-//        }
-//        // add movement in that direction
-//        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-//        AddMovementInput(Direction, Value);
-//    }
-//}
-//
-//void AGPCharacter::MoveRight(float Value)
-//{
-//    if ((Controller != NULL) && (Value != 0.0f))
-//    {
-//        // find out which way is right
-//        const FRotator Rotation = Controller->GetControlRotation();
-//        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-//        // add movement in that direction
-//        AddMovementInput(Direction, Value);
-//    }
-//}
 
 void AGPCharacter::OnStartJump()
 {
@@ -235,16 +198,51 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 	else if (Weapon == 1)
 	{
 		//Hitscan things
-		FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
+		/*FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
 		FRotator MuzzleRotation = CameraRot;
 		UWorld* World = GetWorld();
 		FHitResult* OutHit;
 
-		//5000 * 5000 units long at most
+		// 2000 units range
 		FVector End = FVector(2000.0f, 0, 0);
 		End = MuzzleRotation.RotateVector(End);
 		End += MuzzleLocation;
-		//World->LineTraceSingle(OutHit, MuzzleLocation, End, , );
+		World->LineTraceSingle(OutHit, MuzzleLocation, End, , );*/
+
+		FVector CamLoc;
+		FRotator CamRot;
+		Controller->GetPlayerViewPoint(CamLoc, CamRot);
+		const FVector TraceDirection = CamRot.Vector();
+
+		// Calculate the start location for trace  
+		FVector StartTrace = FVector::ZeroVector;
+		if (Controller)
+		{
+			FRotator UnusedRotation;
+			Controller->GetPlayerViewPoint(StartTrace, UnusedRotation);
+
+			// Adjust trace so there is nothing blocking the ray between the camera and the pawn, and calculate distance from adjusted start  
+			StartTrace = StartTrace + TraceDirection * ((GetActorLocation() - StartTrace) | TraceDirection);
+		}
+
+		// Distance to trace  
+		const float WeaponRange = 2000.0f;
+		// Calculate endpoint of trace  
+		const FVector EndTrace = StartTrace + TraceDirection * WeaponRange;
+
+		// Setup the trace query  
+		static FName FireTraceIdent = FName(TEXT("WeaponTrace"));
+		FCollisionQueryParams TraceParams(FireTraceIdent, true, this);
+		TraceParams.bTraceAsyncScene = true;
+		FHitResult OutHit;
+
+		// Perform the trace  
+		GetWorld()->LineTraceSingle(OutHit, StartTrace, EndTrace, ECC_GameTraceChannel1, TraceParams);
+		if (OutHit.GetActor() != NULL && OutHit.GetActor()->IsA(AGPCharacter::StaticClass())) {
+			const float damage = 5.0f;
+			FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, OutHit, TraceDirection, nullptr);
+			OutHit.GetActor()->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
+		}
 	}
 }
 
@@ -472,7 +470,7 @@ void AGPCharacter::NextWeapon()
 void AGPCharacter::PrevWeapon()
 {
 	Weapon -= 1;
-	if (Weapon = -1)
+	if (Weapon == -1)
 	{
 		Weapon = 1;
 	}
