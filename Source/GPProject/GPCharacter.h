@@ -36,7 +36,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetMaterial(int8 Team);
-		void ServerSetMaterial_Validate(int8 Team);
+		bool ServerSetMaterial_Validate(int8 Team);
 		void ServerSetMaterial_Implementation(int8 Team);
 
 		UFUNCTION(NetMulticast, Reliable)

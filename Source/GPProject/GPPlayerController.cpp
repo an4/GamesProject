@@ -36,7 +36,9 @@ void AGPPlayerController::JoinTeam0()
 {
 	if (GetCharacter() != NULL)
 	{
-		Cast<AGPCharacter>(GetCharacter())->JoinTeam(0);
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(0);
+		Char->SetMaterial(0);
 	}
 }
 
@@ -44,7 +46,9 @@ void AGPPlayerController::JoinTeam1()
 {
 	if (GetCharacter() != NULL)
 	{
-		Cast<AGPCharacter>(GetCharacter())->JoinTeam(1);
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(1);
+		Char->SetMaterial(1);
 	}
 }
 

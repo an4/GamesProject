@@ -59,9 +59,23 @@ bool AGPCharacter::CanJoinTeam(int8 Team)
 
 void AGPCharacter::SetMaterial(int8 Team)
 {
+	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
 	if (CanJoinTeam(Team))
 	{
-		SetMaterial(Team);
+		ServerSetMaterial(Team);
+	}
+}
+
+bool AGPCharacter::ServerSetMaterial_Validate(int8 Team)
+{
+	return CanJoinTeam(Team);
+}
+
+void AGPCharacter::ServerSetMaterial_Implementation(int8 Team)
+{
+	// If we have been validated by the server, then we need to broadcast the change team to all clients.
+	if (Role == ROLE_Authority) {
+		BroadcastSetMaterial(Team);
 	}
 }
 
@@ -69,17 +83,18 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 {
 	if (((AGPPlayerState*)PlayerState)->Team == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
+		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
 		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
 		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
+		//UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
 		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 }
+
 
 void AGPCharacter::JoinTeam(int8 Team)
 {
@@ -87,7 +102,6 @@ void AGPCharacter::JoinTeam(int8 Team)
 	if (CanJoinTeam(Team))
 	{
 		ServerJoinTeam(Team);
-		SetMaterial(Team);
 	}
 
 }
@@ -113,7 +127,6 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
-		SetMaterial(Team);
 	}
 }
 
@@ -187,7 +200,7 @@ void AGPCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
     if (Role == ROLE_Authority) 
     {
-        SetupTeam();
+        //SetupTeam();
     }
 }
 
