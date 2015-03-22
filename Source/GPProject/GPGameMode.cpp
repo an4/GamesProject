@@ -7,6 +7,7 @@
 #include "GPGameState.h"
 #include "GPPlayerState.h"
 #include "EngineUtils.h"
+#include "GPCaptureZone.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -32,6 +33,11 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
+	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
+	if (CaptureZoneBP.Object != NULL)
+	{
+		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
+	}
 	
 	tickCount = 0.0;
 }
@@ -47,6 +53,7 @@ void AGPGameMode::StartPlay()
 		SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
 
         // Spawn flag
 		SpawnFlag();
@@ -60,6 +67,40 @@ void AGPGameMode::StartPlay()
 
 }
 
+void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
+{
+	UWorld* const World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
+		AGPCaptureZone* cp;
+		if (CaptureZoneBPClass != NULL)
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(CaptureZoneBPClass, centre, rotation, SpawnParams);
+		}
+		else
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(AGPCaptureZone::StaticClass(), centre, rotation, SpawnParams);
+		}
+
+		if (cp == NULL)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp is null"));
+			}
+		}
+		else {
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));
+			}
+		}
+	}
+}
 
 void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 {
@@ -195,13 +236,7 @@ void AGPGameMode::SpawnFlag()
     if (World)
     {
         FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-		if (this)
-		{
-			SpawnParams.Owner = this;
-		}
-		else {
-			SpawnParams.Owner = NULL;
-		}
+		SpawnParams.Owner = this;
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);

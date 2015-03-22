@@ -28,10 +28,16 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
 
+		UPROPERTY()
+		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
+
 		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale);
 
 		UFUNCTION()
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
+
+		UFUNCTION()
+		void SpawnCaptureZone(FVector centre, FRotator rotation);
 
 		void Tick(float DeltaSeconds) override;
 

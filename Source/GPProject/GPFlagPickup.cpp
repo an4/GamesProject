@@ -30,10 +30,6 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 {
     // Play Sound
 	AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
-	if (Role == ROLE_Authority && currentActor->CanPickupFlag()) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We have auth"));
-		//DefSpawnFlag(OtherActor);
-	}
 	if (currentActor)
 	{
 		if (currentActor->CanPickupFlag()) {
