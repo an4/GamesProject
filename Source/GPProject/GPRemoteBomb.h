@@ -22,9 +22,6 @@ class GPPROJECT_API AGPRemoteBomb : public AActor
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 		UProjectileMovementComponent* BombProjectileMovement;
 
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
-		UStaticMeshComponent* BombMesh;
-
 		/** inits velocity of the projectile in the shoot direction */
 		void InitVelocity(const FVector& ShootDirection);
 		UFUNCTION()

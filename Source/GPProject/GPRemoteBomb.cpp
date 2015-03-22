@@ -10,7 +10,7 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	// Use a box as a simple collision representation
-	BombCollisionComp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("RootBoxComponent"));
+	BombCollisionComp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("BoxComp"));
 	BombCollisionComp->BodyInstance.SetCollisionProfileName("RemoteBomb");
 	//BombCollisionComp->InitBoxExtent(FVector(5, 5, 5));
 	BombCollisionComp->OnComponentHit.AddDynamic(this, &AGPRemoteBomb::OnHit);

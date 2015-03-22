@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS()
 class GPPROJECT_API AGPCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -82,7 +82,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         USkeletalMeshComponent* FirstPersonMesh;
 
 		/** Property to store the character's health. */
-		UPROPERTY(Replicated, BlueprintReadOnly, Category = "Character", meta = (FriendlyName = "Health"))
+		UPROPERTY(Replicated)
 		float Health;
 
 		// Property to store the character's points
