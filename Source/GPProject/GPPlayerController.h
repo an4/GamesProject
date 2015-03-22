@@ -10,8 +10,9 @@
 UCLASS()
 class GPPROJECT_API AGPPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
+    bool InTeam = false;
 public:
 	virtual void SetupInputComponent() override;
 

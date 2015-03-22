@@ -211,21 +211,6 @@ void AGPCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	if (Role == ROLE_Authority)
 	{
-		//SetupTeam();
-	}
-}
-
-void AGPCharacter::SetupTeam()
-{
-	AGPPlayerState* State = (AGPPlayerState*)PlayerState;
-	if (State != NULL)
-	{
-		SetMaterial(((AGPPlayerState*)PlayerState)->Team);
-		UE_LOG(LogTemp, Warning, TEXT("We should be all colourfull"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("We don't have a playerstate :("));
 	}
 }
 
