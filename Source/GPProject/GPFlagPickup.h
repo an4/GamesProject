@@ -21,8 +21,6 @@ public:
     void OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     /* Spawns a flag in a random location */
-    UFUNCTION()
-    void SpawnFlag(class AActor* FlagOwner);
 
     UPROPERTY(EditDefaultsOnly, Category = Sounds)
     USoundCue* PickUpSound;

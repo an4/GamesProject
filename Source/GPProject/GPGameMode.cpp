@@ -5,6 +5,7 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
+#include "GPPlayerState.h"
 #include "EngineUtils.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
@@ -20,7 +21,9 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	// the controller class handles a player for the entirety of the game, whereas pawns can be replaced (e.g. death and respawn)
 	// Controller should hold things like score, team that need to be kept across lives! Should handle input and replication.
 	PlayerControllerClass = AGPPlayerController::StaticClass();
-
+	PlayerStateClass = AGPPlayerState::StaticClass();
+	GameStateClass = AGPGameState::StaticClass();
+	HUDClass = AGPHUD::StaticClass();
 	GameStateClass = AGPGameState::StaticClass();
 
     // set default pawn class to our Blueprinted character
@@ -30,7 +33,6 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
 	
-    HUDClass = AGPHUD::StaticClass();
 	tickCount = 0.0;
 }
 
@@ -193,8 +195,13 @@ void AGPGameMode::SpawnFlag()
     if (World)
     {
         FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-
-        SpawnParams.Owner = this;
+		if (this)
+		{
+			SpawnParams.Owner = this;
+		}
+		else {
+			SpawnParams.Owner = NULL;
+		}
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);

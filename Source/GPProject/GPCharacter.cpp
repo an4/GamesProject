@@ -7,6 +7,7 @@
 #include "GPGameState.h"
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
+#include "GPPlayerState.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -353,17 +354,197 @@ void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 	DOREPLIFETIME(AGPCharacter, Health);
 }
 
-void AGPCharacter::OnFlagPickUp() {
+bool AGPCharacter::CanPickupFlag()
+{
+	if ((AGPPlayerState*)PlayerState != NULL) {
+		FString outputstring = ((AGPPlayerState*)PlayerState)->GetHasFlag() ? TEXT("true") : TEXT("false");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, outputstring);
+		return !(((AGPPlayerState*)PlayerState)->GetHasFlag());
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool AGPCharacter::CanCaptureFlag()
+{
+	return true;
+}
+
+void AGPCharacter::OnFlagPickup() {
+	if (CanPickupFlag())
+	{
+		ServerOnFlagPickup();
+	}
     // Increase number of flags
-    FlagsPickedUp++;
-
+    /*FlagsPickedUp++;
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else {
+			State->SetHasFlag(true);
+			TArray<UActorComponent*> components;
+			GetComponents(components);
+			for (int32 i = 0; i < components.Num(); i++)
+			{
+				UActorComponent* comp = components[i];
+				if (components[i]->GetName() == "FlagLight")
+				{
+					USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+					if (spotlight) {
+						spotlight->SetIntensity(100000.0f);
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
+					}
+				}
+			}
+		}
+	}
     // Print total number of flags
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
-
+	if ((AGPPlayerState*)PlayerState != NULL) {
+		FString outputstring = ((AGPPlayerState*)PlayerState)->GetHasFlag() ? TEXT("true") : TEXT("false");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, outputstring);
+	}
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
 	// Get controller
 	//AController* controller = GetController();
 
-	AGPCharacter::SetPauseState();
+	AGPCharacter::SetPauseState(); */
+}
+
+bool AGPCharacter::ServerOnFlagPickup_Validate()
+{
+	return (CanPickupFlag());
+}
+
+void AGPCharacter::ServerOnFlagPickup_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastOnFlagPickup();
+		UWorld* const World = GetWorld();
+
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			if (this)
+			{
+				SpawnParams.Owner = this;
+			}
+			else {
+				SpawnParams.Owner = NULL;
+			}
+			SpawnParams.Instigator = NULL;
+
+			FRotator rotation = FRotator(0.f, 0.f, 0.f);
+			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+
+			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+			if (flag == NULL)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+				}
+			}
+			else {
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+				}
+			}
+		}
+	}
+}
+
+void AGPCharacter::BroadcastOnFlagPickup_Implementation()
+{
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else {
+			State->SetHasFlag(true);
+		}
+	}
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagLight")
+		{
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				spotlight->SetIntensity(100000.0f);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
+			}
+		}
+	}
+}
+
+void AGPCharacter::OnFlagCapture()
+{
+	if (CanCaptureFlag())
+	{
+		ServerOnFlagCapture();
+	}
+}
+
+bool AGPCharacter::ServerOnFlagCapture_Validate()
+{
+	return (CanCaptureFlag());
+}
+
+void AGPCharacter::ServerOnFlagCapture_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastOnFlagCapture();
+		SetPauseState();
+	}
+}
+
+void AGPCharacter::BroadcastOnFlagCapture_Implementation()
+{
+	if (GetController() != NULL)
+	{
+		FlagsPickedUp++;
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else {
+			State->SetHasFlag(false);
+			State->IncrementFlags();
+		}
+	}
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagLight")
+		{
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				spotlight->SetIntensity(0.0f);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
+			}
+		}
+	}
 }
 
 // Check game state = 1 before setting to 2 and starting the reset timer
