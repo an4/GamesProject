@@ -21,6 +21,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 	void SetupTeam();
 
+	void Tick(float DeltaSeconds) override;
+
 	UFUNCTION()
 	bool CanFire();
 	
@@ -63,6 +65,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnFire();
+
         bool ServerOnFire_Validate();
         void ServerOnFire_Implementation();
 
@@ -89,7 +92,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombDetonate();
-        bool ServerOnBombDetonate_Validation();
+        bool ServerOnBombDetonate_Validate();
+        void ServerOnBombDetonate_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombDetonate();

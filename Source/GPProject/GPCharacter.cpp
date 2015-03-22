@@ -553,3 +553,14 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		gs->SetState(1);
 	}
 }
+
+
+void AGPCharacter::Tick(float deltaSeconds)
+{
+	FVector ActorLocation = GetActorLocation();
+	if (GetActorLocation().Z <= -5000)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
+		Respawn();
+	}
+}
