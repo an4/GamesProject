@@ -179,6 +179,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		virtual void Respawn();
+		FVector SpawnPoints[2];
 
         ////handles moving forward/backward
         //UFUNCTION()
