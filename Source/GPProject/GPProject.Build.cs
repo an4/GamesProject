@@ -8,7 +8,7 @@ public class GPProject : ModuleRules
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] {  });
+        PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystemNull" });
 
         Definitions.Add("IN_UE4");
 
