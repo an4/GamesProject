@@ -18,11 +18,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     virtual void BeginPlay() override;
 
+	void Tick(float DeltaSeconds) override;
+
 	UFUNCTION()
 	bool CanFire();
 	
     public:
-        //handles firing
+		//handles firing
         UFUNCTION()
         void OnFire();
 
@@ -127,6 +129,26 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
         UFUNCTION()
         void OnFlagPickUp();
+
+		// handle pausing
+		//handles bomb detonation
+		UFUNCTION()
+		void SetPauseState();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseState();
+
+		UFUNCTION()
+		void SetPauseStateOff();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseStateOff();
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* ShotGunSound;
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* RespawnSound;
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

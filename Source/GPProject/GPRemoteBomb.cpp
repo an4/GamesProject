@@ -32,6 +32,12 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	bNetLoadOnClient = true;
 	bReplicates = false;
 	bReplicateMovement = false;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> DetonateSoundCueLoader(TEXT("SoundCue'/Game/Audio/BombDetonate_Cue.BombDetonate_Cue'"));
+    BombDetonateSound = DetonateSoundCueLoader.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> DropSoundCueLoader(TEXT("SoundCue'/Game/Audio/BombDrop_Cue.BombDrop_Cue'"));
+    BombDropSound = DropSoundCueLoader.Object;
 }
 
 void AGPRemoteBomb::InitVelocity(const FVector& ShootDirection)
@@ -47,7 +53,10 @@ void AGPRemoteBomb::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 {
 	if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
 	{
-		// Disable movement once we hit the floor/a building
+        // Play Sound
+        this->PlaySoundOnActor(BombDropSound, 0.5f, 0.5f);
+        
+        // Disable movement once we hit the floor/a building
 		if (OtherActor->IsA(AGPBuilding::StaticClass()) || OtherActor->IsA(AStaticMeshActor::StaticClass())) {
 			BombProjectileMovement->Deactivate();
 		}
@@ -67,7 +76,10 @@ void AGPRemoteBomb::Explode()
 {
 	if (ProjectileClass != NULL)
 	{
-		UWorld* const World = GetWorld();
+        // Play Sound
+        this->PlaySoundOnActor(BombDetonateSound, 0.5f, 0.5f);
+        
+        UWorld* const World = GetWorld();
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;

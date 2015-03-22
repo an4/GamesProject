@@ -3,6 +3,8 @@
 #include "GPProject.h"
 #include "GPPlayerController.h"
 #include "GPCharacter.h"
+#include "GPGameState.h"
+#include "GPGameMode.h"
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -23,12 +25,15 @@ void AGPPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("RemoteBombPlant", IE_Pressed, this, &AGPPlayerController::OnBombLaunch);
 	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
+
+	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
 }
 
 void AGPPlayerController::MoveForward(float Value)
 {
-	// TODO: Health test - forward disabled when health gone
-    if (GetCharacter() != NULL && (Value != 0.0f) /*&& (Health > 0.0f)*/)
+	// Check that the game is not paused before allowing movement
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    if (GetCharacter() != NULL && (Value != 0.0f) && (gs->GetState() == 1))
     {
         // find out which way is forward
         FRotator Rotation = GetControlRotation();
@@ -45,7 +50,8 @@ void AGPPlayerController::MoveForward(float Value)
 
 void AGPPlayerController::MoveRight(float Value)
 {
-    if ((GetCharacter() != NULL) && (Value != 0.0f))
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    if ((GetCharacter() != NULL) && (Value != 0.0f) && (gs->GetState() == 1))
     {
         // find out which way is right
         const FRotator Rotation = GetControlRotation();
@@ -73,7 +79,8 @@ void AGPPlayerController::AddControllerPitchInput(float Value)
 
 void AGPPlayerController::OnStartJump()
 {
-	if (GetCharacter() != NULL)
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	if (GetCharacter() != NULL && gs->GetState() == 1)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnStartJump();
 	}
@@ -108,6 +115,18 @@ void AGPPlayerController::OnBombDetonate()
 	if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnBombDetonate();
+	}
+}
+
+void AGPPlayerController::OnRequestRescan()
+{
+	// Only server may rescan and access the game mode.
+	if (Role == ROLE_Authority) {
+		// TODO: Need to ensure this cast will succeed.
+		AGPGameMode *gmode = Cast<AGPGameMode>(GetWorld()->GetAuthGameMode());
+		if (gmode != NULL) {
+			gmode->wantScan = true;
+		}
 	}
 }
 

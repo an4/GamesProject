@@ -6,9 +6,11 @@ public class GPProject : ModuleRules
 {
 	public GPProject(TargetInfo Target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystemNull" });
+
+        Definitions.Add("IN_UE4");
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
