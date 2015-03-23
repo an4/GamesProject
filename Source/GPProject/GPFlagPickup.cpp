@@ -54,7 +54,7 @@ void AGPFlagPickup::SpawnFlag(class AActor* FlagOwner)
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 21.), FVector(3000., 4500., 21.)));
 
         AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 

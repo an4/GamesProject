@@ -54,7 +54,7 @@ void AGPHealthPickup::SpawnHealth(class AActor* HealthOwner)
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 50.), FVector(2500., 2500., 50.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 50.), FVector(3000., 4500., 50.)));
 
         AGPHealthPickup* health = World->SpawnActor<AGPHealthPickup>(AGPHealthPickup::StaticClass(), location, rotation, SpawnParams);
     }
