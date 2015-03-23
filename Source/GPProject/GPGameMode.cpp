@@ -5,7 +5,9 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
+#include "GPPlayerState.h"
 #include "EngineUtils.h"
+#include "GPCaptureZone.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -20,8 +22,9 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	// the controller class handles a player for the entirety of the game, whereas pawns can be replaced (e.g. death and respawn)
 	// Controller should hold things like score, team that need to be kept across lives! Should handle input and replication.
 	PlayerControllerClass = AGPPlayerController::StaticClass();
-
+	PlayerStateClass = AGPPlayerState::StaticClass();
 	GameStateClass = AGPGameState::StaticClass();
+	HUDClass = AGPHUD::StaticClass();
 
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
@@ -29,8 +32,11 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
-	
-    HUDClass = AGPHUD::StaticClass();
+	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
+	if (CaptureZoneBP.Object != NULL)
+	{
+		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
+	}
 	tickCount = 0.0;
 }
 
@@ -45,6 +51,8 @@ void AGPGameMode::StartPlay()
 		SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+		// Spawn the capture zone in the center
+		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
 
         // Spawn flag
 		SpawnFlag();
@@ -56,6 +64,41 @@ void AGPGameMode::StartPlay()
 		}
 	}
 
+}
+
+void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
+{
+	UWorld* const World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
+		AGPCaptureZone* cp;
+		if (CaptureZoneBPClass != NULL)
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(CaptureZoneBPClass, centre, rotation, SpawnParams);
+		}
+		else
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(AGPCaptureZone::StaticClass(), centre, rotation, SpawnParams);
+		}
+
+		if (cp == NULL)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp is null"));
+			}
+		}
+		else {
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));
+			}
+		}
+	}
 }
 
 

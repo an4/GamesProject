@@ -127,8 +127,35 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(Replicated)
         uint8 FlagsPickedUp;
 
-        UFUNCTION()
-        void OnFlagPickUp();
+		//Handles Flag Capture
+		UFUNCTION()
+		void OnFlagPickup();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagPickup();
+		bool ServerOnFlagPickup_Validate();
+		void ServerOnFlagPickup_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagPickup();
+		void BroadcastOnFlagPickup_Implementation();
+
+		UFUNCTION()
+		void OnFlagCapture();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagCapture();
+		bool ServerOnFlagCapture_Validate();
+		void ServerOnFlagCapture_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagCapture();
+		void BroadcastOnFlagCapture_Implementation();
+
+		UFUNCTION()
+		bool CanPickupFlag();
+		UFUNCTION()
+		bool CanCaptureFlag();
 
 		// handle pausing
 		//handles bomb detonation
@@ -137,12 +164,16 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseState();
+		bool ServerSetPauseState_Validate();
+		void ServerSetPauseState_Implementation();
 
 		UFUNCTION()
 		void SetPauseStateOff();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseStateOff();
+		bool ServerSetPauseStateOff_Validate();
+		void ServerSetPauseStateOff_Implementation();
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* ShotGunSound;
