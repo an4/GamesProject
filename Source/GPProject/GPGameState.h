@@ -15,6 +15,9 @@ class GPPROJECT_API AGPGameState : public AGameState
 
 	UPROPERTY(Replicated)
 	int32 gameState;
+
+	UPROPERTY(Replicated)
+	int32 flagLeader;
 	
 	AGPGameState(const class FObjectInitializer& ObjectInitializer);
 
@@ -24,6 +27,12 @@ class GPPROJECT_API AGPGameState : public AGameState
 
 		UFUNCTION()
 		int32 GetState();
+
+		UFUNCTION()
+		void UpdateFlagLeader();
+
+		UFUNCTION()
+		int32 GetFlagLeader();
 
 	
 	

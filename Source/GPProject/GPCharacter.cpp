@@ -481,7 +481,14 @@ void AGPCharacter::ServerOnFlagCapture_Implementation()
 	{
 		// Tell everyone a flag has been captured
 		BroadcastOnFlagCapture();
-		// Then pause the game as the server
+		// Update the current top score
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+			gs->UpdateFlagLeader();
+		}
+		// Then pause the game
 		SetPauseState();
 	}
 }
