@@ -27,6 +27,9 @@ void AGPPlayerController::SetupInputComponent()
 	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
 
 	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
+
+    InputComponent->BindAction("JoinTeam0", IE_Pressed, this, &AGPPlayerController::JoinTeam0);
+    InputComponent->BindAction("JoinTeam1", IE_Pressed, this, &AGPPlayerController::JoinTeam1);
 }
 
 void AGPPlayerController::JoinTeam0()
