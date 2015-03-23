@@ -372,25 +372,26 @@ bool AGPCharacter::CanCaptureFlag()
 }
 
 // Defer to server
-void AGPCharacter::OnFlagPickup() {
+void AGPCharacter::OnFlagPickup(AGPFlagPickup * flag) {
 	if (CanPickupFlag())
 	{
-		ServerOnFlagPickup();
+		ServerOnFlagPickup(flag);
 	}
 }
 
-bool AGPCharacter::ServerOnFlagPickup_Validate()
+bool AGPCharacter::ServerOnFlagPickup_Validate(AGPFlagPickup * flag)
 {
 	return (CanPickupFlag());
 }
 
-void AGPCharacter::ServerOnFlagPickup_Implementation()
+void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 {
 	if (Role == ROLE_Authority)
 	{
 		// Tell all that a flag has been picked up
 		BroadcastOnFlagPickup();
 		// And spawn a new flag as the server
+		GetWorld()->DestroyActor(flag, true);
 		UWorld* const World = GetWorld();
 
 		if (World)

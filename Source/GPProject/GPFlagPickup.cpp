@@ -33,10 +33,10 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 		if (currentActor->CanPickupFlag()) {
 			this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
 
-			GetWorld()->DestroyActor(this, true);
+			//GetWorld()->DestroyActor(this, true);
 
 			// Moved flag spawning into the actor so that we can call the server to do it without needing flags to have an owner
-			currentActor->OnFlagPickup();
+			currentActor->OnFlagPickup(this);
 		}
 	}
 }

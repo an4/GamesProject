@@ -129,12 +129,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		//Handles Flag Capture
 		UFUNCTION()
-		void OnFlagPickup();
+		void OnFlagPickup(AGPFlagPickup * flag);
 
 		UFUNCTION(Server, Reliable, WithValidation)
-		void ServerOnFlagPickup();
-		bool ServerOnFlagPickup_Validate();
-		void ServerOnFlagPickup_Implementation();
+		void ServerOnFlagPickup(AGPFlagPickup * flag);
+		bool ServerOnFlagPickup_Validate(AGPFlagPickup * flag);
+		void ServerOnFlagPickup_Implementation(AGPFlagPickup * flag);
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFlagPickup();
