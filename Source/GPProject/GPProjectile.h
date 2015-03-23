@@ -23,6 +23,9 @@ class GPPROJECT_API AGPProjectile : public AActor
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
         UProjectileMovementComponent* ProjectileMovement;
 
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+		UStaticMeshComponent* ProjectileMesh;
+
 		// Flag to check if it has hit a wall
 		UPROPERTY()
 		bool hitWall;
