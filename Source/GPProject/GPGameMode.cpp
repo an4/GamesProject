@@ -65,8 +65,8 @@ void AGPGameMode::StartPlay()
 void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 {
 	// World size TODO: Calculate this!
-	const float worldx = 5000.0f;
-	const float worldy = 5000.0f;
+	const float worldx = 6000.0f;
+	const float worldy = 9000.0f;
 
 	// World NW corner offset (The origin is currently at the centre of the floor object) TODO: Move to 0,0?
 	const FVector worldOffset = FVector(-1.0f * (worldx / 2.0f), -1.0f * (worldy / 2.0f), 0.0f);
@@ -76,8 +76,8 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	const float meshy = 200.0f;
 
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = 640.0f; // TODO: Bring back Kinect Interface with resolution constants
-	const float worldy_px = 480.0f; // TODO: Resize the world so it matches the aspect ratio.
+	const float worldx_px = 480.0f; // TODO: Bring back Kinect Interface with resolution constants
+	const float worldy_px = 640.0f; // TODO: Resize the world so it matches the aspect ratio.
 
 	// Scale factors for points in the world.
 	const float cscalex = worldx / worldx_px;
@@ -241,18 +241,8 @@ void AGPGameMode::SpawnHealth()
 
 void AGPGameMode::ResetBuildings()
 {
-	bool doOnce = false;
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
 	{
-		// Skip the 4 walls
-		if (!doOnce)
-		{
-			++bIt;
-			++bIt;
-			++bIt;
-			++bIt;
-			doOnce = true;
-		}
 		if (bIt != NULL && bIt)
 		{
 			bIt->Destroy();
