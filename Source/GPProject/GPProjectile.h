@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "GPBuilding.h"
+#include "GPCharacter.h"
+#include "GPPlayerState.h"
 #include "GameFramework/Actor.h"
 #include "GPProjectile.generated.h"
 

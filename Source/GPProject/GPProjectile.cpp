@@ -2,8 +2,6 @@
 
 #include "GPProject.h"
 #include "GPProjectile.h"
-#include "GPBuilding.h"
-#include "GPCharacter.h"
 
 AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -69,11 +67,32 @@ void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 		} 
 		else if (OtherActor->IsA(AGPCharacter::StaticClass())) {
 			if (hitWall == true) {
+				/*((AGPPlayerState*)((AGPCharacter*)OtherActor)->PlayerState)->Team !=
+					((AGPPlayerState*)((AGPCharacter*)GetOwner())->PlayerState)->Team*/
+				
+				if ((AGPPlayerState*)((AGPCharacter*)OtherActor)->PlayerState == NULL)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("They don't have a playerstate!"));
+				}
+				if ((AGPPlayerState*)((AGPCharacter*)GetOwner())->PlayerState == NULL)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Our owner doesn't have a playerstate!"));
+				}
+
+
 				// Damage the other actor! TODO: Is there a proper way to use the damage system in UE4?
 				const float damage = 5.0f;
 				// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
 				FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
-				OtherActor->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
+
+                APawn* something = ((APawn*)GetOwner());
+                AController* somethingelse = something->GetController();
+                if (somethingelse) {
+                    OtherActor->TakeDamage(damage, *DamageEvent, somethingelse, this);
+                }
+                else {
+                    UE_LOG(LogTemp, Warning, TEXT("Somethingelse is NULL"));
+                }
 			}
 		}
 	}

@@ -27,6 +27,31 @@ void AGPPlayerController::SetupInputComponent()
 	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
 
 	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
+
+    InputComponent->BindAction("JoinTeam0", IE_Pressed, this, &AGPPlayerController::JoinTeam0);
+    InputComponent->BindAction("JoinTeam1", IE_Pressed, this, &AGPPlayerController::JoinTeam1);
+}
+
+void AGPPlayerController::JoinTeam0()
+{
+	if (GetCharacter() != NULL && !InTeam)
+	{
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(0);
+		Char->SetMaterial(0);
+        InTeam = true;
+	}
+}
+
+void AGPPlayerController::JoinTeam1()
+{
+	if (GetCharacter() != NULL && !InTeam)
+	{
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(1);
+		Char->SetMaterial(1);
+        InTeam = true;
+    }
 }
 
 void AGPPlayerController::MoveForward(float Value)

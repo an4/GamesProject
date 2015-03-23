@@ -7,7 +7,25 @@
 AGPGameState::AGPGameState(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	TeamPlayerCount[0] = 0;
+	TeamPlayerCount[1] = 0;
 	gameState = 1;
+}
+
+int8 AGPGameState::GetSetTeam()
+{
+	if (TeamPlayerCount[0] == TeamPlayerCount[1])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Added player to team 1!"));
+		TeamPlayerCount[0]++;
+		return 0;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Added player to team 2!"));
+		TeamPlayerCount[1]++;
+		return 1;
+	}
 }
 
 void AGPGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
@@ -27,4 +45,3 @@ int32 AGPGameState::GetState()
 {
 	return gameState;
 }
-

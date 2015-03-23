@@ -20,6 +20,10 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	// the controller class handles a player for the entirety of the game, whereas pawns can be replaced (e.g. death and respawn)
 	// Controller should hold things like score, team that need to be kept across lives! Should handle input and replication.
 	PlayerControllerClass = AGPPlayerController::StaticClass();
+	PlayerStateClass = AGPPlayerState::StaticClass();
+	GameStateClass = AGPGameState::StaticClass();
+	HUDClass = AGPHUD::StaticClass();
+
 
 	GameStateClass = AGPGameState::StaticClass();
 
@@ -30,7 +34,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
 	
-    HUDClass = AGPHUD::StaticClass();
+    
 	tickCount = 0.0;
 }
 
