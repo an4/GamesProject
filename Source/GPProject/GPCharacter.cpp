@@ -174,7 +174,6 @@ void AGPCharacter::OnStopJump()
 bool AGPCharacter::CanFire()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(gs->GetState()));
 	return (Health > 0.0f && gs->GetState() == 1);
 }
 
@@ -288,6 +287,7 @@ void AGPCharacter::BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRota
 				RemoteBomb->InitVelocity(LaunchDir);
 				BombPlanted = true;
 				RemoteBombList.Add(RemoteBomb);
+				RemoteBomb->SetActorRotation(FRotator(FMath::RandRange(0, 360), FMath::RandRange(0, 360), FMath::RandRange(0,360)));
 			}
 		}
 	}
