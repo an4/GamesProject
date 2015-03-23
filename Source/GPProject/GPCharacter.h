@@ -92,6 +92,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(EditDefaultsOnly, Category = Projectile)
         TSubclassOf<class AGPProjectile> ProjectileClass;
 
+		/** LaserBeam class to spawn */
+		UPROPERTY(EditDefaultsOnly, Category = LaserBeam)
+		TSubclassOf<class AGPLaserBeam> LaserBeamClass;
+
 		/** RemoteBomb class to spawn */
 		UPROPERTY(EditDefaultsOnly, Category = Placeable)
 		TSubclassOf<class AGPRemoteBomb> RemoteBombClass;

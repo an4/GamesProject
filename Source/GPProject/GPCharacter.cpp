@@ -2,6 +2,7 @@
 #include "GPProject.h"
 #include "GPProjectile.h"
 #include "GPRemoteBomb.h"
+#include "GPLaserBeam.h"
 #include "GPCharacter.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
@@ -26,6 +27,8 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     FirstPersonMesh->AttachParent = FirstPersonCameraComponent;
     FirstPersonMesh->bCastDynamicShadow = false;
     FirstPersonMesh->CastShadow = false;
+
+	LaserBeamClass = AGPLaserBeam::StaticClass();
 
     // everyone but the owner can see the regular body mesh
     GetMesh()->SetOwnerNoSee(true);
@@ -169,6 +172,10 @@ void AGPCharacter::ServerOnFire_Implementation()
 
 void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot)
 {
+	if (LaserBeamClass == NULL)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No lazors :("));
+	}
 	if (Weapon == 0 && ProjectileClass != NULL)
 	{
 		// Get the camera transform
@@ -195,24 +202,13 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			}
 		}
 	}
-	else if (Weapon == 1)
+	else if (Weapon == 1 && LaserBeamClass != NULL)
 	{
-		//Hitscan things
-		/*FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = CameraRot;
-		UWorld* World = GetWorld();
-		FHitResult* OutHit;
-
-		// 2000 units range
-		FVector End = FVector(2000.0f, 0, 0);
-		End = MuzzleRotation.RotateVector(End);
-		End += MuzzleLocation;
-		World->LineTraceSingle(OutHit, MuzzleLocation, End, , );*/
-
-		FVector CamLoc;
-		FRotator CamRot;
-		Controller->GetPlayerViewPoint(CamLoc, CamRot);
-		const FVector TraceDirection = CamRot.Vector();
+		FHitResult OutHit;
+		FVector MuzzleLocation;
+		FRotator MuzzleRotation;
+		Controller->GetPlayerViewPoint(MuzzleLocation, MuzzleRotation);
+		const FVector TraceDirection = MuzzleRotation.Vector();
 
 		// Calculate the start location for trace  
 		FVector StartTrace = FVector::ZeroVector;
@@ -234,14 +230,35 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 		static FName FireTraceIdent = FName(TEXT("WeaponTrace"));
 		FCollisionQueryParams TraceParams(FireTraceIdent, true, this);
 		TraceParams.bTraceAsyncScene = true;
-		FHitResult OutHit;
 
 		// Perform the trace  
+		UWorld* const World = GetWorld();
 		GetWorld()->LineTraceSingle(OutHit, StartTrace, EndTrace, ECC_GameTraceChannel1, TraceParams);
 		if (OutHit.GetActor() != NULL && OutHit.GetActor()->IsA(AGPCharacter::StaticClass())) {
 			const float damage = 5.0f;
 			FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, OutHit, TraceDirection, nullptr);
 			OutHit.GetActor()->TakeDamage(damage, *DamageEvent, GetInstigatorController(), this);
+		}
+
+		if (World)
+		{
+			FVector StartToEnd = OutHit.ImpactPoint - StartTrace;
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+			// IMMA FIRIN MAH LAZOR
+			AGPLaserBeam* const Lazor = World->SpawnActor<AGPLaserBeam>(LaserBeamClass, StartTrace + (StartToEnd / 2), MuzzleRotation, SpawnParams);
+			if (Lazor)
+			{
+				// Play Sound
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lazor is not null"));
+				Lazor->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
+				//Lazor->SetScale(StartToEnd.Size());
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lazor is null"));
+			}
 		}
 	}
 }
