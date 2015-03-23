@@ -131,6 +131,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION()
         void OnFlagPickUp();
 
+        UFUNCTION()
+        void OnHealthPickUp();
+
 		// handle pausing
 		//handles bomb detonation
 		UFUNCTION()
@@ -154,6 +157,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* RespawnSound;
+
+        UFUNCTION()
+        float getHealth();
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

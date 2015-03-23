@@ -49,6 +49,9 @@ void AGPGameMode::StartPlay()
         // Spawn flag
 		SpawnFlag();
 
+        // Spawn Health
+        SpawnHealth();
+
 		// Start listener for Kinect input
 		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
 		{
@@ -215,6 +218,24 @@ void AGPGameMode::SpawnFlag()
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
             }
         }
+    }
+}
+
+void AGPGameMode::SpawnHealth()
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = NULL;
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 50.), FVector(2500., 2500., 50.)));
+
+        AGPHealthPickup* health = World->SpawnActor<AGPHealthPickup>(AGPHealthPickup::StaticClass(), location, rotation, SpawnParams);
     }
 }
 

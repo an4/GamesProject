@@ -366,6 +366,10 @@ void AGPCharacter::OnFlagPickUp() {
 	AGPCharacter::SetPauseState();
 }
 
+void AGPCharacter::OnHealthPickUp() {
+    Health = 100.0f;
+}
+
 // Check game state = 1 before setting to 2 and starting the reset timer
 void AGPCharacter::SetPauseState()
 {
@@ -449,4 +453,9 @@ void AGPCharacter::Tick(float deltaSeconds)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
 		Respawn();
 	}
+}
+
+float AGPCharacter::getHealth()
+{
+    return (float)Health;
 }

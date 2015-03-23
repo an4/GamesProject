@@ -5,6 +5,7 @@
 #include "Networking.h"
 #include "GPBuilding.h"
 #include "GPFlagPickup.h"
+#include "GPHealthPickup.h"
 #include "GameFramework/GameMode.h"
 #include "GPGameMode.generated.h"
 
@@ -41,6 +42,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
         UFUNCTION()
         void SpawnFlag();
+
+        UFUNCTION()
+        void SpawnHealth();
 
 		UFUNCTION()
 		void ResetBuildings();
