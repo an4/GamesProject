@@ -173,7 +173,6 @@ void AGPCharacter::OnStopJump()
 bool AGPCharacter::CanFire()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(gs->GetState()));
 	return (Health > 0.0f && gs->GetState() == 1);
 }
 
