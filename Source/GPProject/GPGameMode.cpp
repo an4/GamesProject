@@ -5,7 +5,9 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
+#include "GPPlayerState.h"
 #include "EngineUtils.h"
+#include "GPCaptureZone.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -24,17 +26,19 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	GameStateClass = AGPGameState::StaticClass();
 	HUDClass = AGPHUD::StaticClass();
 
-
-	GameStateClass = AGPGameState::StaticClass();
-
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
     if (PlayerPawnObject.Object != NULL)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
-	
-    
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
+	if (CaptureZoneBP.Object != NULL)
+	{
+		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
+	}
+
 	tickCount = 0.0;
 }
 
@@ -45,6 +49,8 @@ void AGPGameMode::StartPlay()
 	if (Role == ROLE_Authority)
 	{
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
+		// Spawn the capture zone in the center
+		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
 		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
 		//SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		//SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
@@ -63,6 +69,41 @@ void AGPGameMode::StartPlay()
 		}
 	}
 
+}
+
+void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
+{
+	UWorld* const World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
+		AGPCaptureZone* cp;
+		if (CaptureZoneBPClass != NULL)
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(CaptureZoneBPClass, centre, rotation, SpawnParams);
+		}
+		else
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(AGPCaptureZone::StaticClass(), centre, rotation, SpawnParams);
+		}
+
+		if (cp == NULL)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp is null"));
+			}
+		}
+		else {
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));
+			}
+		}
+	}
 }
 
 

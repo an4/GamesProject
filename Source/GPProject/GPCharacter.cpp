@@ -7,6 +7,7 @@
 #include "GPGameState.h"
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
+#include "GPPlayerState.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -467,17 +468,180 @@ void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 	DOREPLIFETIME(AGPCharacter, Health);
 }
 
-void AGPCharacter::OnFlagPickUp() {
-	// Increase number of flags
-	FlagsPickedUp++;
+bool AGPCharacter::CanPickupFlag()
+{
+	// Make sure we're actually looking at the right player before sending through
+	if ((AGPPlayerState*)PlayerState != NULL) {
+		return !(((AGPPlayerState*)PlayerState)->GetHasFlag());
+	}
+	else
+	{
+		return false;
+	}
+}
 
-	// Print total number of flags
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::FromInt(FlagsPickedUp).Append(" Flags"));
+bool AGPCharacter::CanCaptureFlag()
+{
+	return true;
+}
 
-	// Get controller
-	//AController* controller = GetController();
+// Defer to server
+void AGPCharacter::OnFlagPickup(AGPFlagPickup * flag) {
+	if (CanPickupFlag())
+	{
+		ServerOnFlagPickup(flag);
+	}
+}
 
-	AGPCharacter::SetPauseState();
+bool AGPCharacter::ServerOnFlagPickup_Validate(AGPFlagPickup * flag)
+{
+	return (CanPickupFlag());
+}
+
+void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
+{
+	if (Role == ROLE_Authority)
+	{
+		// Tell all that a flag has been picked up
+		BroadcastOnFlagPickup();
+		// And spawn a new flag as the server
+		GetWorld()->DestroyActor(flag, true);
+		UWorld* const World = GetWorld();
+
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			if (this)
+			{
+				SpawnParams.Owner = this;
+			}
+			else {
+				SpawnParams.Owner = NULL;
+			}
+			SpawnParams.Instigator = NULL;
+
+			FRotator rotation = FRotator(0.f, 0.f, 0.f);
+			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+
+			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+			if (flag == NULL)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+				}
+			}
+			else {
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+				}
+			}
+		}
+	}
+}
+
+void AGPCharacter::BroadcastOnFlagPickup_Implementation()
+{
+	// If we're that player, change our playerstate (which will replicate automatically)
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else {
+			State->SetHasFlag(true);
+		}
+	}
+	// Get all the components of the actor
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagLight")
+		{
+			// Set the intensity on all clients so everyone can see we have a flag
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				spotlight->SetIntensity(100000.0f);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
+			}
+		}
+	}
+}
+
+void AGPCharacter::OnFlagCapture()
+{
+	if (CanCaptureFlag())
+	{
+		ServerOnFlagCapture();
+	}
+}
+
+bool AGPCharacter::ServerOnFlagCapture_Validate()
+{
+	return (CanCaptureFlag());
+}
+
+void AGPCharacter::ServerOnFlagCapture_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		// Tell everyone a flag has been captured
+		BroadcastOnFlagCapture();
+		// Update the current top score
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+			gs->UpdateFlagLeader();
+		}
+		// Then pause the game
+		SetPauseState();
+	}
+}
+
+void AGPCharacter::BroadcastOnFlagCapture_Implementation()
+{
+	// If we're that player, change our playerstate (which will replicate automatically)
+	if (GetController() != NULL)
+	{
+		FlagsPickedUp++;
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		// Remove flag state and increment our count
+		else {
+			State->SetHasFlag(false);
+			State->IncrementFlags();
+		}
+	}
+	// Get all components of the actor
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagLight")
+		{
+			// Set the intensity on all clients so everyone can see we no longer have a flag
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				spotlight->SetIntensity(0.0f);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
+			}
+		}
+	}
 }
 
 void AGPCharacter::OnHealthPickUp() {
@@ -517,7 +681,8 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		// Start timer to go back to normal state
-		GetWorld()->GetTimerManager().SetTimer(this, &AGPCharacter::SetPauseStateOff, 3.0f, false, -1.0f);
+		FTimerHandle handle = FTimerHandle();
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::SetPauseStateOff, 3.0f);
 	}
 }
 

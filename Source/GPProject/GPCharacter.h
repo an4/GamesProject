@@ -158,8 +158,35 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(Replicated)
         uint8 FlagsPickedUp;
 
-        UFUNCTION()
-        void OnFlagPickUp();
+		//Handles Flag Capture
+		UFUNCTION()
+		void OnFlagPickup(AGPFlagPickup * flag);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagPickup(AGPFlagPickup * flag);
+		bool ServerOnFlagPickup_Validate(AGPFlagPickup * flag);
+		void ServerOnFlagPickup_Implementation(AGPFlagPickup * flag);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagPickup();
+		void BroadcastOnFlagPickup_Implementation();
+
+		UFUNCTION()
+		void OnFlagCapture();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagCapture();
+		bool ServerOnFlagCapture_Validate();
+		void ServerOnFlagCapture_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagCapture();
+		void BroadcastOnFlagCapture_Implementation();
+
+		UFUNCTION()
+		bool CanPickupFlag();
+		UFUNCTION()
+		bool CanCaptureFlag();
 
         UFUNCTION()
         void OnHealthPickUp();
