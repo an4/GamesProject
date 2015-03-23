@@ -123,6 +123,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
         UCameraComponent* FirstPersonCameraComponent;
 
+
         /** Pawn mesh: 1st person view (arms; seen only by self) */
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         USkeletalMeshComponent* FirstPersonMesh;
@@ -160,6 +161,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION()
         void OnFlagPickUp();
 
+        UFUNCTION()
+        void OnHealthPickUp();
+
 		// handle pausing
 		//handles bomb detonation
 		UFUNCTION()
@@ -167,18 +171,25 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseState();
+		bool ServerSetPauseState_Validate();
+		void ServerSetPauseState_Implementation();
 
 		UFUNCTION()
 		void SetPauseStateOff();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseStateOff();
+		bool ServerSetPauseStateOff_Validate();
+		void ServerSetPauseStateOff_Implementation();
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* ShotGunSound;
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* RespawnSound;
+
+        UFUNCTION()
+        float getHealth();
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

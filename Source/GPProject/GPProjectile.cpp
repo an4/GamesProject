@@ -7,7 +7,7 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     // Use a sphere as a simple collision representation
-    CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("SphereComp"));
+    CollisionComp = ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("BoxComp"));
     CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
     CollisionComp->InitSphereRadius(15.0f);
     CollisionComp->OnComponentHit.AddDynamic(this, &AGPProjectile::OnHit);
@@ -30,6 +30,15 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
 	bReplicates = false;
 	bReplicateMovement = false;
 	hitWall = false;
+
+	//Set the texture of the projectile
+	//Should have 6 different colours (Red, Blue, Orange, Yellow, White, Green)
+	ProjectileMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> meshpath(TEXT("StaticMesh'/Game/Meshes/GP_Cube.GP_Cube'"));
+	if (meshpath.Object) {
+		ProjectileMesh->SetStaticMesh(meshpath.Object);
+	}
+	ProjectileMesh->AttachTo(RootComponent);
 
     static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCueLoader(TEXT("SoundCue'/Game/Audio/OnHit_Cue.OnHit_Cue'"));
     OnHitSound = HitSoundCueLoader.Object;
