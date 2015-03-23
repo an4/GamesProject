@@ -27,49 +27,16 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // Play Sound
-    this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
+	AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
+	if (currentActor)
+	{
+		if (currentActor->CanPickupFlag()) {
+			this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
 
-    GetWorld()->DestroyActor(this, true);
+			//GetWorld()->DestroyActor(this, true);
 
-    if (Role == ROLE_Authority) {
-        SpawnFlag(OtherActor);
-    }
-
-    AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
-    if (currentActor) {
-        currentActor->OnFlagPickUp();
-    }
-}
-
-void AGPFlagPickup::SpawnFlag(class AActor* FlagOwner)
-{
-    UWorld* const World = GetWorld();
-
-    if (World)
-    {
-        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-
-        SpawnParams.Owner = FlagOwner;
-        SpawnParams.Instigator = NULL;
-
-        FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 21.), FVector(3000., 4500., 21.)));
-
-        AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
-
-        if (flag == NULL)
-        {
-            if (GEngine)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-            }
-        }
-        else {
-            if (GEngine)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-            }
-        }
-    }
+			// Moved flag spawning into the actor so that we can call the server to do it without needing flags to have an owner
+			currentActor->OnFlagPickup(this);
+		}
+	}
 }
