@@ -18,6 +18,7 @@ AGPLaserBeam::AGPLaserBeam(const FObjectInitializer& ObjectInitializer)
 		LaserMesh->SetStaticMesh(cubemeshpath.Object);
 
 	LaserMesh->AttachTo(RootComponent);
+	InitialLifeSpan = 0.2f;
 
 	bReplicates = true;
 	bReplicateMovement = true;
@@ -29,28 +30,27 @@ void AGPLaserBeam::BeginPlay()
 	FVector origin = FVector();
 	FVector boxExtent = FVector();
 	GetActorBounds(false, origin, boxExtent);
+	SetLifeSpan(InitialLifeSpan);		//Really shouldn't be needed, but it apparently is.
 }
 
 void AGPLaserBeam::SetScale(float Length)
 {
 	if (Role == ROLE_Authority)
 	{
-		Scale = FVector(10 / 400, Length / 200, 10 / 400);
+		Scale = FVector(0.03f, Length / 200, 0.03f);
 		SetActorScale3D(Scale);
 	}
 }
 
 void AGPLaserBeam::OnRep_Scale()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
 	SetActorScale3D(Scale);
 }
 
-// Handles replication of properties to clients in multiplayer!
 void AGPLaserBeam::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	// Replicate health to all clients.
+	// Replicate scale to all clients.
 	DOREPLIFETIME(AGPLaserBeam, Scale);
 }

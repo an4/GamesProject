@@ -172,16 +172,13 @@ void AGPCharacter::ServerOnFire_Implementation()
 
 void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot)
 {
-	if (LaserBeamClass == NULL)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No lazors :("));
-	}
+	FVector MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
+	FRotator MuzzleRotation = CameraRot;
 	if (Weapon == 0 && ProjectileClass != NULL)
 	{
 		// Get the camera transform
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the camera to find the final muzzle position
-		FVector const MuzzleLocation = CameraLoc + FTransform(CameraRot).TransformVector(MuzzleOffset);
-		FRotator MuzzleRotation = CameraRot;
+		
 		MuzzleRotation.Pitch += 10.0f;          // skew the aim upwards a bit
 		UWorld* const World = GetWorld();
 		if (World)
@@ -205,9 +202,6 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 	else if (Weapon == 1 && LaserBeamClass != NULL)
 	{
 		FHitResult OutHit;
-		FVector MuzzleLocation;
-		FRotator MuzzleRotation;
-		Controller->GetPlayerViewPoint(MuzzleLocation, MuzzleRotation);
 		const FVector TraceDirection = MuzzleRotation.Vector();
 
 		// Calculate the start location for trace  
@@ -242,18 +236,32 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 
 		if (World)
 		{
-			FVector StartToEnd = OutHit.ImpactPoint - StartTrace;
+			FVector StartToEnd;
 			FActorSpawnParameters SpawnParams;
+			FRotator Rotation = MuzzleRotation;
+			Rotation.Yaw += 90;
+			Rotation.Pitch = MuzzleRotation.Pitch;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
+			SpawnParams.bNoCollisionFail;
+
+			if (OutHit.bBlockingHit)
+			{
+				StartToEnd = OutHit.ImpactPoint - StartTrace;
+			}
+			else
+			{
+				StartToEnd = EndTrace - StartTrace;
+			}
+
 			// IMMA FIRIN MAH LAZOR
-			AGPLaserBeam* const Lazor = World->SpawnActor<AGPLaserBeam>(LaserBeamClass, StartTrace + (StartToEnd / 2), MuzzleRotation, SpawnParams);
+			AGPLaserBeam* const Lazor = World->SpawnActor<AGPLaserBeam>(LaserBeamClass, StartTrace + (StartToEnd / 2), Rotation, SpawnParams);
 			if (Lazor)
 			{
 				// Play Sound
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lazor is not null"));
 				Lazor->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
-				//Lazor->SetScale(StartToEnd.Size());
+				Lazor->SetScale(StartToEnd.Size() - 10.0f);
 			}
 			else
 			{
