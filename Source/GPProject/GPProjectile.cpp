@@ -41,6 +41,9 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
 		ProjectileMesh->SetStaticMesh(meshpath.Object);
 	}
 	ProjectileMesh->AttachTo(RootComponent);
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> HitSoundCueLoader(TEXT("SoundCue'/Game/Audio/OnHit_Cue.OnHit_Cue'"));
+    OnHitSound = HitSoundCueLoader.Object;
 }
 
 void AGPProjectile::InitVelocity(const FVector& ShootDirection)
@@ -54,7 +57,10 @@ void AGPProjectile::InitVelocity(const FVector& ShootDirection)
 
 void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
+    // Play Sound
+    this->PlaySoundOnActor(OnHitSound, 0.3f, 0.3f);
+    
+    if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
 	{
 		OtherComp->AddImpulseAtLocation(ProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
 

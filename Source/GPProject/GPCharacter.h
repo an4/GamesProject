@@ -18,19 +18,26 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     virtual void BeginPlay() override;
 
+	void Tick(float DeltaSeconds) override;
+
 	UFUNCTION()
 	bool CanFire();
 	
     public:
-        //handles firing
+		//handles firing
         UFUNCTION()
         void OnFire();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnFire();
+        // Added for 4.7
+        bool ServerOnFire_Validate();
+        void ServerOnFire_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
+        // Added for 4.7
+        void BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb launching
 		UFUNCTION()
@@ -38,9 +45,14 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombLaunch();
+        // Added for 4.7
+        bool ServerOnBombLaunch_Validate();
+        void ServerOnBombLaunch_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombLaunch(FVector CameraLoc, FRotator CameraRot);
+        // Added for 4.7
+        void BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb detonation
 		UFUNCTION()
@@ -48,9 +60,14 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombDetonate();
+        // Added for 4.7
+        bool ServerOnBombDetonate_Validate();
+        void ServerOnBombDetonate_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombDetonate();
+        // Added for 4.7
+        void BroadcastOnBombDetonate_Implementation();
 
 		// handles damage
 		UFUNCTION()
@@ -113,6 +130,30 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
         UFUNCTION()
         void OnFlagPickUp();
+
+		// handle pausing
+		//handles bomb detonation
+		UFUNCTION()
+		void SetPauseState();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseState();
+		bool ServerSetPauseState_Validate();
+		void ServerSetPauseState_Implementation();
+
+		UFUNCTION()
+		void SetPauseStateOff();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetPauseStateOff();
+		bool ServerSetPauseStateOff_Validate();
+		void ServerSetPauseStateOff_Implementation();
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* ShotGunSound;
+
+        UPROPERTY(EditDefaultsOnly, Category = Sounds)
+        USoundCue* RespawnSound;
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
