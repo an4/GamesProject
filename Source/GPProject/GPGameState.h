@@ -14,14 +14,18 @@ class GPPROJECT_API AGPGameState : public AGameState
 	GENERATED_BODY()
 
 	UPROPERTY(Replicated)
-	int32 gameState;
-
-	UPROPERTY(Replicated)
 	int32 flagLeader;
 	
 	AGPGameState(const class FObjectInitializer& ObjectInitializer);
 
+	int8 TeamPlayerCount[2];
+	
 	public:
+		int8 GetSetTeam();
+
+		UPROPERTY(Replicated)
+		int32 gameState;
+
 		UFUNCTION()
 		void SetState(int32 newState);
 
@@ -34,6 +38,5 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UFUNCTION()
 		int32 GetFlagLeader();
 
-	
 	
 };

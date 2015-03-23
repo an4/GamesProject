@@ -10,6 +10,7 @@ void AGPPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	// Replicate to everyone
 	DOREPLIFETIME(AGPPlayerState, hasFlag);
 	DOREPLIFETIME(AGPPlayerState, numFlags);
+	DOREPLIFETIME(AGPPlayerState, Team);
 }
 
 void AGPPlayerState::SetHasFlag(bool newState)

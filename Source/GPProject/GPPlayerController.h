@@ -10,10 +10,17 @@
 UCLASS()
 class GPPROJECT_API AGPPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
+    bool InTeam = false;
 public:
 	virtual void SetupInputComponent() override;
+
+	UFUNCTION()
+	void JoinTeam0();
+
+	UFUNCTION()
+	void JoinTeam1();
 
 	//handles moving forward/backward
     UFUNCTION()

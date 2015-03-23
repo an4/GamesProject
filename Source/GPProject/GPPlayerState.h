@@ -8,8 +8,8 @@
 #include "GPPlayerState.generated.h"
 
 /**
-*
-*/
+ * 
+ */
 UCLASS()
 class GPPROJECT_API AGPPlayerState : public APlayerState
 {
@@ -21,6 +21,11 @@ public:
 
 	UPROPERTY(Replicated)
 		int32 numFlags = 0;
+
+	UPROPERTY(Replicated)
+		int8 Team;
+
+	void SetupTeam();
 
 	UFUNCTION()
 		void SetHasFlag(bool newState);

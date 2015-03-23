@@ -10,34 +10,136 @@
 #include "GPPlayerState.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+	: Super(ObjectInitializer)
 {
-    // Create a CameraComponent 
-    FirstPersonCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
-    FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
-    // Position the camera a bit above the eyes
-    FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
-    // Allow the pawn to control rotation.
-    FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	// Create a CameraComponent 
+	FirstPersonCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
+	FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
+	// Position the camera a bit above the eyes
+	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
+	// Allow the pawn to control rotation.
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
-    // Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-    FirstPersonMesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("FirstPersonMesh"));
-    FirstPersonMesh->SetOnlyOwnerSee(true);         // only the owning player will see this mesh
-    FirstPersonMesh->AttachParent = FirstPersonCameraComponent;
-    FirstPersonMesh->bCastDynamicShadow = false;
-    FirstPersonMesh->CastShadow = false;
+	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
+	FirstPersonMesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("FirstPersonMesh"));
+	FirstPersonMesh->SetOnlyOwnerSee(true);         // only the owning player will see this mesh
+	FirstPersonMesh->AttachParent = FirstPersonCameraComponent;
+	FirstPersonMesh->bCastDynamicShadow = false;
+	FirstPersonMesh->CastShadow = false;
 
-    // everyone but the owner can see the regular body mesh
-    GetMesh()->SetOwnerNoSee(true);
+	// everyone but the owner can see the regular body mesh
+	GetMesh()->SetOwnerNoSee(true);
 
-    // Set number of flags picked up to zero.
-    FlagsPickedUp = 0;
+	// Set number of flags picked up to zero.
+	FlagsPickedUp = 0;
 
-    static ConstructorHelpers::FObjectFinder<USoundCue> GunShotSoundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
-    ShotGunSound = GunShotSoundCueLoader.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material1(TEXT("Material'/Game/Materials/Red.Red'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material2(TEXT("Material'/Game/Materials/Green.Green'"));
+	if (Material1.Object != NULL)
+	{
+		RedMaterial = (UMaterial*)Material1.Object;
+		UE_LOG(LogTemp, Warning, TEXT("RedMaterial has a value"));
+	}
+	if (Material2.Object != NULL)
+	{
+		GreenMaterial = (UMaterial*)Material2.Object;
+		UE_LOG(LogTemp, Warning, TEXT("GreenMaterial has a value"));
+	}
 
-    static ConstructorHelpers::FObjectFinder<USoundCue> RespawnSoundCueLoader(TEXT("SoundCue'/Game/Audio/Respawn_Cue.Respawn_Cue'"));
-    RespawnSound = RespawnSoundCueLoader.Object;
+	static ConstructorHelpers::FObjectFinder<USoundCue> GunShotSoundCueLoader(TEXT("SoundCue'/Game/Audio/GunShot_Cue.GunShot_Cue'"));
+	ShotGunSound = GunShotSoundCueLoader.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> RespawnSoundCueLoader(TEXT("SoundCue'/Game/Audio/Respawn_Cue.Respawn_Cue'"));
+	RespawnSound = RespawnSoundCueLoader.Object;
+
+	SpawnPoints[0] = FVector(2400.0f, 0.0f, 112.0f);
+	SpawnPoints[1] = FVector(-2400.0f, 0.0f, 112.0f);
+}
+
+bool AGPCharacter::CanJoinTeam(int8 Team)
+{
+	return true;
+}
+
+void AGPCharacter::SetMaterial(int8 Team)
+{
+	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
+	if (CanJoinTeam(Team))
+	{
+		ServerSetMaterial(Team);
+	}
+}
+
+bool AGPCharacter::ServerSetMaterial_Validate(int8 Team)
+{
+	return CanJoinTeam(Team);
+}
+
+void AGPCharacter::ServerSetMaterial_Implementation(int8 Team)
+{
+	// If we have been validated by the server, then we need to broadcast the change team to all clients.
+	if (Role == ROLE_Authority) {
+		BroadcastSetMaterial(Team);
+	}
+}
+
+void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
+{
+	if (Role == ROLE_Authority && PlayerState == NULL)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Server, state is null"));
+	}
+	else if (Role != ROLE_Authority && PlayerState == NULL)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
+	}
+	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
+		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+	}
+}
+
+
+void AGPCharacter::JoinTeam(int8 Team)
+{
+	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
+	if (CanJoinTeam(Team))
+	{
+		ServerJoinTeam(Team);
+	}
+
+}
+
+bool AGPCharacter::ServerJoinTeam_Validate(int8 Team)
+{
+	return CanJoinTeam(Team);
+}
+
+void AGPCharacter::ServerJoinTeam_Implementation(int8 Team)
+{
+	// If we have been validated by the server, then we need to broadcast the change team to all clients.
+	if (Role == ROLE_Authority) {
+		BroadcastJoinTeam(Team);
+	}
+}
+
+void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
+{
+
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		State->Team = Team;
+	}
 }
 
 float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -45,30 +147,43 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
 
-	
-	if (EventInstigator != GetController()) {
+	//&& ((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team != ((AGPPlayerState*)PlayerState)->Team
 
-		Health -= DamageAmount;
+	//((AGPPlayerState*)PlayerState)->Team;
+	//((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
 
-		AGPCharacter* otherPlayer = Cast<AGPCharacter,AActor>(DamageCauser->GetOwner());
-		otherPlayer->IncreasePoints();
+	UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
+	if (PlayerState != NULL && EventInstigator->PlayerState != NULL)
+	{
+		int32 OurTeam = ((AGPPlayerState*)PlayerState)->Team;
+		UE_LOG(LogTemp, Warning, TEXT("WE ARE %d"), OurTeam);
 
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+		int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
+		if (TheirTeam != OurTeam) {
 
-			if (Health <= 0)
+			Health -= DamageAmount;
+
+			AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+			otherPlayer->IncreasePoints();
+
+			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-				Respawn();
-			}
-		}
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
 
-		return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+				if (Health <= 0)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+					Respawn();
+				}
+			}
+
+			return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+		}
+		else {
+			return 0.0f;
+		}
 	}
-	else {
-		return 0.0f;
-	}
+	return 0.0f;
 }
 
 void AGPCharacter::IncreasePoints() {
@@ -77,62 +192,61 @@ void AGPCharacter::IncreasePoints() {
 
 void AGPCharacter::BeginPlay()
 {
-    Super::BeginPlay();
+	Super::BeginPlay();
 
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("A player has entered the game!"));
-    }
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("A player has entered the game!"));
+	}
 
 	// Set starting health
+
 	Health = 100.0f;
 	Point = 0.0f;
 	BombPlanted = false;
 	MaxBombs = 5;
 }
 
+void AGPCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (Role == ROLE_Authority)
+	{
+	}
+}
+
 void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Setting up input"));
-    // set up gameplay key bindings
-    //InputComponent->BindAxis("MoveForward", this, &AGPCharacter::MoveForward);
-    //InputComponent->BindAxis("MoveRight", this, &AGPCharacter::MoveRight);
-    //InputComponent->BindAxis("Turn", this, &AGPCharacter::AddControllerYawInput);
-    //InputComponent->BindAxis("LookUp", this, &AGPCharacter::AddControllerPitchInput);
+	// set up gameplay key bindings
+	//InputComponent->BindAxis("MoveForward", this, &AGPCharacter::MoveForward);
+	//InputComponent->BindAxis("MoveRight", this, &AGPCharacter::MoveRight);
+	//InputComponent->BindAxis("Turn", this, &AGPCharacter::AddControllerYawInput);
+	//InputComponent->BindAxis("LookUp", this, &AGPCharacter::AddControllerPitchInput);
 
-    InputComponent->BindAction("Jump", IE_Pressed, this, &AGPCharacter::OnStartJump);
-    InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AGPCharacter::OnStartJump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AGPCharacter::OnStopJump);
 
-    //InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
+	//InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
 }
 
 void AGPCharacter::Respawn()
 {
-    // Play Sound
-    this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
+	// Play Sound
+	this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
 
-    /*bUseControllerRotationPitch = false;
-    bUseControllerRotationRoll = false;
-    bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bUseControllerDesiredRotation = false;
-    FirstPersonCameraComponent->SetWorldRotation(FRotator(0.0f, 0.0f, 0.0f), false);*/
-    SetActorLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FRotator::ZeroRotator, false);
-    //GetRootComponent()->SetWorldLocationAndRotation(FVector(380.0f, 0.0f, 112.0f), FQuat(FRotator(0.0f, 0.0f, 0.0f)));
-    /*bUseControllerRotationPitch = true;
-    bUseControllerRotationRoll = true;
-    bUseControllerRotationYaw = true;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;*/
-
-    Health = 100;
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
-    }
+	int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
+	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
+	Health = 100;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
+	}
 }
 
 //void AGPCharacter::MoveForward(float Value)
 //{
-//	// TODO: Health test - forward disabled when health gone
+//  // TODO: Health test - forward disabled when health gone
 //    if ((Controller != NULL) && (Value != 0.0f) && (Health > 0.0f))
 //    {
 //        // find out which way is forward
@@ -162,12 +276,12 @@ void AGPCharacter::Respawn()
 
 void AGPCharacter::OnStartJump()
 {
-    bPressedJump = true;
+	bPressedJump = true;
 }
 
 void AGPCharacter::OnStopJump()
 {
-    bPressedJump = false;
+	bPressedJump = false;
 }
 
 // Abstract fire conditions to a function, as if the client attempts to fire erroneously they will be dropped!
@@ -224,10 +338,10 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-                // Play Sound
-                Projectile->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
-                
-                // find launch direction
+				// Play Sound
+				Projectile->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
+
+				// find launch direction
 				FVector const LaunchDir = MuzzleRotation.Vector();
 				Projectile->InitVelocity(LaunchDir);
 			}
@@ -331,7 +445,7 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 			AGPRemoteBomb* CurRB = NULL;
 			for (int i = 0; i < RemoteBombList.Num(); i++)
 			{
-                CurRB = RemoteBombList[i];
+				CurRB = RemoteBombList[i];
 				// Check make sure our actor exists
 				if (!CurRB) continue;
 				if (!CurRB->IsValidLowLevel()) continue;
@@ -530,6 +644,10 @@ void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 	}
 }
 
+void AGPCharacter::OnHealthPickUp() {
+    Health = 100.0f;
+}
+
 // Check game state = 1 before setting to 2 and starting the reset timer
 void AGPCharacter::SetPauseState()
 {
@@ -614,4 +732,9 @@ void AGPCharacter::Tick(float deltaSeconds)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
 		Respawn();
 	}
+}
+
+float AGPCharacter::getHealth()
+{
+    return (float)Health;
 }
