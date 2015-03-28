@@ -93,7 +93,7 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
 	}
-	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	if (Team == 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
 		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
@@ -133,7 +133,6 @@ void AGPCharacter::ServerJoinTeam_Implementation(int8 Team)
 
 void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 {
-
 	if (GetController() != NULL)
 	{
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
