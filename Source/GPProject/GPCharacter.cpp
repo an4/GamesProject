@@ -138,6 +138,7 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
+        Respawn();
 	}
 }
 
