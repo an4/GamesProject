@@ -20,6 +20,8 @@ public class GPProjectTarget : TargetRules
 		ref List<string> OutExtraModuleNames
 		)
 	{
-		OutExtraModuleNames.AddRange( new string[] { "GPProject" } );
+        OutExtraModuleNames.AddRange(new string[] { "GPProject", "AIModule" });
 	}
+
+
 }

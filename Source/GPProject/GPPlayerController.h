@@ -10,8 +10,9 @@
 UCLASS()
 class GPPROJECT_API AGPPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
+    bool InTeam = false;
 public:
 	virtual void SetupInputComponent() override;
 
@@ -19,6 +20,12 @@ public:
 	void NextWeapon();
 	UFUNCTION()
 	void PrevWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Team")
+	void JoinTeam0();
+
+    UFUNCTION(BlueprintCallable, Category = "Team")
+	void JoinTeam1();
 
 	//handles moving forward/backward
     UFUNCTION()

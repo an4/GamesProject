@@ -28,6 +28,9 @@ void AGPPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
 
+	InputComponent->BindAction("JoinTeam0", IE_Pressed, this, &AGPPlayerController::JoinTeam0);
+	InputComponent->BindAction("JoinTeam1", IE_Pressed, this, &AGPPlayerController::JoinTeam1);
+
 	InputComponent->BindAction("NextWeapon", IE_Pressed, this, &AGPPlayerController::NextWeapon);
 	InputComponent->BindAction("PrevWeapon", IE_Pressed, this, &AGPPlayerController::PrevWeapon);
 }
@@ -40,6 +43,28 @@ void AGPPlayerController::NextWeapon()
 void AGPPlayerController::PrevWeapon()
 {
 	Cast<AGPCharacter>(GetCharacter())->PrevWeapon();
+}
+
+void AGPPlayerController::JoinTeam0()
+{
+	if (GetCharacter() != NULL && !InTeam)
+	{
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(0);
+		Char->SetMaterial(0);
+        InTeam = true;
+	}
+}
+
+void AGPPlayerController::JoinTeam1()
+{
+	if (GetCharacter() != NULL && !InTeam)
+	{
+		AGPCharacter* Char = Cast<AGPCharacter>(GetCharacter());
+		Char->JoinTeam(1);
+		Char->SetMaterial(1);
+        InTeam = true;
+    }
 }
 
 void AGPPlayerController::MoveForward(float Value)

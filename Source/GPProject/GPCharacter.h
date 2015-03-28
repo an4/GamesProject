@@ -15,9 +15,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
     // Constructor for AGPCharacter
     AGPCharacter(const FObjectInitializer& ObjectInitializer);
+	int Weapon;
 
     virtual void BeginPlay() override;
-	int Weapon;
+	virtual void PossessedBy(AController* NewController) override;
+
+	void SetupTeam();
 
 	void Tick(float DeltaSeconds) override;
 
@@ -44,19 +47,50 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		// Added for 4.7
 		void BroadcastSelectWeapon_Implementation(int8 NewWeapon);
 		
+		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+		UMaterial* GreenMaterial;
+		
+		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+		UMaterial* RedMaterial;
+		
+		UFUNCTION()
+		void SetMaterial(int8 Team);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetMaterial(int8 Team);
+		bool ServerSetMaterial_Validate(int8 Team);
+		void ServerSetMaterial_Implementation(int8 Team);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastSetMaterial(int8 Team);
+		void BroadcastSetMaterial_Implementation(int8 Team);
+
+		bool CanJoinTeam(int8 Team);
+
+		UFUNCTION()
+		void JoinTeam(int8 Team);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerJoinTeam(int8 Team);
+		bool ServerJoinTeam_Validate(int8 Team);
+		void ServerJoinTeam_Implementation(int8 Team);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastJoinTeam(int8 Team);
+		void BroadcastJoinTeam_Implementation(int8 Team);
+
 		//handles firing
         UFUNCTION()
         void OnFire();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnFire();
-        // Added for 4.7
+
         bool ServerOnFire_Validate();
         void ServerOnFire_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFire(FVector CameraLoc, FRotator CameraRot);
-        // Added for 4.7
         void BroadcastOnFire_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb launching
@@ -65,13 +99,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombLaunch();
-        // Added for 4.7
         bool ServerOnBombLaunch_Validate();
         void ServerOnBombLaunch_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombLaunch(FVector CameraLoc, FRotator CameraRot);
-        // Added for 4.7
         void BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRotator CameraRot);
 
 		//handles bomb detonation
@@ -80,13 +112,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerOnBombDetonate();
-        // Added for 4.7
         bool ServerOnBombDetonate_Validate();
         void ServerOnBombDetonate_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnBombDetonate();
-        // Added for 4.7
         void BroadcastOnBombDetonate_Implementation();
 
 		// handles damage
@@ -116,6 +146,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         /** First person camera */
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
         UCameraComponent* FirstPersonCameraComponent;
+
 
         /** Pawn mesh: 1st person view (arms; seen only by self) */
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
@@ -151,8 +182,38 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(Replicated)
         uint8 FlagsPickedUp;
 
+		//Handles Flag Capture
+		UFUNCTION()
+		void OnFlagPickup(AGPFlagPickup * flag);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagPickup(AGPFlagPickup * flag);
+		bool ServerOnFlagPickup_Validate(AGPFlagPickup * flag);
+		void ServerOnFlagPickup_Implementation(AGPFlagPickup * flag);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagPickup();
+		void BroadcastOnFlagPickup_Implementation();
+
+		UFUNCTION()
+		void OnFlagCapture();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerOnFlagCapture();
+		bool ServerOnFlagCapture_Validate();
+		void ServerOnFlagCapture_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastOnFlagCapture();
+		void BroadcastOnFlagCapture_Implementation();
+
+		UFUNCTION()
+		bool CanPickupFlag();
+		UFUNCTION()
+		bool CanCaptureFlag();
+
         UFUNCTION()
-        void OnFlagPickUp();
+        void OnHealthPickUp();
 
 		// handle pausing
 		//handles bomb detonation
@@ -161,12 +222,16 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseState();
+		bool ServerSetPauseState_Validate();
+		void ServerSetPauseState_Implementation();
 
 		UFUNCTION()
 		void SetPauseStateOff();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetPauseStateOff();
+		bool ServerSetPauseStateOff_Validate();
+		void ServerSetPauseStateOff_Implementation();
 
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* ShotGunSound;
@@ -174,9 +239,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* RespawnSound;
 
+        UFUNCTION()
+        float getHealth();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		virtual void Respawn();
+		FVector SpawnPoints[2];
 
         ////handles moving forward/backward
         //UFUNCTION()

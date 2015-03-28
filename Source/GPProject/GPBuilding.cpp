@@ -10,11 +10,20 @@ AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
     DummyRoot = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("RootBoxComponent"));
     RootComponent = DummyRoot;
 
-    BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent"));
-
+    BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent")); 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> cubemeshpath(TEXT("StaticMesh'/Game/Meshes/GP_Cube.GP_Cube'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> cubetexturepath1(TEXT("Material'/Game/Materials/M_Book.M_Book'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> cubetexturepath2(TEXT("Material'/Game/Materials/M_Book2.M_Book2'"));
 	if (cubemeshpath.Object)
+	{
 		BuildingMesh->SetStaticMesh(cubemeshpath.Object);
+		if (rand() % 2 == 0) {
+			BuildingMesh->SetMaterial(0,cubetexturepath1.Object);
+		}
+		else {
+			BuildingMesh->SetMaterial(0, cubetexturepath1.Object);
+		}
+	}
 
 	BuildingMesh->AttachTo(RootComponent);
 

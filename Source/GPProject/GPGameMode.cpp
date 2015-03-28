@@ -5,7 +5,9 @@
 #include "GPHUD.h"
 #include "GPPlayerController.h"
 #include "GPGameState.h"
+#include "GPPlayerState.h"
 #include "EngineUtils.h"
+#include "GPCaptureZone.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -20,8 +22,9 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	// the controller class handles a player for the entirety of the game, whereas pawns can be replaced (e.g. death and respawn)
 	// Controller should hold things like score, team that need to be kept across lives! Should handle input and replication.
 	PlayerControllerClass = AGPPlayerController::StaticClass();
-
+	PlayerStateClass = AGPPlayerState::StaticClass();
 	GameStateClass = AGPGameState::StaticClass();
+	HUDClass = AGPHUD::StaticClass();
 
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
@@ -29,8 +32,13 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
     {
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
-	
-    HUDClass = AGPHUD::StaticClass();
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
+	if (CaptureZoneBP.Object != NULL)
+	{
+		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
+	}
+
 	tickCount = 0.0;
 }
 
@@ -41,13 +49,18 @@ void AGPGameMode::StartPlay()
 	if (Role == ROLE_Authority)
 	{
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
-		SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
-		SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
-		SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
-		SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+		// Spawn the capture zone in the center
+		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
+		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
+		//SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
+		//SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
+		//SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 
         // Spawn flag
 		SpawnFlag();
+
+        // Spawn Health
+        SpawnHealth();
 
 		// Start listener for Kinect input
 		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
@@ -58,12 +71,47 @@ void AGPGameMode::StartPlay()
 
 }
 
+void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
+{
+	UWorld* const World = GetWorld();
+
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
+		AGPCaptureZone* cp;
+		if (CaptureZoneBPClass != NULL)
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(CaptureZoneBPClass, centre, rotation, SpawnParams);
+		}
+		else
+		{
+			cp = World->SpawnActor<AGPCaptureZone>(AGPCaptureZone::StaticClass(), centre, rotation, SpawnParams);
+		}
+
+		if (cp == NULL)
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp is null"));
+			}
+		}
+		else {
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));
+			}
+		}
+	}
+}
+
 
 void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 {
 	// World size TODO: Calculate this!
-	const float worldx = 5000.0f;
-	const float worldy = 5000.0f;
+	const float worldx = 6000.0f;
+	const float worldy = 9000.0f;
 
 	// World NW corner offset (The origin is currently at the centre of the floor object) TODO: Move to 0,0?
 	const FVector worldOffset = FVector(-1.0f * (worldx / 2.0f), -1.0f * (worldy / 2.0f), 0.0f);
@@ -73,8 +121,8 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	const float meshy = 200.0f;
 
 	// Dimensions of the entire input space (in pixels!)
-	const float worldx_px = 640.0f; // TODO: Bring back Kinect Interface with resolution constants
-	const float worldy_px = 480.0f; // TODO: Resize the world so it matches the aspect ratio.
+	const float worldx_px = 480.0f; // TODO: Bring back Kinect Interface with resolution constants
+	const float worldy_px = 640.0f; // TODO: Resize the world so it matches the aspect ratio.
 
 	// Scale factors for points in the world.
 	const float cscalex = worldx / worldx_px;
@@ -198,7 +246,7 @@ void AGPGameMode::SpawnFlag()
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 21.), FVector(3000., 4500., 21.)));
 
         AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 
@@ -218,20 +266,28 @@ void AGPGameMode::SpawnFlag()
     }
 }
 
+void AGPGameMode::SpawnHealth()
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = NULL;
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 50.), FVector(3000., 4500., 50.)));
+
+        AGPHealthPickup* health = World->SpawnActor<AGPHealthPickup>(AGPHealthPickup::StaticClass(), location, rotation, SpawnParams);
+    }
+}
+
 void AGPGameMode::ResetBuildings()
 {
-	bool doOnce = false;
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
 	{
-		// Skip the 4 walls
-		if (!doOnce)
-		{
-			++bIt;
-			++bIt;
-			++bIt;
-			++bIt;
-			doOnce = true;
-		}
 		if (bIt != NULL && bIt)
 		{
 			bIt->Destroy();

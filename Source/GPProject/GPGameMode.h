@@ -5,6 +5,11 @@
 #include "Networking.h"
 #include "GPBuilding.h"
 #include "GPFlagPickup.h"
+#include "GPGameState.h"
+#include "GPHUD.h"
+#include "GPPlayerController.h"
+#include "GPPlayerState.h"
+#include "GPHealthPickup.h"
 #include "GameFramework/GameMode.h"
 #include "GPGameMode.generated.h"
 
@@ -28,10 +33,17 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
 
+		UPROPERTY()
+		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
+
 		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale);
 
 		UFUNCTION()
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
+
+
+		UFUNCTION()
+		void SpawnCaptureZone(FVector centre, FRotator rotation);
 
 		void Tick(float DeltaSeconds) override;
 
@@ -41,6 +53,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
         UFUNCTION()
         void SpawnFlag();
+
+        UFUNCTION()
+        void SpawnHealth();
 
 		UFUNCTION()
 		void ResetBuildings();
