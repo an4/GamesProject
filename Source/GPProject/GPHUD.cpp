@@ -53,7 +53,7 @@ void AGPHUD::DrawHUD()
 		{
 			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
 			AGPPlayerState* ps = Cast<AGPPlayerState>(PlayerOwner->PlayerState);
-			if (gs)
+			if (gs && ps)
 			{
 				FString str = "Leader has ";
 				str.Append(FString::FromInt(gs->GetFlagLeader()));

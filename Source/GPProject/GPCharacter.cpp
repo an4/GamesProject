@@ -544,7 +544,6 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
 				spotlight->SetIntensity(100000.0f);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
 			}
 		}
 	}
