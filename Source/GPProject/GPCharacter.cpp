@@ -93,12 +93,15 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
 	}
+<<<<<<< HEAD
 	// Set material on flags for clients
 	// Would set them on being play but the flags don't seem to have been spawned for the client by then
 	for (TActorIterator<AGPFlagPickup> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		ActorItr->ClientOnlySetMaterial();
 	}
+=======
+>>>>>>> dev
 	if (Team == 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
@@ -139,7 +142,6 @@ void AGPCharacter::ServerJoinTeam_Implementation(int8 Team)
 
 void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 {
-
 	if (GetController() != NULL)
 	{
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
@@ -694,6 +696,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 	}
 }
 
+// TODO: Rename
 void AGPCharacter::SetPauseStateOff()
 {
 	UWorld* const World = GetWorld();
@@ -724,10 +727,11 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		else
 		{
 			gm->ResetBuildings();
+			gm->Rescan();
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
-		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-		gs->SetState(1);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		//AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		//gs->SetState(1);
 	}
 }
 

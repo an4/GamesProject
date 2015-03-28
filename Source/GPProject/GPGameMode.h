@@ -55,10 +55,16 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         void SpawnFlag(int8 Team);
 
         UFUNCTION()
-        void SpawnHealth();
+		void SpawnHealth();
+
+		UFUNCTION()
+		void Rescan();
 
 		UFUNCTION()
 		void ResetBuildings();
+
+		UFUNCTION()
+		void UnpauseGame();
 
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////
