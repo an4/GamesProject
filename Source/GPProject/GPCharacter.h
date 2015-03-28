@@ -31,6 +31,19 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION()
 		void PrevWeapon();
 
+		UFUNCTION()
+		void SelectWeapon(int8 NewWeapon);
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSelectWeapon(int8 NewWeapon);
+		// Added for 4.7
+		bool ServerSelectWeapon_Validate(int8 NewWeapon);
+		void ServerSelectWeapon_Implementation(int8 NewWeapon);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastSelectWeapon(int8 NewWeapon);
+		// Added for 4.7
+		void BroadcastSelectWeapon_Implementation(int8 NewWeapon);
+		
 		//handles firing
         UFUNCTION()
         void OnFire();

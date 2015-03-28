@@ -489,14 +489,38 @@ void AGPCharacter::Tick(float deltaSeconds)
 
 void AGPCharacter::NextWeapon()
 {
-	Weapon = (Weapon + 1) % 2;
+	SelectWeapon((Weapon + 1) % 2);
 }
 
 void AGPCharacter::PrevWeapon()
 {
-	Weapon -= 1;
-	if (Weapon == -1)
+	int8 NewWeapon = Weapon - 1;
+	if (NewWeapon == -1)
 	{
-		Weapon = 1;
+		NewWeapon = 1;
 	}
+	SelectWeapon(NewWeapon);
+}
+
+void AGPCharacter::SelectWeapon(int8 NewWeapon)
+{
+	ServerSelectWeapon(NewWeapon);
+}
+
+
+bool AGPCharacter::ServerSelectWeapon_Validate(int8 NewWeapon)
+{
+	return true;
+}
+
+void AGPCharacter::ServerSelectWeapon_Implementation(int8 NewWeapon)
+{
+	if (Role == ROLE_Authority) {
+		BroadcastSelectWeapon(NewWeapon);
+	}
+}
+
+void AGPCharacter::BroadcastSelectWeapon_Implementation(int8 NewWeapon)
+{
+	Weapon = NewWeapon;
 }
