@@ -175,9 +175,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void OnFlagCapture();
 
 		UFUNCTION(Server, Reliable, WithValidation)
-		void ServerOnFlagCapture();
-		bool ServerOnFlagCapture_Validate();
-		void ServerOnFlagCapture_Implementation();
+		void ServerOnFlagCapture(int8 Team);
+		bool ServerOnFlagCapture_Validate(int8 Team);
+		void ServerOnFlagCapture_Implementation(int8 Team);
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastOnFlagCapture();

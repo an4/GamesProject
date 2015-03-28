@@ -512,40 +512,7 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 		int8 Team = flag->flagTeam;
 		// And spawn a new flag as the server
 		GetWorld()->DestroyActor(flag, true);
-		UWorld* const World = GetWorld();
-
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-			if (this)
-			{
-				SpawnParams.Owner = this;
-			}
-			else {
-				SpawnParams.Owner = NULL;
-			}
-			SpawnParams.Instigator = NULL;
-
-			FRotator rotation = FRotator(0.f, 0.f, 0.f);
-			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
-
-			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
-
-			if (flag == NULL)
-			{
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-				}
-			}
-			else {
-				flag->Init(Team);
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-				}
-			}
-		}
+		
 	}
 }
 
@@ -585,18 +552,20 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 
 void AGPCharacter::OnFlagCapture()
 {
+	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
+	int8 T = PState->Team;
 	if (CanCaptureFlag())
 	{
-		ServerOnFlagCapture();
+		ServerOnFlagCapture(T);
 	}
 }
 
-bool AGPCharacter::ServerOnFlagCapture_Validate()
+bool AGPCharacter::ServerOnFlagCapture_Validate(int8 Team)
 {
 	return (CanCaptureFlag());
 }
 
-void AGPCharacter::ServerOnFlagCapture_Implementation()
+void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 {
 	if (Role == ROLE_Authority)
 	{
@@ -608,6 +577,37 @@ void AGPCharacter::ServerOnFlagCapture_Implementation()
 		{
 			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
 			gs->UpdateFlagLeader();
+
+			// Spawn new flag
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			if (this)
+			{
+				SpawnParams.Owner = this;
+			}
+			else {
+				SpawnParams.Owner = NULL;
+			}
+			SpawnParams.Instigator = NULL;
+
+			FRotator rotation = FRotator(0.f, 0.f, 0.f);
+			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+
+			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+			if (flag == NULL)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+				}
+			}
+			else {
+				flag->Init(Team);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+				}
+			}
 		}
 		// Then pause the game
 		SetPauseState();
@@ -724,11 +724,11 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		else
 		{
 			gm->ResetBuildings();
-			gm->Rescan();
+			//gm->Rescan();
 		}
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
-		//AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-		//gs->SetState(1);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
 	}
 }
 
