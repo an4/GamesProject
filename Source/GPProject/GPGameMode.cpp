@@ -8,6 +8,7 @@
 #include "GPPlayerState.h"
 #include "EngineUtils.h"
 #include "GPCaptureZone.h"
+#include "GPCharacter.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -548,6 +549,11 @@ void AGPGameMode::TCPSocketListener()
 
 		// Unpause the game
 		UnpauseGame();
+		// 'Respawn' all characters
+		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			ActorItr->Respawn();
+		}
 
 		commstate = OCVSProtocolState::INIT;
 	}
