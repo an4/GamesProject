@@ -93,15 +93,12 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
 	}
-<<<<<<< HEAD
 	// Set material on flags for clients
 	// Would set them on being play but the flags don't seem to have been spawned for the client by then
 	for (TActorIterator<AGPFlagPickup> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		ActorItr->ClientOnlySetMaterial();
 	}
-=======
->>>>>>> dev
 	if (Team == 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
