@@ -57,7 +57,6 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	SpawnPoints[0] = FVector(2400.0f, 0.0f, 112.0f);
 	SpawnPoints[1] = FVector(-2400.0f, 0.0f, 112.0f);
 
-
 	LaserBeamClass = AGPLaserBeam::StaticClass();
 }
 
@@ -150,7 +149,6 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
-
 	
 	if (EventInstigator != GetController())
 	{
@@ -165,10 +163,6 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		{
 			otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
 		}
-		//&& ((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team != ((AGPPlayerState*)PlayerState)->Team
-
-		//((AGPPlayerState*)PlayerState)->Team;
-		//((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
 
 		UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
 		if (PlayerState != NULL && EventInstigator->PlayerState != NULL)
@@ -176,30 +170,41 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			int32 OurTeam = ((AGPPlayerState*)PlayerState)->Team;
 			UE_LOG(LogTemp, Warning, TEXT("WE ARE %d"), OurTeam);
 
-			int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
-			if (TheirTeam != OurTeam) {
+			//((AGPPlayerState*)PlayerState)->Team;
+			//((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
 
-				Health -= DamageAmount;
-
-				AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
-				otherPlayer->IncreasePoints();
-
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
-
-					if (Health <= 0)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-						Respawn();
-					}
-				}
-
-				return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-			}
-			else
+			UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
+			if (PlayerState != NULL && EventInstigator->PlayerState != NULL)
 			{
-				return 0.0f;
+				int32 OurTeam = ((AGPPlayerState*)PlayerState)->Team;
+				UE_LOG(LogTemp, Warning, TEXT("WE ARE %d"), OurTeam);
+
+				int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
+				if (TheirTeam != OurTeam)
+				{
+
+					Health -= DamageAmount;
+
+					AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+					otherPlayer->IncreasePoints();
+
+					if (GEngine)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
+
+						if (Health <= 0)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+							Respawn();
+						}
+					}
+
+					return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+				}
+				else
+				{
+					return 0.0f;
+				}
 			}
 		}
 	}
