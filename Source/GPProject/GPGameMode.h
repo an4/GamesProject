@@ -52,7 +52,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         TSubclassOf<class AGPFlagPickup> FlagPickupClass;
 
         UFUNCTION()
-        void SpawnFlag();
+        void SpawnFlag(int8 Team);
 
         UFUNCTION()
         void SpawnHealth();

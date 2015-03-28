@@ -93,7 +93,13 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
 	}
-	if (((AGPPlayerState*)PlayerState)->Team == 0)
+	// Set material on flags for clients
+	// Would set them on being play but the flags don't seem to have been spawned for the client by then
+	for (TActorIterator<AGPFlagPickup> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ClientOnlySetMaterial();
+	}
+	if (Team == 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
 		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
@@ -504,6 +510,7 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 	{
 		// Tell all that a flag has been picked up
 		BroadcastOnFlagPickup();
+		int8 Team = flag->flagTeam;
 		// And spawn a new flag as the server
 		GetWorld()->DestroyActor(flag, true);
 		UWorld* const World = GetWorld();
@@ -533,6 +540,7 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 				}
 			}
 			else {
+				flag->Init(Team);
 				if (GEngine)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));

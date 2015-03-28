@@ -57,7 +57,8 @@ void AGPGameMode::StartPlay()
 		//SpawnBuilding(FVector(-2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
 
         // Spawn flag
-		SpawnFlag();
+		SpawnFlag(0);
+		SpawnFlag(1);
 
         // Spawn Health
         SpawnHealth();
@@ -234,7 +235,7 @@ void AGPGameMode::Tick(float DeltaSeconds)
 	}
 }
 
-void AGPGameMode::SpawnFlag()
+void AGPGameMode::SpawnFlag(int8 Team)
 {
     UWorld* const World = GetWorld();
 
@@ -258,6 +259,7 @@ void AGPGameMode::SpawnFlag()
             }
         }
         else {
+			flag->Init(Team);
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
