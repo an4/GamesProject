@@ -6,7 +6,7 @@ public class GPProject : ModuleRules
 {
 	public GPProject(TargetInfo Target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking", "AIModule" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystemNull" });
 

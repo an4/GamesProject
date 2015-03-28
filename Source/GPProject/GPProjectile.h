@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "GPBuilding.h"
+#include "GPCharacter.h"
+#include "GPPlayerState.h"
 #include "GameFramework/Actor.h"
 #include "GPProjectile.generated.h"
 
@@ -22,6 +24,9 @@ class GPPROJECT_API AGPProjectile : public AActor
     public:
         UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
         UProjectileMovementComponent* ProjectileMovement;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+		UStaticMeshComponent* ProjectileMesh;
 
 		// Flag to check if it has hit a wall
 		UPROPERTY()
