@@ -685,6 +685,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 	}
 }
 
+// TODO: Rename
 void AGPCharacter::SetPauseStateOff()
 {
 	UWorld* const World = GetWorld();
@@ -715,10 +716,11 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		else
 		{
 			gm->ResetBuildings();
+			gm->Rescan();
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
-		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-		gs->SetState(1);
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		//AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		//gs->SetState(1);
 	}
 }
 

@@ -216,11 +216,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         USoundCue* RespawnSound;
 
         UFUNCTION()
-        float getHealth();
+		float getHealth();
+
+		UFUNCTION()
+		void Respawn();
 
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-		virtual void Respawn();
 		FVector SpawnPoints[2];
 
         ////handles moving forward/backward

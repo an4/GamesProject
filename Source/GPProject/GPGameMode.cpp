@@ -8,6 +8,7 @@
 #include "GPPlayerState.h"
 #include "EngineUtils.h"
 #include "GPCaptureZone.h"
+#include "GPCharacter.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -284,6 +285,11 @@ void AGPGameMode::SpawnHealth()
     }
 }
 
+void AGPGameMode::Rescan()
+{
+	wantScan = true;
+}
+
 void AGPGameMode::ResetBuildings()
 {
 	for (TActorIterator<AGPBuilding> bIt(GetWorld()); bIt; ++bIt)
@@ -293,6 +299,13 @@ void AGPGameMode::ResetBuildings()
 			bIt->Destroy();
 		}
 	}
+}
+
+void AGPGameMode::UnpauseGame()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GO GO GO"));
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(1);
 }
 
 /////////////////////////////////////////////////////
@@ -533,6 +546,14 @@ void AGPGameMode::TCPSocketListener()
 		int32 sent = 0;
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
+
+		// Unpause the game
+		UnpauseGame();
+		// 'Respawn' all characters
+		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			ActorItr->Respawn();
+		}
 
 		commstate = OCVSProtocolState::INIT;
 	}
