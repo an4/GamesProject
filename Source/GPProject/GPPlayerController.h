@@ -16,10 +16,10 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
 public:
 	virtual void SetupInputComponent() override;
 
-	UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Team")
 	void JoinTeam0();
 
-	UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Team")
 	void JoinTeam1();
 
 	//handles moving forward/backward
