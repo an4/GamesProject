@@ -20,8 +20,11 @@ AGPLaserBeam::AGPLaserBeam(const FObjectInitializer& ObjectInitializer)
 	LaserMesh->AttachTo(RootComponent);
 	InitialLifeSpan = 0.2f;
 
-	bReplicates = true;
-	bReplicateMovement = true;
+	// Instance on clients.
+	bNetLoadOnClient = true;
+	bReplicates = false;
+	bReplicateMovement = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -33,12 +36,17 @@ void AGPLaserBeam::BeginPlay()
 	SetLifeSpan(InitialLifeSpan);		//Really shouldn't be needed, but it apparently is.
 }
 
-void AGPLaserBeam::SetScale(float Length)
+void AGPLaserBeam::SetLengthAndPitch(float Length, float Pitch)
 {
 	if (Role == ROLE_Authority)
 	{
 		Scale = FVector(0.03f, Length / 200, 0.03f);
+		Angle.Pitch = Pitch;
+		Angle.Yaw = 0;
+		Angle.Roll = 0;
+
 		SetActorScale3D(Scale);
+		SetActorRotation(GetActorRotation() + Angle);
 	}
 }
 
@@ -47,10 +55,16 @@ void AGPLaserBeam::OnRep_Scale()
 	SetActorScale3D(Scale);
 }
 
+void AGPLaserBeam::OnRep_Angle()
+{
+	SetActorRotation(GetActorRotation() + Angle);
+}
+
 void AGPLaserBeam::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// Replicate scale to all clients.
 	DOREPLIFETIME(AGPLaserBeam, Scale);
+	DOREPLIFETIME(AGPLaserBeam, Angle);
 }

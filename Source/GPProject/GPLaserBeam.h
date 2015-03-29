@@ -26,9 +26,15 @@ public:
 	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
 	FVector Scale;
 
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Angle)
+	FRotator Angle;
+
 	UFUNCTION()
 	void OnRep_Scale();
 
 	UFUNCTION()
-	void SetScale(float Length);
+	void OnRep_Angle();
+
+	UFUNCTION()
+	void SetLengthAndPitch(float Length, float Pitch);
 };
