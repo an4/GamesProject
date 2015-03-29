@@ -35,7 +35,7 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UFUNCTION()
 		void UpdateFlagLeader();
 
-		UFUNCTION()
+        UFUNCTION(BlueprintCallable, Category = "Flag")
 		int32 GetFlagLeader();
 
 	
