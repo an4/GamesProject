@@ -14,6 +14,9 @@ class GPPROJECT_API AGPCaptureZone : public AActor
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(Replicated)
+	int8 cpTeam;
+
 	AGPCaptureZone(const FObjectInitializer& ObjectInitializer);
 
 	/** called when something enters the sphere component */
@@ -33,4 +36,10 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Area)
 		UStaticMeshComponent* PickupMesh;
 
+
+	UFUNCTION()
+	void Init(int8 Team);
+
+	UFUNCTION()
+	void ClientOnlySetColor();
 };

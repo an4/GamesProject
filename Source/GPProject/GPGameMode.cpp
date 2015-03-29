@@ -51,7 +51,8 @@ void AGPGameMode::StartPlay()
 	{
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
 		// Spawn the capture zone in the center
-		SpawnCaptureZone(FVector(0, 0, 0), FRotator::ZeroRotator);
+		SpawnCaptureZone(FVector(-100, 1000, 0), FRotator::ZeroRotator, 0);
+		SpawnCaptureZone(FVector(100, -1000, 0), FRotator::ZeroRotator, 1);
 		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
 		//SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		//SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
@@ -73,7 +74,7 @@ void AGPGameMode::StartPlay()
 
 }
 
-void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
+void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)
 {
 	UWorld* const World = GetWorld();
 
@@ -100,6 +101,7 @@ void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation)
 			}
 		}
 		else {
+			cp->Init(Team);
 			if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));

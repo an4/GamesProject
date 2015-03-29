@@ -8,6 +8,7 @@
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
 #include "GPPlayerState.h"
+#include "GPCaptureZone.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -98,6 +99,10 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	for (TActorIterator<AGPFlagPickup> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
 		ActorItr->ClientOnlySetMaterial();
+	}
+	for (TActorIterator<AGPCaptureZone> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ClientOnlySetColor();
 	}
 	if (Team == 0)
 	{
