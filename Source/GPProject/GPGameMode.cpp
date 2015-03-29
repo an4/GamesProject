@@ -51,8 +51,8 @@ void AGPGameMode::StartPlay()
 	{
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
 		// Spawn the capture zone in the center
-		SpawnCaptureZone(FVector(-100, 1000, 0), FRotator::ZeroRotator, 0);
-		SpawnCaptureZone(FVector(100, -1000, 0), FRotator::ZeroRotator, 1);
+		SpawnCaptureZone(FVector(2300.0f, 3800.0f, 112.0f), FRotator::ZeroRotator, 0);
+		SpawnCaptureZone(FVector(-2300.0f, -3800.0f, 112.0f), FRotator::ZeroRotator, 1);
 		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
 		//SpawnBuilding(FVector(0.0, 2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.));
 		//SpawnBuilding(FVector(2600., 0., 0.), FRotator::ZeroRotator, FVector(1., 5000. / 200., 7.));
@@ -242,16 +242,22 @@ void AGPGameMode::SpawnFlag(int8 Team)
 {
     UWorld* const World = GetWorld();
 
-    if (World)
-    {
-        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = NULL;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = NULL;
 
-        FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 21.), FVector(3000., 4500., 21.)));
-
+		FRotator rotation = FRotator(0.f, 0.f, 0.f);
+		FVector location;
+		if (Team == 0) {
+			location = FVector(-2300.f, -3800.f, 0.f);
+		}
+		else 
+		{
+			location = FVector(2300.f, 3800.f, 0.f);
+		}
         AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 
         if (flag == NULL)

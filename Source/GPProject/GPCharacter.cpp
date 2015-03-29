@@ -514,7 +514,6 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 		// Tell all that a flag has been picked up
 		BroadcastOnFlagPickup();
 		int8 Team = flag->flagTeam;
-		// And spawn a new flag as the server
 		GetWorld()->DestroyActor(flag, true);
 		
 	}
@@ -593,7 +592,14 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 			SpawnParams.Instigator = NULL;
 
 			FRotator rotation = FRotator(0.f, 0.f, 0.f);
-			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
+			FVector location;
+			if (Team == 0) {
+				location = FVector(-2300.f, -3800.f, 0.f);
+			}
+			else
+			{
+				location = FVector(2300.f, 3800.f, 0.f);
+			}
 
 			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 

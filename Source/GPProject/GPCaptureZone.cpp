@@ -51,7 +51,7 @@ void AGPCaptureZone::Init(int8 Team) {
 			spotlight->SetLightColor(FLinearColor(0.f, 255.f, 0.f));
 		}
 		else if (cpTeam == 1) {
-			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 255.f));
+			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 0.f));
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("cpTeam is not set"));
@@ -104,7 +104,7 @@ void AGPCaptureZone::ClientOnlySetColor() {
 			spotlight->SetLightColor(FLinearColor(0.f, 255.f, 0.f));
 		}
 		else if (cpTeam == 1) {
-			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 255.f));
+			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 0.f));
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("cpTeam is not set"));
