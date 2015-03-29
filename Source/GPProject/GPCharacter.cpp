@@ -179,8 +179,6 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
-
 				if (Health <= 0)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));

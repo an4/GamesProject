@@ -215,7 +215,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(EditDefaultsOnly, Category = Sounds)
         USoundCue* RespawnSound;
 
-        UFUNCTION()
+        UFUNCTION(BlueprintCallable, Category = "Health")
 		float getHealth();
 
 		UFUNCTION()
