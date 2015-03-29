@@ -746,3 +746,7 @@ int32 AGPCharacter::getAmmo()
 {
     return Ammo;
 }
+
+void AGPCharacter::OnAmmoPickUp(int32 Value) {
+    Ammo += Value;
+}

@@ -227,6 +227,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION(BlueprintCallable, Category = "Ammo")
         int32 getAmmo();
 
+        UFUNCTION()
+        void OnAmmoPickUp(int32 Value);
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		FVector SpawnPoints[2];
