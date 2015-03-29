@@ -376,7 +376,7 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			FActorSpawnParameters SpawnParams;
 			FRotator Rotation = MuzzleRotation;
 			Rotation.Yaw += 90;
-			Rotation.Pitch = MuzzleRotation.Pitch;
+			//Rotation.Pitch = MuzzleRotation.Pitch;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			SpawnParams.bNoCollisionFail;
@@ -395,9 +395,8 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			if (Lazor)
 			{
 				// Play Sound
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lazor is not null"));
 				Lazor->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
-				Lazor->SetScale(StartToEnd.Size() - 10.0f);
+				Lazor->SetLengthAndPitch(StartToEnd.Size() - 10.0f, Rotation.Pitch);
 			}
 			else
 			{
