@@ -51,9 +51,9 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> RespawnSoundCueLoader(TEXT("SoundCue'/Game/Audio/Respawn_Cue.Respawn_Cue'"));
 	RespawnSound = RespawnSoundCueLoader.Object;
-
-	SpawnPoints[0] = FVector(2400.0f, 0.0f, 112.0f);
-	SpawnPoints[1] = FVector(-2400.0f, 0.0f, 112.0f);
+    
+    SpawnPoints[0] = FVector( 2300.0f,  3800.0f, 112.0f);
+	SpawnPoints[1] = FVector(-2300.0f, -3800.0f, 112.0f);
 }
 
 bool AGPCharacter::CanJoinTeam(int8 Team)
@@ -144,6 +144,7 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
+        Respawn();
 	}
 }
 
