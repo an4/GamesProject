@@ -37,6 +37,6 @@ public:
 		void IncrementFlags();
 	UFUNCTION()
 		void ResetFlags();
-	UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Flag")
 		int32 GetNumFlags();
 };
