@@ -22,8 +22,12 @@ class GPPROJECT_API AGPAmmoPickup : public AGPPickup
 
     /* Spawns health box in a random location */
     UFUNCTION()
-    void SpawnAmmo(class AActor* AmmoOwner, int32 Value);
+    void SpawnAmmo(class AActor* AmmoOwner);
 	
     UPROPERTY()
     int32 Value;
+
+public:
+    UFUNCTION()
+    int32 getValue();
 };
