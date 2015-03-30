@@ -699,9 +699,9 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
-		// Start timer to go back to normal state
-		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::SetPauseStateOff, 3.0f);
+		// Start timer to go back to normal state TODO: We may want a timeout if the Kinect isn't working?
+		//FTimerHandle handle = FTimerHandle();
+		//GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::SetPauseStateOff, 3.0f);
 	}
 }
 
@@ -736,7 +736,7 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		else
 		{
 			gm->ResetBuildings();
-			//gm->Rescan();
+			gm->Rescan();
 		}
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
