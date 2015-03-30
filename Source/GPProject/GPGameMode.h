@@ -10,6 +10,7 @@
 #include "GPPlayerController.h"
 #include "GPPlayerState.h"
 #include "GPHealthPickup.h"
+#include "GPAmmoPickup.h"
 #include "GameFramework/GameMode.h"
 #include "GPGameMode.generated.h"
 
@@ -65,6 +66,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		UFUNCTION()
 		void UnpauseGame();
+
+        UFUNCTION()
+        void SpawnAmmo();
 
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////

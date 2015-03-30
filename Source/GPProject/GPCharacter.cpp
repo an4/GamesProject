@@ -214,6 +214,7 @@ void AGPCharacter::BeginPlay()
 	Point = 0.0f;
 	BombPlanted = false;
 	MaxBombs = 5;
+    Ammo = 10;
 }
 
 void AGPCharacter::PossessedBy(AController* NewController)
@@ -247,6 +248,7 @@ void AGPCharacter::Respawn()
 	int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
 	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 	Health = 100;
+    Ammo = 10;
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
@@ -297,7 +299,7 @@ void AGPCharacter::OnStopJump()
 bool AGPCharacter::CanFire()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	return (Health > 0.0f && gs->GetState() == 1);
+	return (Health > 0.0f && gs->GetState() == 1 && Ammo > 0);
 }
 
 void AGPCharacter::OnFire()
@@ -305,7 +307,8 @@ void AGPCharacter::OnFire()
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
 	if (CanFire())
 	{
-		ServerOnFire();
+        Ammo--;
+        ServerOnFire();
 	}
 }
 
@@ -755,4 +758,13 @@ void AGPCharacter::Tick(float deltaSeconds)
 float AGPCharacter::getHealth()
 {
     return (float)Health;
+}
+
+int32 AGPCharacter::getAmmo()
+{
+    return Ammo;
+}
+
+void AGPCharacter::OnAmmoPickUp(int32 Value) {
+    Ammo += Value;
 }
