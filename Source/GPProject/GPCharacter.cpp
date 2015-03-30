@@ -320,6 +320,7 @@ void AGPCharacter::BroadcastSetLightIntensity_Implementation(float val)
 	}
 }
 
+// Move this into server code??
 void AGPCharacter::Respawn()
 {
 	// Play Sound
@@ -330,6 +331,16 @@ void AGPCharacter::Respawn()
 	PState->SetHasFlag(false);
 	PState->SetCanPickupFlag(false);
 	FVector loc = GetActorLocation();
+	FString str;
+	if (PState->GetHasFlag() == true)
+	{
+		str = "Has flag";
+	}
+	else
+	{
+		str = "Does not have flag";
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, str);
 	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 	Health = 100;
     Ammo = 100;
@@ -593,7 +604,14 @@ bool AGPCharacter::CanPickupFlag()
 
 bool AGPCharacter::CanCaptureFlag()
 {
-	return true;
+	if ((AGPPlayerState*)PlayerState != NULL)
+	{
+		return (((AGPPlayerState*)PlayerState)->GetHasFlag());
+	}
+	else
+	{
+		return false;
+	}
 }
 
 // Defer to server
