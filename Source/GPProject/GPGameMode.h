@@ -44,7 +44,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 
 		UFUNCTION()
-		void SpawnCaptureZone(FVector centre, FRotator rotation);
+		void SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team);
 
 		void Tick(float DeltaSeconds) override;
 
@@ -53,7 +53,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         TSubclassOf<class AGPFlagPickup> FlagPickupClass;
 
         UFUNCTION()
-        void SpawnFlag();
+        void SpawnFlag(int8 Team);
 
         UFUNCTION()
 		void SpawnHealth();

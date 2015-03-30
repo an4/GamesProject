@@ -17,17 +17,46 @@ AGPCaptureZone::AGPCaptureZone(const FObjectInitializer& ObjectInitializer)
 	// Set the SphereComponent as the root component.
 	RootComponent = BaseCollisionComponent;
 
-	// Create the StaticMeshComponent.
-	//PickupMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("PickupMesh"));
-
-	// Attach the StaticMeshComponent to the RootComponent.
-	//PickupMesh->AttachTo(RootComponent);
-
-	//PickupMesh->SetSimulatePhysics(true);
-
 	bReplicates = true;
 
 	BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPCaptureZone::OnOverlapBegin);
+}
+
+void AGPCaptureZone::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Replicate to everyone
+	DOREPLIFETIME(AGPCaptureZone, cpTeam);
+}
+
+void AGPCaptureZone::Init(int8 Team) {
+	cpTeam = Team;
+	TArray<UActorComponent*> components;
+	USpotLightComponent* spotlight = NULL;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "SpotLight")
+		{
+			// Set the intensity on all clients so everyone can see we have a flag
+			spotlight = Cast<USpotLightComponent>(comp);
+			break;
+		}
+	}
+	if (spotlight != NULL) {
+		if (cpTeam == 0) {
+			spotlight->SetLightColor(FLinearColor(0.f, 255.f, 0.f));
+		}
+		else if (cpTeam == 1) {
+			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 0.f));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("cpTeam is not set"));
+		}
+	}
 }
 
 void AGPCaptureZone::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -41,7 +70,7 @@ void AGPCaptureZone::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCo
 		if (PState)
 		{
 			// Check we have the flag
-			if (PState->GetHasFlag()) {
+			if (PState->GetHasFlag() && PState->Team == cpTeam) {
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We have a flag!"));
 				// Tell actor to cap it!
 				currentActor->OnFlagCapture();
@@ -50,6 +79,35 @@ void AGPCaptureZone::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCo
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("No flag for you :("));
 			}
+		}
+	}
+}
+
+// Only call this from a client when they join the game, to update all the materials for them
+void AGPCaptureZone::ClientOnlySetColor() {
+	TArray<UActorComponent*> components;
+	USpotLightComponent* spotlight = NULL;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "SpotLight")
+		{
+			// Set the intensity on all clients so everyone can see we have a flag
+			spotlight = Cast<USpotLightComponent>(comp);
+			break;
+		}
+	}
+	if (spotlight != NULL) {
+		if (cpTeam == 0) {
+			spotlight->SetLightColor(FLinearColor(0.f, 255.f, 0.f));
+		}
+		else if (cpTeam == 1) {
+			spotlight->SetLightColor(FLinearColor(255.f, 0.f, 0.f));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("cpTeam is not set"));
 		}
 	}
 }

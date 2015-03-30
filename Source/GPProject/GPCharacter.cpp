@@ -8,6 +8,7 @@
 #include "GPGameMode.h"
 #include "UnrealNetwork.h"
 #include "GPPlayerState.h"
+#include "GPCaptureZone.h"
 
 AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -92,6 +93,16 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	else if (Role != ROLE_Authority && PlayerState == NULL)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("server, state is null"));
+	}
+	// Set material on flags for clients
+	// Would set them on being play but the flags don't seem to have been spawned for the client by then
+	for (TActorIterator<AGPFlagPickup> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ClientOnlySetMaterial();
+	}
+	for (TActorIterator<AGPCaptureZone> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ClientOnlySetColor();
 	}
 	if (Team == 0)
 	{
@@ -505,41 +516,9 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 	{
 		// Tell all that a flag has been picked up
 		BroadcastOnFlagPickup();
-		// And spawn a new flag as the server
+		int8 Team = flag->flagTeam;
 		GetWorld()->DestroyActor(flag, true);
-		UWorld* const World = GetWorld();
-
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-			if (this)
-			{
-				SpawnParams.Owner = this;
-			}
-			else {
-				SpawnParams.Owner = NULL;
-			}
-			SpawnParams.Instigator = NULL;
-
-			FRotator rotation = FRotator(0.f, 0.f, 0.f);
-			FVector location = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 21.), FVector(2500., 2500., 21.)));
-
-			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
-
-			if (flag == NULL)
-			{
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-				}
-			}
-			else {
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-				}
-			}
-		}
+		
 	}
 }
 
@@ -571,7 +550,6 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
 				spotlight->SetIntensity(100000.0f);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
 			}
 		}
 	}
@@ -579,18 +557,20 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 
 void AGPCharacter::OnFlagCapture()
 {
+	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
+	int8 T = PState->Team;
 	if (CanCaptureFlag())
 	{
-		ServerOnFlagCapture();
+		ServerOnFlagCapture(T);
 	}
 }
 
-bool AGPCharacter::ServerOnFlagCapture_Validate()
+bool AGPCharacter::ServerOnFlagCapture_Validate(int8 Team)
 {
 	return (CanCaptureFlag());
 }
 
-void AGPCharacter::ServerOnFlagCapture_Implementation()
+void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 {
 	if (Role == ROLE_Authority)
 	{
@@ -602,6 +582,44 @@ void AGPCharacter::ServerOnFlagCapture_Implementation()
 		{
 			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
 			gs->UpdateFlagLeader();
+
+			// Spawn new flag
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			if (this)
+			{
+				SpawnParams.Owner = this;
+			}
+			else {
+				SpawnParams.Owner = NULL;
+			}
+			SpawnParams.Instigator = NULL;
+
+			FRotator rotation = FRotator(0.f, 0.f, 0.f);
+			FVector location;
+			if (Team == 0) {
+				location = FVector(-2300.f, -3800.f, 0.f);
+			}
+			else
+			{
+				location = FVector(2300.f, 3800.f, 0.f);
+			}
+
+			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+
+			if (flag == NULL)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+				}
+			}
+			else {
+				flag->Init(Team);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+				}
+			}
 		}
 		// Then pause the game
 		SetPauseState();
@@ -718,11 +736,11 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		else
 		{
 			gm->ResetBuildings();
-			gm->Rescan();
+			//gm->Rescan();
 		}
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
-		//AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-		//gs->SetState(1);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
 	}
 }
 
