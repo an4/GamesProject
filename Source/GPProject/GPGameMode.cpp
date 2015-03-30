@@ -63,6 +63,9 @@ void AGPGameMode::StartPlay()
         // Spawn Health
         SpawnHealth();
 
+        // Spawn Ammo
+        SpawnAmmo();
+
 		// Start listener for Kinect input
 		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
 		{
@@ -284,6 +287,25 @@ void AGPGameMode::SpawnHealth()
         AGPHealthPickup* health = World->SpawnActor<AGPHealthPickup>(AGPHealthPickup::StaticClass(), location, rotation, SpawnParams);
     }
 }
+
+void AGPGameMode::SpawnAmmo()
+{
+    UWorld* const World = GetWorld();
+
+    if (World)
+    {
+        FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = NULL;
+
+        FRotator rotation = FRotator(0.f, 0.f, 0.f);
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2950., -4450., 50.), FVector(2950., 4450., 50.)));
+
+        AGPAmmoPickup* ammo = World->SpawnActor<AGPAmmoPickup>(AGPAmmoPickup::StaticClass(), location, rotation, SpawnParams);
+    }
+}
+
 
 void AGPGameMode::Rescan()
 {
