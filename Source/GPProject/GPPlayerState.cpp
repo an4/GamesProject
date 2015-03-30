@@ -11,6 +11,7 @@ void AGPPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	DOREPLIFETIME(AGPPlayerState, hasFlag);
 	DOREPLIFETIME(AGPPlayerState, numFlags);
 	DOREPLIFETIME(AGPPlayerState, Team);
+	DOREPLIFETIME(AGPPlayerState, canPickupFlag);
 }
 
 void AGPPlayerState::SetHasFlag(bool newState)
@@ -21,6 +22,16 @@ void AGPPlayerState::SetHasFlag(bool newState)
 bool AGPPlayerState::GetHasFlag()
 {
 	return hasFlag;
+}
+
+void AGPPlayerState::SetCanPickupFlag(bool newState)
+{
+	canPickupFlag = newState;
+}
+
+bool AGPPlayerState::GetCanPickupFlag()
+{
+	return canPickupFlag;
 }
 
 // TODO: Add winstate for flag number (add to game mode / game state?)

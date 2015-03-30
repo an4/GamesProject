@@ -153,7 +153,10 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 	}
 }
 
-float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+// Moved this into a server call to prevent dying at 5 health on clients.
+// As what happens is the server sets it to 5 health (which replicates to all the client),
+// and then the firer calls TakeDamage again and locally sets it to 0
+/*float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	// TODO: Implement this properly ourselves (with damage type handlers!)
 	// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
@@ -185,14 +188,59 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 					Respawn();
 				}
 			}
-
-			return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+			return DamageAmount;
+			//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		}
 		else {
 			return 0.0f;
 		}
 	}
 	return 0.0f;
+}*/
+
+bool AGPCharacter::ServerTakeDamage_Validate(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return true;
+}
+
+void AGPCharacter::ServerTakeDamage_Implementation(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Role == ROLE_Authority)
+	{
+		// TODO: Implement this properly ourselves (with damage type handlers!)
+		// For now, simply call the super method to do anything that might be necessary, and ignore any checks.
+
+		//&& ((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team != ((AGPPlayerState*)PlayerState)->Team
+
+		//((AGPPlayerState*)PlayerState)->Team;
+		//((AGPPlayerState*)((AGPPlayerController*)EventInstigator)->PlayerState)->Team;
+
+		UE_LOG(LogTemp, Warning, TEXT("Oh no! We've been hit! What a shame."));
+		if (PlayerState != NULL && EventInstigator->PlayerState != NULL)
+		{
+			int32 OurTeam = ((AGPPlayerState*)PlayerState)->Team;
+			UE_LOG(LogTemp, Warning, TEXT("WE ARE %d"), OurTeam);
+
+			int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
+			if (TheirTeam != OurTeam) {
+
+				Health -= DamageAmount;
+
+				AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+				otherPlayer->IncreasePoints();
+
+				if (GEngine)
+				{
+					if (Health <= 0)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+						Respawn();
+					}
+				}
+				//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+			}
+		}
+	}
 }
 
 void AGPCharacter::IncreasePoints() {
@@ -214,7 +262,7 @@ void AGPCharacter::BeginPlay()
 	Point = 0.0f;
 	BombPlanted = false;
 	MaxBombs = 5;
-    Ammo = 10;
+    Ammo = 100;
 }
 
 void AGPCharacter::PossessedBy(AController* NewController)
@@ -240,19 +288,70 @@ void AGPCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 	//InputComponent->BindAction("Fire", IE_Pressed, this, &AGPCharacter::OnFire);
 }
 
+bool AGPCharacter::ServerSetLightIntensity_Validate(float val)
+{
+	return true;
+}
+
+void AGPCharacter::ServerSetLightIntensity_Implementation(float val)
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastSetLightIntensity(val);
+	}
+}
+
+void AGPCharacter::BroadcastSetLightIntensity_Implementation(float val)
+{
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagLight")
+		{
+			// Set the intensity on all clients so everyone can see we have a flag
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				spotlight->SetIntensity(val);
+			}
+		}
+	}
+}
+
 void AGPCharacter::Respawn()
 {
 	// Play Sound
 	this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
-
+	AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
 	int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
+	bool hadFlag = PState->GetHasFlag();
+	PState->SetHasFlag(false);
+	PState->SetCanPickupFlag(false);
+	FVector loc = GetActorLocation();
 	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 	Health = 100;
-    Ammo = 10;
+    Ammo = 100;
+	// Spawn flag after moving actor so we don't immediately pick it up again
+	if (hadFlag) 
+	{
+		loc.Z = 10.f;
+		ServerSetLightIntensity(0.0f);
+		ServerSpawnFlag(loc, Team, true);
+	}
+	FTimerHandle handle = FTimerHandle();
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::FinishRespawn, 3.0f);
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
 	}
+}
+
+void AGPCharacter::FinishRespawn()
+{
+	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
+	PState->SetCanPickupFlag(true);
 }
 
 //void AGPCharacter::MoveForward(float Value)
@@ -484,7 +583,7 @@ bool AGPCharacter::CanPickupFlag()
 {
 	// Make sure we're actually looking at the right player before sending through
 	if ((AGPPlayerState*)PlayerState != NULL) {
-		return !(((AGPPlayerState*)PlayerState)->GetHasFlag());
+		return !(((AGPPlayerState*)PlayerState)->GetHasFlag() && ((AGPPlayerState*)PlayerState)->GetCanPickupFlag());
 	}
 	else
 	{
@@ -537,22 +636,7 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 			State->SetHasFlag(true);
 		}
 	}
-	// Get all the components of the actor
-	TArray<UActorComponent*> components;
-	GetComponents(components);
-	for (int32 i = 0; i < components.Num(); i++)
-	{
-		// Find the spotlight component
-		UActorComponent* comp = components[i];
-		if (components[i]->GetName() == "FlagLight")
-		{
-			// Set the intensity on all clients so everyone can see we have a flag
-			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
-			if (spotlight) {
-				spotlight->SetIntensity(100000.0f);
-			}
-		}
-	}
+	ServerSetLightIntensity(100000.0f);
 }
 
 void AGPCharacter::OnFlagCapture()
@@ -576,13 +660,12 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 	{
 		// Tell everyone a flag has been captured
 		BroadcastOnFlagCapture();
-		// Update the current top score
 		UWorld* const World = GetWorld();
 		if (World)
 		{
 			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
 			gs->UpdateFlagLeader();
-
+			/*
 			// Spawn new flag
 			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 			if (this)
@@ -603,6 +686,7 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 			{
 				location = FVector(2300.f, 3800.f, 0.f);
 			}
+			ServerSpawnFlag(location, Team, false);
 
 			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 
@@ -614,13 +698,24 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 				}
 			}
 			else {
-				flag->Init(Team);
+				flag->Init(Team, false);
 				if (GEngine)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
 				}
-			}
+			}*/
 		}
+		// Update the current top score
+		FVector loc;
+		if (Team == 0) {
+			loc = FVector(-2300.f, -3800.f, 0.f);
+		}
+		else
+		{
+			loc = FVector(2300.f, 3800.f, 0.f);
+		}
+
+		ServerSpawnFlag(loc, Team, false);
 		// Then pause the game
 		SetPauseState();
 	}
@@ -645,6 +740,7 @@ void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 		}
 	}
 	// Get all components of the actor
+	ServerSetLightIntensity(0.0f);/*
 	TArray<UActorComponent*> components;
 	GetComponents(components);
 	for (int32 i = 0; i < components.Num(); i++)
@@ -657,10 +753,9 @@ void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
 				spotlight->SetIntensity(0.0f);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(spotlight->Intensity));
 			}
 		}
-	}
+	}*/
 }
 
 void AGPCharacter::OnHealthPickUp() {
@@ -744,6 +839,51 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 	}
 }
 
+bool AGPCharacter::ServerSpawnFlag_Validate(FVector loc, int8 Team, bool wasDropped) {
+	return true;
+}
+
+void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool wasDropped) {
+	if (Role == ROLE_Authority) 
+	{
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
+			gs->UpdateFlagLeader();
+
+			// Spawn new flag
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			if (this)
+			{
+				SpawnParams.Owner = this;
+			}
+			else {
+				SpawnParams.Owner = NULL;
+			}
+			SpawnParams.Instigator = NULL;
+
+			FRotator rotation = FRotator(0.f, 0.f, 0.f);
+
+			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
+
+			if (flag == NULL)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
+				}
+			}
+			else {
+				flag->Init(Team, wasDropped);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
+				}
+			}
+		}
+	}
+}
 
 void AGPCharacter::Tick(float deltaSeconds)
 {

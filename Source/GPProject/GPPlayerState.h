@@ -20,6 +20,9 @@ public:
 		bool hasFlag = false;
 
 	UPROPERTY(Replicated)
+		bool canPickupFlag = false;
+
+	UPROPERTY(Replicated)
 		int32 numFlags = 0;
 
 	UPROPERTY(Replicated)
@@ -32,6 +35,12 @@ public:
 
 	UFUNCTION()
 		bool GetHasFlag();
+
+	UFUNCTION()
+		void SetCanPickupFlag(bool newState);
+
+	UFUNCTION()
+		bool GetCanPickupFlag();
 
 	UFUNCTION()
 		void IncrementFlags();

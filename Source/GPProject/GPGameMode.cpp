@@ -271,7 +271,7 @@ void AGPGameMode::SpawnFlag(int8 Team)
             }
         }
         else {
-			flag->Init(Team);
+			flag->Init(Team, false);
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));

@@ -88,7 +88,7 @@ void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
                 APawn* something = ((APawn*)GetOwner());
                 AController* somethingelse = something->GetController();
                 if (somethingelse) {
-                    OtherActor->TakeDamage(damage, *DamageEvent, somethingelse, this);
+                    ((AGPCharacter*)OtherActor)->ServerTakeDamage(damage, *DamageEvent, somethingelse, this);
                 }
                 else {
                     UE_LOG(LogTemp, Warning, TEXT("Somethingelse is NULL"));

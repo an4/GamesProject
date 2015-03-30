@@ -100,8 +100,13 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         void BroadcastOnBombDetonate_Implementation();
 
 		// handles damage
-		UFUNCTION()
-		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+		//UFUNCTION()
+		//float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerTakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+		bool ServerTakeDamage_Validate(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+		void ServerTakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 
 		// handles points
 		UFUNCTION()
@@ -183,6 +188,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void BroadcastOnFlagCapture();
 		void BroadcastOnFlagCapture_Implementation();
 
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSpawnFlag(FVector loc, int8 Team, bool wasDropped);
+		bool ServerSpawnFlag_Validate(FVector loc, int8 Team, bool wasDropped);
+		void ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool wasDropped);
+
 		UFUNCTION()
 		bool CanPickupFlag();
 		UFUNCTION()
@@ -220,6 +230,18 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION()
 		void Respawn();
+
+		UFUNCTION()
+		void FinishRespawn();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerSetLightIntensity(float val);
+		bool ServerSetLightIntensity_Validate(float val);
+		void ServerSetLightIntensity_Implementation(float val);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastSetLightIntensity(float val);
+		void BroadcastSetLightIntensity_Implementation(float val);
 
         UPROPERTY()
         int32 Ammo;

@@ -35,11 +35,17 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 
     static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
     PickUpSound = PickUpSoundCueLoader.Object;
+
+	timeAlive = 0.0f;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
 }
 
-void AGPFlagPickup::Init(int8 Team) {
+void AGPFlagPickup::Init(int8 Team, bool dropped) {
 	flagTeam = Team;
 	ServerSetMaterial(Team);
+	wasDropped = dropped;
 }
 
 bool AGPFlagPickup::ServerSetMaterial_Validate(int8 Team)
@@ -101,6 +107,46 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 				// Moved flag spawning into the actor so that we can call the server to do it without needing flags to have an owner
 				currentActor->OnFlagPickup(this);
 			}
+		}
+	}
+}
+
+bool AGPFlagPickup::ServerMoveToSpawn_Validate()
+{
+	return true;
+}
+
+void AGPFlagPickup::ServerMoveToSpawn_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastMoveToSpawn();
+	}
+}
+
+void AGPFlagPickup::BroadcastMoveToSpawn_Implementation()
+{
+	FVector loc;
+	if (flagTeam == 0) {
+		loc = FVector(-2300.f, -3800.f, 0.f);
+	}
+	else
+	{
+		loc = FVector(2300.f, 3800.f, 0.f);
+	}
+	SetActorLocation(loc, false);
+}
+
+void AGPFlagPickup::Tick(float DeltaSeconds)
+{
+	if (wasDropped)
+	{
+		timeAlive += DeltaSeconds;
+		if (timeAlive >= 10.f)
+		{
+			wasDropped = false;
+			timeAlive = 0.0f;
+			ServerMoveToSpawn();
 		}
 	}
 }
