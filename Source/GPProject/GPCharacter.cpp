@@ -186,8 +186,10 @@ float AGPCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 					Health -= DamageAmount;
 
 					AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
-					otherPlayer->IncreasePoints();
-
+                    if (otherPlayer)
+                    {
+                        otherPlayer->IncreasePoints();
+                    }
 					if (GEngine)
 					{
 						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(Health).Append(" HP"));
@@ -397,6 +399,7 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 				// Play Sound
 				Lazor->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
 				Lazor->SetLengthAndPitch(StartToEnd.Size() - 10.0f, Rotation.Pitch);
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lazor is not null"));
 			}
 			else
 			{
