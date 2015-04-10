@@ -82,7 +82,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		OCVSProtocolState commstate = OCVSProtocolState::INIT;
 
-		enum class ScanRequestState { NONE, SCAN, DEBUG };
+		enum class ScanRequestState { NONE, SCAN, DEBUG, INTERACTIVE };
 		ScanRequestState wantScan = ScanRequestState::NONE;
 
 		void VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec);

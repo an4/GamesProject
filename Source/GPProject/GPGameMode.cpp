@@ -326,11 +326,14 @@ void AGPGameMode::Rescan()
 // Console command implementation
 void AGPGameMode::Rescan(const FString &msg)
 {
-	if (msg.Equals(TEXT("normal"), ESearchCase::IgnoreCase)) {
+	if (msg.Equals(TEXT("n"), ESearchCase::IgnoreCase)) {
 		wantScan = ScanRequestState::SCAN;
 	}
-	else if (msg.Equals(TEXT("debug"), ESearchCase::IgnoreCase)) {
+	else if (msg.Equals(TEXT("d"), ESearchCase::IgnoreCase)) {
 		wantScan = ScanRequestState::DEBUG;
+	}
+	else if (msg.Equals(TEXT("i"), ESearchCase::IgnoreCase)) {
+		wantScan = ScanRequestState::INTERACTIVE;
 	}
 	else {
 		wantScan = ScanRequestState::NONE;
@@ -552,7 +555,22 @@ void AGPGameMode::TCPSocketListener()
 	case OCVSProtocolState::REQUEST:
 	// Need to send request, if we want a scan.
 	if (wantScan != ScanRequestState::NONE) {
-		OCVSPacketScanReq pktReq(wantScan == ScanRequestState::DEBUG);
+		OCVSPacketScanReq::ScanType mode;
+
+		switch (wantScan)
+		{
+		case AGPGameMode::ScanRequestState::DEBUG:
+			mode = OCVSPacketScanReq::ScanType::SCAN_DEBUG;
+			break;
+		case AGPGameMode::ScanRequestState::INTERACTIVE:
+			mode = OCVSPacketScanReq::ScanType::SCAN_INTERACTIVE;
+			break;
+		default:
+			mode = OCVSPacketScanReq::ScanType::SCAN;
+			break;
+		}
+
+		OCVSPacketScanReq pktReq(mode);
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff);
 		pktReq.Pack(somestuff);
