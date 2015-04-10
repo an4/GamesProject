@@ -319,8 +319,24 @@ void AGPGameMode::SpawnAmmo()
 
 void AGPGameMode::Rescan()
 {
-	wantScan = true;
+	wantScan = ScanRequestState::SCAN;
 }
+
+
+// Console command implementation
+void AGPGameMode::Rescan(const FString &msg)
+{
+	if (msg.Equals(TEXT("normal"), ESearchCase::IgnoreCase)) {
+		wantScan = ScanRequestState::SCAN;
+	}
+	else if (msg.Equals(TEXT("debug"), ESearchCase::IgnoreCase)) {
+		wantScan = ScanRequestState::DEBUG;
+	}
+	else {
+		wantScan = ScanRequestState::NONE;
+	}
+}
+
 
 void AGPGameMode::ResetBuildings()
 {
@@ -332,6 +348,14 @@ void AGPGameMode::ResetBuildings()
 		}
 	}
 }
+
+
+void AGPGameMode::PauseGame()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(0);
+}
+
 
 void AGPGameMode::UnpauseGame()
 {
@@ -483,7 +507,7 @@ void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
 //Rama's TCP Socket Listener
 void AGPGameMode::TCPSocketListener()
 {
-	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && !wantScan)) return; // TODO: We may want to do some keepalive comms whilst in request state
+	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && wantScan == ScanRequestState::NONE)) return; // TODO: We may want to do some keepalive comms whilst in request state
 
 	TArray<uint8> ReceivedData;
 	uint32 Size;
@@ -527,8 +551,8 @@ void AGPGameMode::TCPSocketListener()
 	break;
 	case OCVSProtocolState::REQUEST:
 	// Need to send request, if we want a scan.
-	if (wantScan) {
-		OCVSPacketScanReq pktReq;
+	if (wantScan != ScanRequestState::NONE) {
+		OCVSPacketScanReq pktReq(wantScan == ScanRequestState::DEBUG);
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff);
 		pktReq.Pack(somestuff);
@@ -540,7 +564,7 @@ void AGPGameMode::TCPSocketListener()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
 		commstate = OCVSProtocolState::RECEIVE;
-		wantScan = false;
+		wantScan = ScanRequestState::NONE;
 	}
 	break;
 	case OCVSProtocolState::RECEIVE:
