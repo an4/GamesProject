@@ -375,7 +375,6 @@ void AGPCharacter::BroadcastRespawn_Implementation()
 		}
 		else 
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("SETTING STATES"));
 			State->SetHadFlag(true);
 			State->SetHasFlag(false);
 			State->SetCanPickupFlag(false);
