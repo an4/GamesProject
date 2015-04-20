@@ -35,6 +35,12 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
 
+    static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject2(TEXT("Blueprint'/Game/Blueprints/BP_GPServerPawn.BP_GPServerPawn'"));
+    if (PlayerPawnObject2.Object != NULL)
+    {
+        ServerPawnClass = (UClass*)PlayerPawnObject2.Object->GeneratedClass;
+    }
+
 	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
 	if (CaptureZoneBP.Object != NULL)
 	{
@@ -93,11 +99,11 @@ void AGPGameMode::StartPlay()
 UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
-    if (PlayerController->IsServer)
+    if (PlayerController->IsServerPlayer)
     {
         return AGPServerPawn::StaticClass();
     }
-    return AGPCharacter::StaticClass();
+    return DefaultPawnClass;
 }
 
 void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)

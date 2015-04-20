@@ -13,11 +13,11 @@ void AGPPlayerController::SetupInputComponent()
     Super::SetupInputComponent();
     if (Role == ROLE_Authority && IsPrimaryPlayer())
     {
+        IsServerPlayer = true;
         InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
     }
     else
     {
-
         // set up gameplay key bindings
         InputComponent->BindAxis("MoveForward", this, &AGPPlayerController::MoveForward);
         InputComponent->BindAxis("MoveRight", this, &AGPPlayerController::MoveRight);

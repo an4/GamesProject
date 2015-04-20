@@ -31,10 +31,12 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 	public:
         virtual UClass* GetDefaultPawnClassForController(AController* InController) OVERRIDE;
-        TMapBase<int32, UClass*, false> PawnTypes;
         /** Building class to spawn */
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
+
+        UPROPERTY()
+        TSubclassOf<class AGPServerPawn> ServerPawnClass;
 
 		UPROPERTY()
 		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
