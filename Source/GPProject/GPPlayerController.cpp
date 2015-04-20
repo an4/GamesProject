@@ -10,23 +10,28 @@
 
 void AGPPlayerController::SetupInputComponent()
 {
-	Super::SetupInputComponent();
+    Super::SetupInputComponent();
+    if (Role == ROLE_Authority && IsPrimaryPlayer())
+    {
+        InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
+    }
+    else
+    {
 
-	// set up gameplay key bindings
-	InputComponent->BindAxis("MoveForward", this, &AGPPlayerController::MoveForward);
-	InputComponent->BindAxis("MoveRight", this, &AGPPlayerController::MoveRight);
-	InputComponent->BindAxis("Turn", this, &AGPPlayerController::AddControllerYawInput);
-	InputComponent->BindAxis("LookUp", this, &AGPPlayerController::AddControllerPitchInput);
+        // set up gameplay key bindings
+        InputComponent->BindAxis("MoveForward", this, &AGPPlayerController::MoveForward);
+        InputComponent->BindAxis("MoveRight", this, &AGPPlayerController::MoveRight);
+        InputComponent->BindAxis("Turn", this, &AGPPlayerController::AddControllerYawInput);
+        InputComponent->BindAxis("LookUp", this, &AGPPlayerController::AddControllerPitchInput);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AGPPlayerController::OnStartJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &AGPPlayerController::OnStopJump);
+        InputComponent->BindAction("Jump", IE_Pressed, this, &AGPPlayerController::OnStartJump);
+        InputComponent->BindAction("Jump", IE_Released, this, &AGPPlayerController::OnStopJump);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &AGPPlayerController::OnFire);
+        InputComponent->BindAction("Fire", IE_Pressed, this, &AGPPlayerController::OnFire);
 
-	InputComponent->BindAction("RemoteBombPlant", IE_Pressed, this, &AGPPlayerController::OnBombLaunch);
-	InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
-
-	InputComponent->BindAction("TriggerRescan", IE_Pressed, this, &AGPPlayerController::OnRequestRescan);
+        InputComponent->BindAction("RemoteBombPlant", IE_Pressed, this, &AGPPlayerController::OnBombLaunch);
+        InputComponent->BindAction("RemoteBombDetonate", IE_Pressed, this, &AGPPlayerController::OnBombDetonate);
+    }
 }
 
 void AGPPlayerController::JoinTeam0()
