@@ -249,6 +249,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void ServerFinishRespawn_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastSetAmmo(int32 val);
+		void BroadcastSetAmmo_Implementation(int32 val);
+
+		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastFinishRespawn();
 		void BroadcastFinishRespawn_Implementation();
 
