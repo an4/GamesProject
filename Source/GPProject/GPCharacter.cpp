@@ -357,6 +357,7 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 		{
 			BroadcastRespawn();
 		}
+		BroadcastSetAmmo(100);
 		respawnTimer = FTimerHandle();
 		GetWorld()->GetTimerManager().SetTimer(respawnTimer, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
 		if (GetWorld()->GetTimerManager().TimerExists(respawnTimer))
@@ -364,6 +365,11 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("TIMER EXISTS2"));
 		}
 	}
+}
+
+void AGPCharacter::BroadcastSetAmmo_Implementation(int32 val)
+{
+	Ammo = val;
 }
 
 // Set states so that we don't instantly repickup the flag
@@ -384,6 +390,8 @@ void AGPCharacter::BroadcastRespawn_Implementation()
 			State->SetCanPickupFlag(false);
 		}
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Setting AMMO"));
+	Ammo = 100;
 }
 
 bool AGPCharacter::ServerFinishRespawn_Validate()
@@ -401,7 +409,7 @@ void AGPCharacter::ServerFinishRespawn_Implementation()
 		FVector loc = GetActorLocation();
 		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 		Health = 100;
-		Ammo = 100;
+		//Ammo = 100;
 		if (PState->GetHadFlag() == true)
 		{
 			// Respawn the flag back at capture zone
