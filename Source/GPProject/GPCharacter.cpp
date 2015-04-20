@@ -407,7 +407,6 @@ void AGPCharacter::ServerFinishRespawn_Implementation()
 		FVector loc = GetActorLocation();
 		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 		Health = 100;
-		//Ammo = 100;
 		if (PState->GetHadFlag() == true)
 		{
 			// Respawn the flag back at capture zone
