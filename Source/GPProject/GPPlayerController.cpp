@@ -145,10 +145,15 @@ void AGPPlayerController::OnRequestRescan()
 	// Only server may rescan and access the game mode.
 	if (Role == ROLE_Authority) {
 		// TODO: Need to ensure this cast will succeed.
-		AGPGameMode *gmode = Cast<AGPGameMode>(GetWorld()->GetAuthGameMode());
-		if (gmode != NULL) {
-			gmode->wantScan = true;
-		}
+		//AGPGameMode *gmode = Cast<AGPGameMode>(GetWorld()->GetAuthGameMode());
+		//if (gmode != NULL) {
+		//	gmode->wantScan = true;
+		//}
+		
+		// Repurpose shift-k for unpause purposes.
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
 	}
 }
 
