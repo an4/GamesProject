@@ -357,8 +357,12 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 		{
 			BroadcastRespawn();
 		}
-		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
+		respawnTimer = FTimerHandle();
+		GetWorld()->GetTimerManager().SetTimer(respawnTimer, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
+		if (GetWorld()->GetTimerManager().TimerExists(respawnTimer))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("TIMER EXISTS2"));
+		}
 	}
 }
 
@@ -441,6 +445,21 @@ void AGPCharacter::BroadcastFinishRespawn_Implementation()
 			State->SetHadFlag(false);
 		}
 	}
+}
+
+bool AGPCharacter::getRespawnTimerExists()
+{
+	return (GetWorld()->GetTimerManager().TimerExists(respawnTimer));
+}
+
+float AGPCharacter::getRespawnTimeRemaining()
+{
+	if (GetWorld()->GetTimerManager().TimerExists(respawnTimer))
+	{
+		float time = GetWorld()->GetTimerManager().GetTimerRemaining(respawnTimer);
+		return time;
+	}
+	return 0.0f;
 }
 
 //void AGPCharacter::MoveForward(float Value)
