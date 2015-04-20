@@ -390,8 +390,6 @@ void AGPCharacter::BroadcastRespawn_Implementation()
 			State->SetCanPickupFlag(false);
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Setting AMMO"));
-	Ammo = 100;
 }
 
 bool AGPCharacter::ServerFinishRespawn_Validate()
