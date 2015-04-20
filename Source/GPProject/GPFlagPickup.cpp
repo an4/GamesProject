@@ -100,6 +100,7 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 		AGPPlayerState* PState = (AGPPlayerState*)currentActor->PlayerState;
 		if (PState) {
 			if (currentActor->CanPickupFlag() && PState->Team == flagTeam) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("PICKING UP FLAG"));
 				this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
 
 				//GetWorld()->DestroyActor(this, true);

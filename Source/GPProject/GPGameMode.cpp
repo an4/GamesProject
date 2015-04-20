@@ -584,7 +584,7 @@ void AGPGameMode::TCPSocketListener()
 		// 'Respawn' all characters
 		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 		{
-			ActorItr->Respawn();
+			ActorItr->ServerRespawn(true);
 		}
 
 		commstate = OCVSProtocolState::INIT;

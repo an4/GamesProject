@@ -228,11 +228,29 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION(BlueprintCallable, Category = "Health")
 		float getHealth();
 
-		UFUNCTION()
-		void Respawn();
+		UPROPERTY()
+		bool resetFlag = false;
 
 		UFUNCTION()
-		void FinishRespawn();
+		void Spawn();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerRespawn(bool shallResetFlag);
+		bool ServerRespawn_Validate(bool shallResetFlag);
+		void ServerRespawn_Implementation(bool shallResetFlag);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastRespawn();
+		void BroadcastRespawn_Implementation();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerFinishRespawn();
+		bool ServerFinishRespawn_Validate();
+		void ServerFinishRespawn_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastFinishRespawn();
+		void BroadcastFinishRespawn_Implementation();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetLightIntensity(float val);

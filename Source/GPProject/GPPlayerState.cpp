@@ -12,6 +12,7 @@ void AGPPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Ou
 	DOREPLIFETIME(AGPPlayerState, numFlags);
 	DOREPLIFETIME(AGPPlayerState, Team);
 	DOREPLIFETIME(AGPPlayerState, canPickupFlag);
+	DOREPLIFETIME(AGPPlayerState, hadFlag);
 }
 
 void AGPPlayerState::SetHasFlag(bool newState)
@@ -48,4 +49,14 @@ void AGPPlayerState::ResetFlags()
 int32 AGPPlayerState::GetNumFlags()
 {
 	return numFlags;
+}
+
+void AGPPlayerState::SetHadFlag(bool newState)
+{
+	hadFlag = newState;
+}
+
+bool AGPPlayerState::GetHadFlag()
+{
+	return hadFlag;
 }

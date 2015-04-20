@@ -69,6 +69,16 @@ void AGPCaptureZone::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCo
 		AGPPlayerState* PState = (AGPPlayerState*)currentActor->PlayerState;
 		if (PState)
 		{
+			FString str;
+			if (PState->GetHasFlag() == true)
+			{
+				str = "Has flag";
+			}
+			else
+			{
+				str = "Does not have flag";
+			}
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, str);
 			// Check we have the flag
 			if (PState->GetHasFlag() && PState->Team == cpTeam) {
 				// Tell actor to cap it!

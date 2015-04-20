@@ -149,7 +149,7 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		State->Team = Team;
-        Respawn();
+        Spawn();
 	}
 }
 
@@ -223,18 +223,22 @@ void AGPCharacter::ServerTakeDamage_Implementation(float DamageAmount, FDamageEv
 
 			int32 TheirTeam = ((AGPPlayerState*)(EventInstigator->PlayerState))->Team;
 			if (TheirTeam != OurTeam) {
-
-				Health -= DamageAmount;
-
-				AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
-				otherPlayer->IncreasePoints();
-
-				if (GEngine)
+				// Only take damage if we still have health, so we don't attempt to respawn while respawning
+				if (Health > 0)
 				{
-					if (Health <= 0)
+
+					Health -= DamageAmount;
+
+					AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
+					otherPlayer->IncreasePoints();
+
+					if (GEngine)
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-						Respawn();
+						if (Health <= 0)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
+							ServerRespawn(false);
+						}
 					}
 				}
 				//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -320,49 +324,124 @@ void AGPCharacter::BroadcastSetLightIntensity_Implementation(float val)
 	}
 }
 
-// Move this into server code??
-void AGPCharacter::Respawn()
+// Used when first spawning the actor so there's no delay
+void AGPCharacter::Spawn()
 {
 	// Play Sound
 	this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
-	AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
+
 	int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
-	bool hadFlag = PState->GetHasFlag();
-	PState->SetHasFlag(false);
-	PState->SetCanPickupFlag(false);
-	FVector loc = GetActorLocation();
-	FString str;
-	if (PState->GetHasFlag() == true)
-	{
-		str = "Has flag";
-	}
-	else
-	{
-		str = "Does not have flag";
-	}
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, str);
 	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 	Health = 100;
-    Ammo = 100;
-	// Spawn flag after moving actor so we don't immediately pick it up again
-	if (hadFlag) 
+	Ammo = 100;
+}
+
+bool AGPCharacter::ServerRespawn_Validate(bool shallResetFlag)
+{
+	return true;
+}
+
+void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
+{
+	if (Role == ROLE_Authority)
 	{
-		loc.Z = 10.f;
+		// Play Sound
+		resetFlag = shallResetFlag;
+		this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
+		AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
+		int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
+		bool hadFlag = PState->GetHasFlag();
 		ServerSetLightIntensity(0.0f);
-		ServerSpawnFlag(loc, Team, true);
-	}
-	FTimerHandle handle = FTimerHandle();
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::FinishRespawn, 3.0f);
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("We have been respawned!"));
+		FVector loc = GetActorLocation();
+		if (hadFlag)
+		{
+			BroadcastRespawn();
+		}
+		FTimerHandle handle = FTimerHandle();
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
 	}
 }
 
-void AGPCharacter::FinishRespawn()
+// Set states so that we don't instantly repickup the flag
+void AGPCharacter::BroadcastRespawn_Implementation()
 {
-	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
-	PState->SetCanPickupFlag(true);
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("SETTING STATES"));
+			State->SetHadFlag(true);
+			State->SetHasFlag(false);
+			State->SetCanPickupFlag(false);
+		}
+	}
+}
+
+bool AGPCharacter::ServerFinishRespawn_Validate()
+{
+	return true;
+}
+
+// Reset player location after delay (so we don't instantly respawn)
+void AGPCharacter::ServerFinishRespawn_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
+		int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
+		FVector loc = GetActorLocation();
+		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
+		Health = 100;
+		Ammo = 100;
+		if (PState->GetHadFlag() == true)
+		{
+			// Respawn the flag back at capture zone
+			if (resetFlag == true)
+			{
+				if (Team == 0)
+				{
+					ServerSpawnFlag(SpawnPoints[1], Team, false);
+				}
+				else
+				{
+					ServerSpawnFlag(SpawnPoints[0], Team, true);
+				}
+				resetFlag = false;
+			}
+			// Drop the flag at our feet
+			else
+			{
+				loc.Z = 10.f;
+				ServerSpawnFlag(loc, Team, true);
+			}
+		}
+		FTimerHandle handle = FTimerHandle();
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::BroadcastFinishRespawn, 2.0f);
+	}
+}
+
+// Reset states after player has been moved back to spawn on ALL clients
+void AGPCharacter::BroadcastFinishRespawn_Implementation()
+{
+	if (GetController() != NULL)
+	{
+		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
+		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
+		if (State == NULL)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+		}
+		else {
+			State->SetCanPickupFlag(true);
+			State->SetHadFlag(false);
+		}
+	}
 }
 
 //void AGPCharacter::MoveForward(float Value)
@@ -594,7 +673,7 @@ bool AGPCharacter::CanPickupFlag()
 {
 	// Make sure we're actually looking at the right player before sending through
 	if ((AGPPlayerState*)PlayerState != NULL) {
-		return !(((AGPPlayerState*)PlayerState)->GetHasFlag() && ((AGPPlayerState*)PlayerState)->GetCanPickupFlag());
+		return (!(((AGPPlayerState*)PlayerState)->GetHasFlag()) && ((AGPPlayerState*)PlayerState)->GetCanPickupFlag());
 	}
 	else
 	{
@@ -909,7 +988,8 @@ void AGPCharacter::Tick(float deltaSeconds)
 	if (GetActorLocation().Z <= -5000)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
-		Respawn();
+		// Move flag back to capture area
+		ServerRespawn(true);
 	}
 }
 
