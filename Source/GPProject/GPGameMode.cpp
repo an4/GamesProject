@@ -355,16 +355,20 @@ void AGPGameMode::ResetBuildings()
 
 void AGPGameMode::PauseGame()
 {
-	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	gs->SetState(0);
+	if (Role == ROLE_Authority) {
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(0);
+	}
 }
 
 
 void AGPGameMode::UnpauseGame()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GO GO GO"));
-	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	gs->SetState(1);
+	if (Role == ROLE_Authority) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GO GO GO"));
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetState(1);
+	}
 }
 
 /////////////////////////////////////////////////////
