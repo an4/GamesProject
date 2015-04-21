@@ -292,6 +292,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UFUNCTION()
         void OnAmmoPickUp(int32 Value);
 
+        UFUNCTION()
+        bool CanPlaceBomb();
+
+        UFUNCTION()
+        bool CanDetonate();
+
     protected:
         virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		FVector SpawnPoints[2];

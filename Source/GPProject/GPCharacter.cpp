@@ -530,6 +530,18 @@ bool AGPCharacter::CanFire()
 	return (Health > 0.0f && gs->GetState() == 1 && Ammo > 0);
 }
 
+bool AGPCharacter::CanDetonate()
+{
+    AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    return (Health > 0.0f && gs->GetState() == 1);
+}
+
+bool AGPCharacter::CanPlaceBomb()
+{
+    AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+    return (Health > 0.0f && gs->GetState() == 1 && Ammo > 5 && RemoteBombList.Num() < MaxBombs);
+}
+
 void AGPCharacter::OnFire()
 {
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
@@ -592,8 +604,9 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 void AGPCharacter::OnBombLaunch()
 {
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
-	if (CanFire() && RemoteBombList.Num() < MaxBombs)
+	if (CanPlaceBomb())
 	{
+        Ammo -= 5;
 		ServerOnBombLaunch();
 	}
 }
@@ -601,7 +614,7 @@ void AGPCharacter::OnBombLaunch()
 bool AGPCharacter::ServerOnBombLaunch_Validate()
 {
 	// Only allow the character to fire if they have health.
-	return (CanFire() && RemoteBombList.Num() < MaxBombs);
+	return (CanPlaceBomb());
 }
 
 void AGPCharacter::ServerOnBombLaunch_Implementation()
@@ -650,7 +663,7 @@ void AGPCharacter::BroadcastOnBombLaunch_Implementation(FVector CameraLoc, FRota
 void AGPCharacter::OnBombDetonate()
 {
 	// WARNING: This condition -MUST- match that in validate, else the client may be disconnected!
-	if (CanFire() && BombPlanted)
+	if (BombPlanted && CanDetonate())
 	{
 		ServerOnBombDetonate();
 	}
@@ -659,7 +672,7 @@ void AGPCharacter::OnBombDetonate()
 bool AGPCharacter::ServerOnBombDetonate_Validate()
 {
 	// Only allow the character to fire if they have health.
-	return (CanFire() && BombPlanted);
+	return (CanDetonate() && BombPlanted);
 }
 
 void AGPCharacter::ServerOnBombDetonate_Implementation()
