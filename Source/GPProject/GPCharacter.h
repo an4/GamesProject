@@ -134,10 +134,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         USkeletalMeshComponent* FirstPersonMesh;
 
 		// Meshes for the weapons wooo~
-		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-		UStaticMeshComponent* WeaponMesh;
-		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-		UStaticMeshComponent* WeaponMeshFirst;
+		//UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		//UStaticMeshComponent* WeaponMesh;
+		//UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		//UStaticMeshComponent* WeaponMeshFirst;
 
 		/** Property to store the character's health. */
 		UPROPERTY(Replicated)
@@ -237,6 +237,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UPROPERTY()
 		bool resetFlag = false;
 
+		FTimerHandle respawnTimer = FTimerHandle();
+
 		UFUNCTION()
 		void Spawn();
 
@@ -244,6 +246,10 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void ServerRespawn(bool shallResetFlag);
 		bool ServerRespawn_Validate(bool shallResetFlag);
 		void ServerRespawn_Implementation(bool shallResetFlag);
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastRespawnTimer();
+		void BroadcastRespawnTimer_Implementation();
 
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastRespawn();
@@ -261,6 +267,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastFinishRespawn();
 		void BroadcastFinishRespawn_Implementation();
+
+		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
+		bool getRespawnTimerExists();
+
+		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
+		float getRespawnTimeRemaining();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetLightIntensity(float val);

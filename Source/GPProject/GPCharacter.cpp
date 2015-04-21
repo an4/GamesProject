@@ -29,11 +29,11 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonMesh->CastShadow = false;
 
 	// Create mesh components (two copies) for the weapon
-	WeaponMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponMesh"));
-	WeaponMesh->SetOwnerNoSee(true);
+	//WeaponMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponMesh"));
+	//WeaponMesh->SetOwnerNoSee(true);
 
-	WeaponMeshFirst = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponFirstMesh"));
-	WeaponMeshFirst->SetOnlyOwnerSee(true);
+	//WeaponMeshFirst = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponFirstMesh"));
+	//WeaponMeshFirst->SetOnlyOwnerSee(true);
 
 	// everyone but the owner can see the regular body mesh
 	GetMesh()->SetOwnerNoSee(true);
@@ -115,15 +115,17 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
 		GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-		WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-		WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		//WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		//WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
 	}
 	else
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
 		GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
-		WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-		WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		//WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		//WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 }
 
@@ -367,8 +369,10 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 			BroadcastRespawn();
 		}
 		BroadcastSetAmmo(100);
-		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
+		// Broadcast the timer so that it's a valid timer on all clients
+		BroadcastRespawnTimer();
+		//respawnTimer = FTimerHandle();
+		GetWorld()->GetTimerManager().SetTimer(respawnTimer, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
 	}
 }
 
@@ -376,6 +380,13 @@ void AGPCharacter::BroadcastSetAmmo_Implementation(int32 val)
 {
 	Ammo = val;
 }
+
+void AGPCharacter::BroadcastRespawnTimer_Implementation()
+{
+	// Set the timer to not actually do anything for clients so that we don't call ServerFinishRespawn half a dozen times
+	GetWorld()->GetTimerManager().SetTimer(respawnTimer, 3.0f, false, -1.0f);
+}
+
 
 // Set states so that we don't instantly repickup the flag
 void AGPCharacter::BroadcastRespawn_Implementation()
@@ -455,6 +466,21 @@ void AGPCharacter::BroadcastFinishRespawn_Implementation()
 			State->SetHadFlag(false);
 		}
 	}
+}
+
+bool AGPCharacter::getRespawnTimerExists()
+{
+	return (GetWorld()->GetTimerManager().TimerExists(respawnTimer));
+}
+
+float AGPCharacter::getRespawnTimeRemaining()
+{
+	if (GetWorld()->GetTimerManager().TimerExists(respawnTimer))
+	{
+		float time = GetWorld()->GetTimerManager().GetTimerRemaining(respawnTimer);
+		return time;
+	}
+	return 0.0f;
 }
 
 //void AGPCharacter::MoveForward(float Value)
