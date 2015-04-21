@@ -101,7 +101,7 @@ UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
     if (PlayerController->IsServerPlayer)
     {
-        return AGPServerPawn::StaticClass();
+        return ServerPawnClass;
     }
     return DefaultPawnClass;
 }

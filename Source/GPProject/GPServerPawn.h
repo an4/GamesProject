@@ -12,7 +12,10 @@ class GPPROJECT_API AGPServerPawn : public APawn
 
 public:
 	// Sets default values for this pawn's properties
-	AGPServerPawn();
+    AGPServerPawn(const FObjectInitializer& ObjectInitializer);
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+    UCameraComponent* FirstPersonCameraComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

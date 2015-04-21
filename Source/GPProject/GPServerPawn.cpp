@@ -5,18 +5,23 @@
 
 
 // Sets default values
-AGPServerPawn::AGPServerPawn()
+AGPServerPawn::AGPServerPawn(const FObjectInitializer& ObjectInitializer)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    // Create a CameraComponent 
+    //FirstPersonCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
+    //FirstPersonCameraComponent->AttachParent = RootComponent;
+    //FirstPersonCameraComponent->SetWorldLocation(FVector(0, 0, 2000));
+    //FirstPersonCameraComponent->AddWorldRotation(FRotator(270, 0, 180));
 }   
 
 // Called when the game starts or when spawned
 void AGPServerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    SetActorLocation(FVector(0, 0, 5500));
 }
 
 // Called every frame
@@ -32,4 +37,3 @@ void AGPServerPawn::SetupPlayerInputComponent(class UInputComponent* InputCompon
 	Super::SetupPlayerInputComponent(InputComponent);
 
 }
-
