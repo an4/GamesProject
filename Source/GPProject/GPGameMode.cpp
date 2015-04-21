@@ -271,7 +271,7 @@ void AGPGameMode::SpawnFlag(int8 Team)
             }
         }
         else {
-			flag->Init(Team);
+			flag->Init(Team, false);
             if (GEngine)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
@@ -626,7 +626,7 @@ void AGPGameMode::TCPSocketListener()
 		// 'Respawn' all characters
 		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 		{
-			ActorItr->Respawn();
+			ActorItr->ServerRespawn(true);
 		}
 
 		commstate = OCVSProtocolState::INIT;

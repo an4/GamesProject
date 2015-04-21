@@ -15,6 +15,14 @@ class GPPROJECT_API AGPFlagPickup : public AGPPickup
 	
     AGPFlagPickup(const FObjectInitializer& ObjectInitializer);
 
+	void Tick(float DeltaSeconds) override;
+
+	UPROPERTY(Replicated)
+	float timeAlive;
+
+	UPROPERTY(Replicated)
+	bool wasDropped;
+
 public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 	UMaterial* GreenMaterial;
@@ -23,7 +31,7 @@ public:
 	UMaterial* RedMaterial;
 
 	UFUNCTION()
-	void Init(int8 Team);
+	void Init(int8 Team, bool isNew);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerSetMaterial(int8 Team);
@@ -33,6 +41,15 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void BroadcastSetMaterial(int8 Team);
 	void BroadcastSetMaterial_Implementation(int8 Team);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerMoveToSpawn();
+	bool ServerMoveToSpawn_Validate();
+	void ServerMoveToSpawn_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastMoveToSpawn();
+	void BroadcastMoveToSpawn_Implementation();
 
 	UFUNCTION()
 	void ClientOnlySetMaterial();

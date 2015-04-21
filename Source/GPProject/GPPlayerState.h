@@ -20,10 +20,16 @@ public:
 		bool hasFlag = false;
 
 	UPROPERTY(Replicated)
+		bool canPickupFlag = true;
+
+	UPROPERTY(Replicated)
 		int32 numFlags = 0;
 
 	UPROPERTY(Replicated)
 		int8 Team;
+
+	UPROPERTY(Replicated)
+		bool hadFlag = false;
 
 	void SetupTeam();
 
@@ -32,6 +38,18 @@ public:
 
 	UFUNCTION()
 		bool GetHasFlag();
+
+	UFUNCTION()
+		void SetHadFlag(bool newState);
+
+	UFUNCTION()
+		bool GetHadFlag();
+
+	UFUNCTION()
+		void SetCanPickupFlag(bool newState);
+
+	UFUNCTION()
+		bool GetCanPickupFlag();
 
 	UFUNCTION()
 		void IncrementFlags();

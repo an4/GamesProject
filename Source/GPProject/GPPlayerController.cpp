@@ -55,32 +55,38 @@ void AGPPlayerController::MoveForward(float Value)
 {
 	// Check that the game is not paused before allowing movement
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-    if (GetCharacter() != NULL && (Value != 0.0f) && (gs->GetState() == 1))
-    {
-        // find out which way is forward
-        FRotator Rotation = GetControlRotation();
-        // Limit pitch when walking or falling
-		if (GetCharacter()->GetCharacterMovement()->IsMovingOnGround() || GetCharacter()->GetCharacterMovement()->IsFalling())
-        {
-            Rotation.Pitch = 0.0f;
-        }
-        // add movement in that direction
-        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-        GetCharacter()->AddMovementInput(Direction, Value);
+	if (GetCharacter() != NULL)
+	{
+		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1))
+		{
+			// find out which way is forward
+			FRotator Rotation = GetControlRotation();
+			// Limit pitch when walking or falling
+			if (GetCharacter()->GetCharacterMovement()->IsMovingOnGround() || GetCharacter()->GetCharacterMovement()->IsFalling())
+			{
+				Rotation.Pitch = 0.0f;
+			}
+			// add movement in that direction
+			const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+			GetCharacter()->AddMovementInput(Direction, Value);
+		}
     }
 }
 
 void AGPPlayerController::MoveRight(float Value)
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-    if ((GetCharacter() != NULL) && (Value != 0.0f) && (gs->GetState() == 1))
-    {
-        // find out which way is right
-        const FRotator Rotation = GetControlRotation();
-        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-        // add movement in that direction
-        GetCharacter()->AddMovementInput(Direction, Value);
-    }
+	if (GetCharacter() != NULL)
+	{
+		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1))
+		{
+			// find out which way is right
+			const FRotator Rotation = GetControlRotation();
+			const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+			// add movement in that direction
+			GetCharacter()->AddMovementInput(Direction, Value);
+		}
+	}
 }
 
 void AGPPlayerController::AddControllerYawInput(float Value)
