@@ -62,13 +62,18 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         UFUNCTION()
 		void SpawnHealth();
 
-		UFUNCTION()
+		UFUNCTION(exec)
+		void Rescan(const FString &opt);
+
 		void Rescan();
 
-		UFUNCTION()
+		UFUNCTION(exec)
 		void ResetBuildings();
 
-		UFUNCTION()
+		UFUNCTION(exec)
+		void PauseGame();
+
+		UFUNCTION(exec)
 		void UnpauseGame();
 
         UFUNCTION()
@@ -81,7 +86,8 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		OCVSProtocolState commstate = OCVSProtocolState::INIT;
 
-		bool wantScan = false;
+		enum class ScanRequestState { NONE, SCAN, DEBUG, INTERACTIVE };
+		ScanRequestState wantScan = ScanRequestState::NONE;
 
 		void VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec);
 
