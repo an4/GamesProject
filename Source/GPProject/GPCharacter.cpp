@@ -28,6 +28,13 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
 
+	// Create mesh components (two copies) for the weapon
+	WeaponMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponMesh"));
+	WeaponMesh->SetOwnerNoSee(true);
+
+	WeaponMeshFirst = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("WeaponFirstMesh"));
+	WeaponMeshFirst->SetOnlyOwnerSee(true);
+
 	// everyone but the owner can see the regular body mesh
 	GetMesh()->SetOwnerNoSee(true);
 
@@ -107,14 +114,16 @@ void AGPCharacter::BroadcastSetMaterial_Implementation(int8 Team)
 	if (Team == 0)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding green material to player"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
-		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
+		WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(GreenMaterial, this));
 	}
 	else
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Adding Red Material to player"));
-		GetMesh()->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
-		FirstPersonMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		GetMesh()->SetMaterial(1, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		WeaponMeshFirst->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+		WeaponMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 }
 
