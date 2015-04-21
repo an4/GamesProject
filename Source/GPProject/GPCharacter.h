@@ -262,11 +262,6 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void BroadcastFinishRespawn();
 		void BroadcastFinishRespawn_Implementation();
 
-		UFUNCTION(BlueprintCallable, Category = "RespawnTimer", Server, Reliable, WithValidation)
-		void ServerGetRespawnTimerExists();
-		bool ServerGetRespawnTimerExists_Validate();
-		void ServerGetRespawnTimerExists_Implementation();
-
 		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
 		bool getRespawnTimerExists();
 

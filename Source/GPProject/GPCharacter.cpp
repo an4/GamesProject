@@ -376,6 +376,7 @@ void AGPCharacter::BroadcastRespawnTimer_Implementation()
 	GetWorld()->GetTimerManager().SetTimer(respawnTimer, 3.0f, false, -1.0f);
 }
 
+
 // Set states so that we don't instantly repickup the flag
 void AGPCharacter::BroadcastRespawn_Implementation()
 {
@@ -453,19 +454,6 @@ void AGPCharacter::BroadcastFinishRespawn_Implementation()
 			State->SetCanPickupFlag(true);
 			State->SetHadFlag(false);
 		}
-	}
-}
-
-bool AGPCharacter::ServerGetRespawnTimerExists_Validate()
-{
-	return true;
-}
-
-void AGPCharacter::ServerGetRespawnTimerExists_Implementation()
-{
-	if (Role == ROLE_Authority)
-	{
-		//respawnTimerExists = GetWorld()->GetTimeManager().TimerExists(respawnTimer));
 	}
 }
 
