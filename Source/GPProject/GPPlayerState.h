@@ -36,7 +36,7 @@ public:
 	UFUNCTION()
 		void SetHasFlag(bool newState);
 
-	UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Flag")
 		bool GetHasFlag();
 
 	UFUNCTION()

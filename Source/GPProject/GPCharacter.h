@@ -133,6 +133,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
         UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
         USkeletalMeshComponent* FirstPersonMesh;
 
+		// Meshes for the weapons wooo~
+		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		UStaticMeshComponent* WeaponMesh;
+		UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+		UStaticMeshComponent* WeaponMeshFirst;
+
 		/** Property to store the character's health. */
 		UPROPERTY(Replicated)
 		float Health;
