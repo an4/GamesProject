@@ -358,18 +358,22 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 			BroadcastRespawn();
 		}
 		BroadcastSetAmmo(100);
-		respawnTimer = FTimerHandle();
+		// Broadcast the timer so that it's a valid timer on all clients
+		BroadcastRespawnTimer();
+		//respawnTimer = FTimerHandle();
 		GetWorld()->GetTimerManager().SetTimer(respawnTimer, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
-		if (GetWorld()->GetTimerManager().TimerExists(respawnTimer))
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("TIMER EXISTS2"));
-		}
 	}
 }
 
 void AGPCharacter::BroadcastSetAmmo_Implementation(int32 val)
 {
 	Ammo = val;
+}
+
+void AGPCharacter::BroadcastRespawnTimer_Implementation()
+{
+	// Set the timer to not actually do anything for clients so that we don't call ServerFinishRespawn half a dozen times
+	GetWorld()->GetTimerManager().SetTimer(respawnTimer, 3.0f, false, -1.0f);
 }
 
 // Set states so that we don't instantly repickup the flag
@@ -449,6 +453,19 @@ void AGPCharacter::BroadcastFinishRespawn_Implementation()
 			State->SetCanPickupFlag(true);
 			State->SetHadFlag(false);
 		}
+	}
+}
+
+bool AGPCharacter::ServerGetRespawnTimerExists_Validate()
+{
+	return true;
+}
+
+void AGPCharacter::ServerGetRespawnTimerExists_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		//respawnTimerExists = GetWorld()->GetTimeManager().TimerExists(respawnTimer));
 	}
 }
 
