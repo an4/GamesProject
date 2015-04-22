@@ -15,6 +15,7 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
     bool InTeam = false;
 public:
 	virtual void SetupInputComponent() override;
+    bool IsServerPlayer = false;
 
     UFUNCTION(BlueprintCallable, Category = "Team")
 	void JoinTeam0();

@@ -30,9 +30,13 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 	AGPGameMode(const class FObjectInitializer& ObjectInitializer);
 
 	public:
-		/** Building class to spawn */
+        virtual UClass* GetDefaultPawnClassForController(AController* InController) OVERRIDE;
+        /** Building class to spawn */
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
+
+        UPROPERTY()
+        TSubclassOf<class AGPServerPawn> ServerPawnClass;
 
 		UPROPERTY()
 		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
