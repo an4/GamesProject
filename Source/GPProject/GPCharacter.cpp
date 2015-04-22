@@ -362,6 +362,7 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 		bool hadFlag = PState->GetHasFlag();
 		ServerSetLightIntensity(0.0f);
 		FVector loc = GetActorLocation();
+		deathLoc = GetActorLocation();
 		if (hadFlag)
 		{
 			BroadcastRespawn();
@@ -371,6 +372,13 @@ void AGPCharacter::ServerRespawn_Implementation(bool shallResetFlag)
 		BroadcastRespawnTimer();
 		//respawnTimer = FTimerHandle();
 		GetWorld()->GetTimerManager().SetTimer(respawnTimer, this, &AGPCharacter::ServerFinishRespawn, 3.0f);
+		loc.Z = -500.f;
+		SetActorLocationAndRotation(loc, FRotator::ZeroRotator, false);
+		if (hadFlag)
+		{
+			FTimerHandle handle = FTimerHandle();
+			GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::ServerRespawnDropFlag, 0.2f);
+		}
 	}
 }
 
@@ -385,6 +393,39 @@ void AGPCharacter::BroadcastRespawnTimer_Implementation()
 	GetWorld()->GetTimerManager().SetTimer(respawnTimer, 3.0f, false, -1.0f);
 }
 
+bool AGPCharacter::ServerRespawnDropFlag_Validate()
+{
+	return true;
+}
+
+void AGPCharacter::ServerRespawnDropFlag_Implementation()
+{
+	if (Role == ROLE_Authority)
+	{
+		AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
+		int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
+		// Respawn the flag back at capture zone
+		if (resetFlag == true)
+		{
+			if (Team == 0)
+			{
+				ServerSpawnFlag(SpawnPoints[1], Team, false);
+			}
+			else
+			{
+				ServerSpawnFlag(SpawnPoints[0], Team, true);
+			}
+			resetFlag = false;
+		}
+		// Drop the flag at our feet
+		else
+		{
+			FVector loc = deathLoc;
+			loc.Z = 10.f;
+			ServerSpawnFlag(loc, Team, true);
+		}
+	}
+}
 
 // Set states so that we don't instantly repickup the flag
 void AGPCharacter::BroadcastRespawn_Implementation()
@@ -418,33 +459,10 @@ void AGPCharacter::ServerFinishRespawn_Implementation()
 	{
 		AGPPlayerState * PState = (AGPPlayerState*)PlayerState;
 		int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
-		FVector loc = GetActorLocation();
-		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 		Health = 100;
-		if (PState->GetHadFlag() == true)
-		{
-			// Respawn the flag back at capture zone
-			if (resetFlag == true)
-			{
-				if (Team == 0)
-				{
-					ServerSpawnFlag(SpawnPoints[1], Team, false);
-				}
-				else
-				{
-					ServerSpawnFlag(SpawnPoints[0], Team, true);
-				}
-				resetFlag = false;
-			}
-			// Drop the flag at our feet
-			else
-			{
-				loc.Z = 10.f;
-				ServerSpawnFlag(loc, Team, true);
-			}
-		}
+		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
 		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::BroadcastFinishRespawn, 2.0f);
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::BroadcastFinishRespawn, 1.0f);
 	}
 }
 
@@ -1035,7 +1053,7 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 void AGPCharacter::Tick(float deltaSeconds)
 {
 	FVector ActorLocation = GetActorLocation();
-	if (GetActorLocation().Z <= -5000)
+	if (GetActorLocation().Z <= -100000 && Health > 0)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
 		// Move flag back to capture area
