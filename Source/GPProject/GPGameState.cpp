@@ -37,6 +37,8 @@ void AGPGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 	// Replicate to everyone so that we don't have to broadcast server functions
 	DOREPLIFETIME(AGPGameState, gameState);
 	DOREPLIFETIME(AGPGameState, flagLeader);
+	DOREPLIFETIME(AGPGameState, team1Flags);
+	DOREPLIFETIME(AGPGameState, team0Flags);
 }
 
 void AGPGameState::SetState(int32 newState)
@@ -56,6 +58,8 @@ int32 AGPGameState::GetFlagLeader()
 
 void AGPGameState::UpdateFlagLeader()
 {
+	int32 team0 = 0;
+	int32 team1 = 0;
 	TArray<class APlayerState*>PStates = PlayerArray;
 	if (PStates[0])
 	{
@@ -63,10 +67,41 @@ void AGPGameState::UpdateFlagLeader()
 		{
 			AGPPlayerState* PState = (AGPPlayerState*)PStates[i];
 			int32 numFlags = PState->GetNumFlags();
-			if (numFlags > flagLeader)
+			int8 team = PState->Team;
+			if (team == 0)
 			{
-				flagLeader = numFlags;
+				team0 += numFlags;
+			}
+			else if (team == 1)
+			{
+				team1 += numFlags;
 			}
 		}
+		team0Flags = team0;
+		team1Flags = team1;
+		if (team0Flags > team1Flags)
+		{
+			flagLeader = 0;
+		}
+		else
+		{
+			flagLeader = 1;
+		}
+	}
+}
+
+int32 AGPGameState::GetTeamFlags(int32 team)
+{
+	if (team == 0)
+	{
+		return team0Flags;
+	}
+	else if (team == 1)
+	{
+		return team1Flags;
+	}
+	else
+	{
+		return 0;
 	}
 }
