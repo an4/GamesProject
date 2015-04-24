@@ -9,6 +9,7 @@
 #include "EngineUtils.h"
 #include "GPCaptureZone.h"
 #include "GPCharacter.h"
+#include "GPServerPawn.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -34,6 +35,12 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
         DefaultPawnClass = (UClass*)PlayerPawnObject.Object->GeneratedClass;
     }
 
+    static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject2(TEXT("Blueprint'/Game/Blueprints/BP_GPServerPawn.BP_GPServerPawn'"));
+    if (PlayerPawnObject2.Object != NULL)
+    {
+        ServerPawnClass = (UClass*)PlayerPawnObject2.Object->GeneratedClass;
+    }
+
 	static ConstructorHelpers::FObjectFinder<UBlueprint> CaptureZoneBP(TEXT("Blueprint'/Game/Blueprints/BP_GPCaptureZone.BP_GPCaptureZone'"));
 	if (CaptureZoneBP.Object != NULL)
 	{
@@ -46,9 +53,21 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 void AGPGameMode::StartPlay()
 {
 	Super::StartPlay();
-
+    //AGPPlayerController* ServerController;
 	if (Role == ROLE_Authority)
 	{
+        /*for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+        {
+            if (Cast<AGPPlayerController>(Iterator->Get())->IsServer)
+            {
+                ServerController = Cast<AGPPlayerController>(Iterator->Get());
+            }
+        }
+        ServerController->GetPawn()->Destroy();
+        FActorSpawnParameters params;
+        World->SpawnActor<AGPCaptureZone>(CaptureZoneBPClass, centre, rotation, SpawnParams);
+        //ServerController->*/
+
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
 		// Spawn the capture zone in the center
 		SpawnCaptureZone(FVector(2300.0f, 3800.0f, 112.0f), FRotator::ZeroRotator, 0);
@@ -75,6 +94,16 @@ void AGPGameMode::StartPlay()
 		}
 	}
 
+}
+
+UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
+{
+    AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
+    if (PlayerController->IsServerPlayer)
+    {
+        return ServerPawnClass;
+    }
+    return DefaultPawnClass;
 }
 
 void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)

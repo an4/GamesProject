@@ -237,6 +237,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UPROPERTY()
 		bool resetFlag = false;
 
+		FTimerHandle respawnTimer = FTimerHandle();
+
+		UPROPERTY(Replicated)
+		FVector deathLoc;
+
 		UFUNCTION()
 		void Spawn();
 
@@ -246,8 +251,17 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void ServerRespawn_Implementation(bool shallResetFlag);
 
 		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastRespawnTimer();
+		void BroadcastRespawnTimer_Implementation();
+
+		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastRespawn();
 		void BroadcastRespawn_Implementation();
+
+		UFUNCTION(Server, Reliable, WithValidation)
+		void ServerRespawnDropFlag();
+		bool ServerRespawnDropFlag_Validate();
+		void ServerRespawnDropFlag_Implementation();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerFinishRespawn();
@@ -261,6 +275,12 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		UFUNCTION(NetMulticast, Reliable)
 		void BroadcastFinishRespawn();
 		void BroadcastFinishRespawn_Implementation();
+
+		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
+		bool getRespawnTimerExists();
+
+		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
+		float getRespawnTimeRemaining();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetLightIntensity(float val);

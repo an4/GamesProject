@@ -26,6 +26,12 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UPROPERTY(Replicated)
 		int32 gameState;
 
+		UPROPERTY(Replicated)
+		int32 team1Flags = 0;
+
+		UPROPERTY(Replicated)
+		int32 team0Flags = 0;
+
 		UFUNCTION()
 		void SetState(int32 newState);
 
@@ -38,5 +44,7 @@ class GPPROJECT_API AGPGameState : public AGameState
         UFUNCTION(BlueprintCallable, Category = "Flag")
 		int32 GetFlagLeader();
 
+		UFUNCTION(BlueprintCallable, Category = "Flag")
+		int32 GetTeamFlags(int32 team);
 	
 };
