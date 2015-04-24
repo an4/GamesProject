@@ -18,7 +18,7 @@ AGPAmmoPickup::AGPAmmoPickup(const FObjectInitializer& ObjectInitializer)
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPAmmoPickup::OnOverlapBegin);
 
-    Value = FMath::RandRange(10, 25);
+    Value = FMath::RandRange(50, 100);
 }
 
 void AGPAmmoPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -48,7 +48,7 @@ void AGPAmmoPickup::SpawnAmmo(class AActor* AmmoOwner)
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-2950., -4450., 50.), FVector(2950., 4450., 50.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2800., -4300., 50.), FVector(2800., 4300., 50.)));
 
         AGPAmmoPickup* ammo = World->SpawnActor<AGPAmmoPickup>(AGPAmmoPickup::StaticClass(), location, rotation, SpawnParams);
     }
