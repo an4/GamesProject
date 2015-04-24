@@ -339,10 +339,13 @@ void AGPCharacter::Spawn()
 	// Play Sound
 	this->PlaySoundOnActor(RespawnSound, 1.0f, 3.0f);
 
-	int8 Team = Cast<AGPPlayerState>(PlayerState)->Team;
-	SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
-	Health = 100;
-	Ammo = 100;
+	AGPPlayerState *pstate = Cast<AGPPlayerState>(PlayerState);
+	if (pstate != NULL) {
+		int8 Team = pstate->Team;
+		SetActorLocationAndRotation(SpawnPoints[Team], FRotator::ZeroRotator, false);
+		Health = 100;
+		Ammo = 100;
+	}
 }
 
 bool AGPCharacter::ServerRespawn_Validate(bool shallResetFlag)
