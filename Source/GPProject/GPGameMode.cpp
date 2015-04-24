@@ -321,7 +321,7 @@ void AGPGameMode::SpawnHealth()
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-3000., -4500., 50.), FVector(3000., 4500., 50.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2800., -4300., 50.), FVector(2800., 4300., 50.)));
 
         AGPHealthPickup* health = World->SpawnActor<AGPHealthPickup>(AGPHealthPickup::StaticClass(), location, rotation, SpawnParams);
     }
@@ -339,7 +339,7 @@ void AGPGameMode::SpawnAmmo()
         SpawnParams.Instigator = NULL;
 
         FRotator rotation = FRotator(0.f, 0.f, 0.f);
-        FVector location = FMath::RandPointInBox(FBox(FVector(-2950., -4450., 50.), FVector(2950., 4450., 50.)));
+        FVector location = FMath::RandPointInBox(FBox(FVector(-2800., -4300., 50.), FVector(2800., 4300., 50.)));
 
         AGPAmmoPickup* ammo = World->SpawnActor<AGPAmmoPickup>(AGPAmmoPickup::StaticClass(), location, rotation, SpawnParams);
     }
