@@ -82,10 +82,18 @@ void AGPGameState::UpdateFlagLeader()
 		if (team0Flags > team1Flags)
 		{
 			flagLeader = 0;
+			if (team0Flags >= 2)
+			{
+				GameEndCondition(0);
+			}
 		}
 		else
 		{
 			flagLeader = 1;
+			if (team1Flags >= 2)
+			{
+				GameEndCondition(1);
+			}
 		}
 	}
 }

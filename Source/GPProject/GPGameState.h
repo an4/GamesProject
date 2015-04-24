@@ -46,5 +46,7 @@ class GPPROJECT_API AGPGameState : public AGameState
 
 		UFUNCTION(BlueprintCallable, Category = "Flag")
 		int32 GetTeamFlags(int32 team);
-	
+
+		UFUNCTION(BlueprintImplementableEvent, Category = "Game End")
+		virtual void GameEndCondition(int32 team);
 };

@@ -41,6 +41,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY()
 		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
 
+		UPROPERTY()
+		TSubclassOf<class AGPGameState> GameStateBPClass;
+
 		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale);
 
 		UFUNCTION()

@@ -47,6 +47,12 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UBlueprint> GameStateBP(TEXT("Blueprint'/Game/Blueprints/BP_GPGameState.BP_GPGameState'"));
+	if (GameStateBP.Object != NULL)
+	{
+		GameStateBPClass = (UClass*)GameStateBP.Object->GeneratedClass;
+	}
+
 	tickCount = 0.0;
 }
 
@@ -69,7 +75,15 @@ void AGPGameMode::StartPlay()
         //ServerController->*/
 
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
-		// Spawn the capture zone in the center
+		// Spawn in the GameState BP
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = NULL;
+			World->SpawnActor<AGPGameState>(GameStateBPClass, FVector(0.f, 0.f, -100.0f), FRotator::ZeroRotator, SpawnParams);
+		}
 		SpawnCaptureZone(FVector(2300.0f, 3800.0f, 112.0f), FRotator::ZeroRotator, 0);
 		SpawnCaptureZone(FVector(-2300.0f, -3800.0f, 112.0f), FRotator::ZeroRotator, 1);
 		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
