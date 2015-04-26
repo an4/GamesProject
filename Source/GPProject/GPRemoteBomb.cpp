@@ -13,6 +13,9 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	BombCollisionComp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("BoxComp"));
 	BombCollisionComp->BodyInstance.SetCollisionProfileName("RemoteBomb");
 	//BombCollisionComp->InitBoxExtent(FVector(5, 5, 5));
+	BombCollisionComp->SetBoxExtent(FVector(5, 5, 5));
+	BombCollisionComp->UpdateCollisionProfile();
+
 	BombCollisionComp->OnComponentHit.AddDynamic(this, &AGPRemoteBomb::OnHit);
 	RootComponent = BombCollisionComp;
 
