@@ -12,6 +12,8 @@
 #include "GPServerPawn.h"
 #include "GPGameInstance.h"
 
+#include "CoreMisc.h"
+
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
 #include "GPKinectAPI/OCVSPacketScanReq.h"
@@ -100,9 +102,27 @@ void AGPGameMode::StartPlay()
 UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
-    if (PlayerController->IsServerPlayer || ((UGPGameInstance*)GetGameInstance())->isProjection)
+    
+    TArray<FString> OutStrings;
+
+    if (PlayerController->IsServerPlayer)
     {
         return ServerPawnClass;
+    }
+    else
+    {
+        FString path = FPaths::GameDir() + FString("idhack.txt");
+        FFileHelper::LoadANSITextFileToStrings(*path, NULL, OutStrings);
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, (*path));
+        if (OutStrings.Num() > 0)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, (*OutStrings[0]));
+
+            if (OutStrings[0].Equals(FString("true")))
+            {
+                return ServerPawnClass;
+            }
+        }
     }
     return DefaultPawnClass;
 }
