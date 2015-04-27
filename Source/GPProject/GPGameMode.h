@@ -82,6 +82,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
         UFUNCTION()
         void SpawnAmmo();
 
+		UFUNCTION()
+		void EndGame(int8 Team);
+
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////
 		//////////////////////////////////

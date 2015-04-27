@@ -359,6 +359,13 @@ void AGPGameMode::SpawnAmmo()
     }
 }
 
+void AGPGameMode::EndGame(int8 Team)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("End Game"));
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(3);
+}
+
 
 void AGPGameMode::Rescan()
 {

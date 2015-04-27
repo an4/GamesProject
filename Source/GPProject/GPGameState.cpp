@@ -4,6 +4,7 @@
 #include "GPGameState.h"
 #include "UnrealNetwork.h"
 #include "GPPlayerState.h"
+#include "GPGameMode.h"
 
 AGPGameState::AGPGameState(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -58,41 +59,50 @@ int32 AGPGameState::GetFlagLeader()
 
 void AGPGameState::UpdateFlagLeader()
 {
-	int32 team0 = 0;
-	int32 team1 = 0;
-	TArray<class APlayerState*>PStates = PlayerArray;
-	if (PStates[0])
+	UWorld * const World = GetWorld();
+	AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+	if (gm == NULL || !gm)
 	{
-		for (int32 i = 0; i < PStates.Num(); i++)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+	}
+	else
+	{
+		int32 team0 = 0;
+		int32 team1 = 0;
+		TArray<class APlayerState*>PStates = PlayerArray;
+		if (PStates[0])
 		{
-			AGPPlayerState* PState = (AGPPlayerState*)PStates[i];
-			int32 numFlags = PState->GetNumFlags();
-			int8 team = PState->Team;
-			if (team == 0)
+			for (int32 i = 0; i < PStates.Num(); i++)
 			{
-				team0 += numFlags;
+				AGPPlayerState* PState = (AGPPlayerState*)PStates[i];
+				int32 numFlags = PState->GetNumFlags();
+				int8 team = PState->Team;
+				if (team == 0)
+				{
+					team0 += numFlags;
+				}
+				else if (team == 1)
+				{
+					team1 += numFlags;
+				}
 			}
-			else if (team == 1)
+			team0Flags = team0;
+			team1Flags = team1;
+			if (team0Flags > team1Flags)
 			{
-				team1 += numFlags;
+				flagLeader = 0;
+				if (team0Flags >= 2)
+				{
+					gm->EndGame(0);
+				}
 			}
-		}
-		team0Flags = team0;
-		team1Flags = team1;
-		if (team0Flags > team1Flags)
-		{
-			flagLeader = 0;
-			if (team0Flags >= 2)
+			else
 			{
-				GameEndCondition(0);
-			}
-		}
-		else
-		{
-			flagLeader = 1;
-			if (team1Flags >= 2)
-			{
-				GameEndCondition(1);
+				flagLeader = 1;
+				if (team1Flags >= 2)
+				{
+					gm->EndGame(1);
+				}
 			}
 		}
 	}

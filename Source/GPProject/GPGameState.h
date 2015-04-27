@@ -35,7 +35,7 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UFUNCTION()
 		void SetState(int32 newState);
 
-		UFUNCTION()
+		UFUNCTION(BlueprintCallable, Category = "State")
 		int32 GetState();
 
 		UFUNCTION()
