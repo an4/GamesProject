@@ -67,5 +67,8 @@ public:
 
 	//UFUNCTION(reliable, server, WithValidation)
 	//void ServerSetSomeBool(bool bNewSomeBool);
+
+    UPROPERTY(BluePrintReadWrite, Category = "Projection")
+    bool isProjecting = false;
 	
 };

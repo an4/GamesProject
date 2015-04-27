@@ -10,6 +10,7 @@
 #include "GPCaptureZone.h"
 #include "GPCharacter.h"
 #include "GPServerPawn.h"
+#include "GPGameInstance.h"
 
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
@@ -99,7 +100,7 @@ void AGPGameMode::StartPlay()
 UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
-    if (PlayerController->IsServerPlayer)
+    if (PlayerController->IsServerPlayer || ((UGPGameInstance*)GetGameInstance())->isProjection)
     {
         return ServerPawnClass;
     }
