@@ -91,7 +91,7 @@ void AGPGameState::UpdateFlagLeader()
 			if (team0Flags > team1Flags)
 			{
 				flagLeader = 0;
-				if (team0Flags >= 2)
+				if (team0Flags >= 1)
 				{
 					gm->EndGame(0);
 				}
@@ -99,7 +99,7 @@ void AGPGameState::UpdateFlagLeader()
 			else
 			{
 				flagLeader = 1;
-				if (team1Flags >= 2)
+				if (team1Flags >= 1)
 				{
 					gm->EndGame(1);
 				}
