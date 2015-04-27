@@ -15,7 +15,7 @@ class GPPROJECT_API AGPRemoteBomb : public AActor
 	
 	UPROPERTY(VisibleAnywhere, category = RemoteBomb)
 	UBoxComponent* BombCollisionComp;
-	
+
 	AGPRemoteBomb(const FObjectInitializer& ObjectInitializer);
 	
 	public:
