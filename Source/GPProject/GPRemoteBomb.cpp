@@ -15,7 +15,7 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	BombCollisionComp->SetBoxExtent(FVector(16, 23.5, 15), true);
 	//Can't get this to work, just ended up shifting the mesh in the blueprint.
 	//BombCollisionComp->SetRelativeLocation(FVector(0, 9, 3));
-	BombCollisionComp->UpdateCollisionProfile();
+	//BombCollisionComp->UpdateCollisionProfile();
 
 	BombCollisionComp->OnComponentHit.AddDynamic(this, &AGPRemoteBomb::OnHit);
 	RootComponent = BombCollisionComp;
