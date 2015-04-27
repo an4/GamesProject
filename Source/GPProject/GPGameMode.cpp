@@ -69,7 +69,7 @@ void AGPGameMode::StartPlay()
         //ServerController->*/
 
 		// Surround the play area with a border of buildings (need to use Unreal coords as we are out of bounds)
-		// Spawn the capture zone in the center
+		// Spawn in the GameState BP
 		SpawnCaptureZone(FVector(2300.0f, 3800.0f, 112.0f), FRotator::ZeroRotator, 0);
 		SpawnCaptureZone(FVector(-2300.0f, -3800.0f, 112.0f), FRotator::ZeroRotator, 1);
 		//SpawnBuilding(FVector(0.0, -2600.0, 0.0), FRotator::ZeroRotator, FVector(5400. / 200., 1., 7.)); // Use 5400 so we fill in corners
@@ -343,6 +343,13 @@ void AGPGameMode::SpawnAmmo()
 
         AGPAmmoPickup* ammo = World->SpawnActor<AGPAmmoPickup>(AGPAmmoPickup::StaticClass(), location, rotation, SpawnParams);
     }
+}
+
+void AGPGameMode::EndGame(int8 Team)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("End Game"));
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(3);
 }
 
 
