@@ -10,7 +10,6 @@
 #include "GPCaptureZone.h"
 #include "GPCharacter.h"
 #include "GPServerPawn.h"
-#include "GPGameInstance.h"
 
 #include "CoreMisc.h"
 
