@@ -664,6 +664,8 @@ void AGPGameMode::TCPSocketListener()
 		{
 			ActorItr->ServerRespawn(true);
 		}
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetWaitingForRescan(false);
 
 		commstate = OCVSProtocolState::INIT;
 	}

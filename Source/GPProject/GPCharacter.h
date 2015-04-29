@@ -238,6 +238,7 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		bool resetFlag = false;
 
 		FTimerHandle respawnTimer = FTimerHandle();
+		FTimerHandle rescanTimer = FTimerHandle();
 
 		UPROPERTY(Replicated)
 		FVector deathLoc;
@@ -281,6 +282,16 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 
 		UFUNCTION(BlueprintCallable, Category = "RespawnTimer")
 		float getRespawnTimeRemaining();
+
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastRescanTimer();
+		void BroadcastRescanTimer_Implementation();
+
+		UFUNCTION(BlueprintCallable, Category = "Rescan")
+		bool getRescanTimerExists();
+
+		UFUNCTION(BlueprintCallable, Category = "Rescan")
+		float getRescanTimeRemaining();
 
 		UFUNCTION(Server, Reliable, WithValidation)
 		void ServerSetLightIntensity(float val);
