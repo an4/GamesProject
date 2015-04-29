@@ -2,9 +2,80 @@
 
 #include "GPProject.h"
 #include "GPPlayerController.h"
-#include "GPCharacter.h"
 #include "GPGameState.h"
+#include "UnrealNetwork.h"
 #include "GPGameMode.h"
+
+AGPPlayerController::AGPPlayerController(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    /* Make sure the PawnClass is Replicated */
+    bReplicates = true;
+}
+
+void AGPPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
+bool AGPPlayerController::GetPlayerPawnClass()
+{
+    DeterminePawnClass();
+    return isProjecting;
+}
+
+// Pawn Class
+void AGPPlayerController::DeterminePawnClass_Implementation()
+{
+    if (IsLocalController()) //Only Do This Locally (NOT Client-Only, since Server wants this too!)
+    {
+        /* Load Text File Into String Array */
+        TArray<FString> TextStrings;
+        const FString FilePath = FPaths::GameDir() + "idhack.txt";
+        FFileHelper::LoadANSITextFileToStrings(*FilePath, NULL, TextStrings);
+
+        if (TextStrings.Num() > 0)
+        {
+            /* Use PawnA if the Text File tells us to */
+            if (TextStrings[0].Contains("true"))
+            {
+                isProjecting = true;
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("CONTROLLER PROJECTOR"));
+                ServerSetPawn(true);
+                return;
+            }
+        }
+        else
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("NOTHING TO READ"));
+        }
+
+        /* Otherwise, Use PawnB :) */
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("CONTROLLER CHARACTER"));
+        isProjecting = false;
+        ServerSetPawn(false);
+        return;
+    }
+}
+
+bool AGPPlayerController::ServerSetPawn_Validate(bool InIsProjecting)
+{
+    return true;
+}
+
+void AGPPlayerController::ServerSetPawn_Implementation(bool InIsProjecting)
+{
+    isProjecting = InIsProjecting;
+
+    /* Just in case we didn't get the PawnClass on the Server in time... */
+    //GetWorld()->GetAuthGameMode()->RestartPlayer(this);
+}
+
+// Replication
+void AGPPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    DOREPLIFETIME(AGPPlayerController, isProjecting);
+}
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 

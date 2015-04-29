@@ -451,49 +451,49 @@
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Animations/ThirdPersonAnimation/Walk_Rt_Rifle_Ironsights.uasset" 451
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPMainMenu.uasset" 452
 "../../../Engine/Content/EditorBlueprintResources/StandardMacros.uasset" 453
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPProjectile.uasset" 454
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texBlue.uasset" 455
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texDynamite.uasset" 456
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texGreen.uasset" 457
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texOrange.uasset" 458
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texYellow.uasset" 459
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/OnHit_Cue.uasset" 460
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/OnHit.uasset" 461
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPRemoteBomb.uasset" 462
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Meshes/RubiksBombCheck.uasset" 463
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texAlarmClock1.uasset" 464
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texBellsExport.uasset" 465
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texClockFace.uasset" 466
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/clockface.uasset" 467
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texRubiks.uasset" 468
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/rubikstex.uasset" 469
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDetonate_Cue.uasset" 470
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDetonate.uasset" 471
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDrop_Cue.uasset" 472
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDrop.uasset" 473
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/armstest.uasset" 474
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/proxy_geo_body_m.uasset" 475
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/armstest_PhysicsAsset.uasset" 476
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/PowerRangerv2.uasset" 477
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/PowerRangerv2_PhysicsAsset.uasset" 478
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/weapondraft.uasset" 479
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/phong1.uasset" 480
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPServerPawn.uasset" 481
-"../../../Engine/Content/BasicShapes/BasicShapeMaterial.uasset" 482
-"../../../Engine/Content/BasicShapes/Cube.uasset" 483
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Join.uasset" 484
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_HUD.uasset" 485
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/crosshair.uasset" 486
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_InGameMenu.uasset" 487
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_Play.uasset" 488
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_Play_Background.uasset" 489
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Background.uasset" 490
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/Images/back.uasset" 491
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Host.uasset" 492
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Join_Entry.uasset" 493
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Loading.uasset" 494
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Main.uasset" 495
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Settings.uasset" 496
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/PowerRangerv2.uasset" 454
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/proxy_geo_body_m.uasset" 455
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/PowerRangerv2_PhysicsAsset.uasset" 456
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/armstest.uasset" 457
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/armstest_PhysicsAsset.uasset" 458
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/weapondraft.uasset" 459
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/phong1.uasset" 460
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPServerPawn.uasset" 461
+"../../../Engine/Content/BasicShapes/BasicShapeMaterial.uasset" 462
+"../../../Engine/Content/BasicShapes/Cube.uasset" 463
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_HUD.uasset" 464
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/crosshair.uasset" 465
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_InGameMenu.uasset" 466
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_Play.uasset" 467
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GP_Play_Background.uasset" 468
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Background.uasset" 469
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/Images/back.uasset" 470
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Host.uasset" 471
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Join.uasset" 472
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Join_Entry.uasset" 473
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Loading.uasset" 474
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Main.uasset" 475
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Settings.uasset" 476
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPProjectile.uasset" 477
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texBlue.uasset" 478
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texDynamite.uasset" 479
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texGreen.uasset" 480
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texOrange.uasset" 481
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texYellow.uasset" 482
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/OnHit_Cue.uasset" 483
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/OnHit.uasset" 484
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPRemoteBomb.uasset" 485
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Meshes/RubiksBombCheck.uasset" 486
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texAlarmClock1.uasset" 487
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texBellsExport.uasset" 488
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texClockFace.uasset" 489
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/clockface.uasset" 490
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/texRubiks.uasset" 491
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/rubikstex.uasset" 492
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDetonate_Cue.uasset" 493
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDetonate.uasset" 494
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDrop_Cue.uasset" 495
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/BombDrop.uasset" 496
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPCaptureZone.uasset" 497
 "C:/Users/Ana/AppData/Local/UnrealEngine/4.7/Saved/Config/Windows/SourceControlSettings.ini" 498
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Intermediate/Config/CoalescedSourceConfigs/SourceControlSettings.ini" 499
@@ -513,19 +513,19 @@
 "../../../Engine/Content/EngineFonts/RobotoTiny.uasset" 513
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Intermediate/CachedAssetRegistry.bin" 514
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/8/7/35C7D27E437A3CE93D0EE8B0DCBAF4BF.udd" 515
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/1/4/CCABD312498B9FF9D42DC095797E3BA8.udd" 516
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/0/9/67BCFD1443D8532E28F6CE89895EA918.udd" 517
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/2/5/7D9D800B417C3DDC086749AC80F7D571.udd" 518
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/2/1/AF991A43496CAB6D186FBCA503A546FA.udd" 519
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/9/6/F51815C0484DB091CA7E3AA3453E6B8A.udd" 520
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/5/0/36E6F69D4FE6BA597B6158BFF4F74687.udd" 521
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/9/2/3182F6AE464F13E8E2149BA8BFFC4C95.udd" 522
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/0/0/692E53BF4ED77F3951A9029B879F04FB.udd" 523
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/8/6/847E88F24C8BE58A12DA4DAD631D3BFE.udd" 524
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/0/7C767F2D44011E49F1B12AA76B845009.udd" 525
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GenericMale.uasset" 526
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/lambert2.uasset" 527
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GenericMale_PhysicsAsset.uasset" 528
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GenericMale.uasset" 516
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/lambert2.uasset" 517
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GenericMale_PhysicsAsset.uasset" 518
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/1/4/CCABD312498B9FF9D42DC095797E3BA8.udd" 519
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/0/9/67BCFD1443D8532E28F6CE89895EA918.udd" 520
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/2/5/7D9D800B417C3DDC086749AC80F7D571.udd" 521
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/2/1/AF991A43496CAB6D186FBCA503A546FA.udd" 522
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/9/6/F51815C0484DB091CA7E3AA3453E6B8A.udd" 523
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/5/0/36E6F69D4FE6BA597B6158BFF4F74687.udd" 524
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/9/2/3182F6AE464F13E8E2149BA8BFFC4C95.udd" 525
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/0/0/692E53BF4ED77F3951A9029B879F04FB.udd" 526
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/8/6/847E88F24C8BE58A12DA4DAD631D3BFE.udd" 527
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/0/7C767F2D44011E49F1B12AA76B845009.udd" 528
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/9/0/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM5_2__BC5N_DEV_SL_NODBUF39FB480A__3091A0160EB277E5FF8067F9CA06D9FB0059CAE8.udd" 529
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/6/4/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM4_2__BC5N_DEV_SL_NODBUF39FB480A__8F9D7ACEF61A1392208D19834476876983CD397B.udd" 530
 "../../../Engine/Content/MobileResources/HUD/VirtualJoystick_Thumb.uasset" 531
@@ -575,41 +575,41 @@
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Materials/T_Wood_Oak_N.uasset" 575
 "../../../Engine/Content/BasicShapes/Cylinder.uasset" 576
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Meshes/GP_Wall.uasset" 577
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/1/9/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM5_2__BC5N_DEV_SL_NODBUF6627F7B0__E7E0C0A8F521CE593F62D80319994A18EBC572B6.udd" 578
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/1/8/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM4_2__BC5N_DEV_SL_NODBUF6627F7B0__E3D072E9323F137F976A31C9FAE7235DC670B0CA.udd" 579
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/3/8/STATICMESH_46A8778361B442A9523C54440EA1E9D_2C1BC8F50A7A43818AFE266EB43D9060_DF__D17D917E56B91149034268AEA52350F3C138CAEB.udd" 580
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/4/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_79C9A1194C9DA__961D1E73821ADAA46547FCCBA6D6FAA2CB6F74CB.udd" 581
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/2/9/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM5_2__BC5N_DEV_SL_NODBUF735E039E__FE7435B325711DB112D9B9CF691697F31E6D580E.udd" 582
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/6/1/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM4_2__BC5N_DEV_SL_NODBUF735E039E__019D79806BF8F1258D7D7A57CACCC6C94EE054E9.udd" 583
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/4/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_0083EB64478BDE4DD6FEC2AEA0FFF51C__1_0_13075_0.udd" 584
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/6/1/STATICMESH_46A8778361B442A9523C54440EA1E9D_2C1BC8F50A7A43818AFE266EB43D9060_62__4298CC57F767F64F8ED6373CA894D159C3F61390.udd" 585
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/8/7/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_8737B7804F273__12495CC79A611075A3F4DDC2F6E7DA90C7DE5141.udd" 586
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__E4E1CE50D4EB3F7ECB1867947B64CCDF801A0F8E.udd" 587
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__5454D51BD66BE8ADABB31156754371EF2DDB8166.udd" 588
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/1/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__D6BEDDA864E31866BF0D035D3FB592FD33DC28C1.udd" 589
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__85B050DBC3B789C7FD1621B7D8EB6C633BE0D4AA.udd" 590
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__F3FC833DCA9A1CBF1AAA99178DC0739166E5B9F4.udd" 591
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__71E5B29FC75583DC1D1EECDEC4B8414816458E92.udd" 592
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/3/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___3794BD81D3780AB7309CCEB850AC6ED3FE0AEFAD.udd" 593
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/1/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___CD8B424A745DFFA4F0BB9E09A72A035CCEA4E0DE.udd" 594
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/4/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___B4582C6F8E92444344AB2CB4C4F701ABAE906057.udd" 595
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___FA1D2270FC13FCBB6F15A645A39348996DAA4BCB.udd" 596
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/2/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___DC7C67A2496615037DC327E5886CD03539472D9F.udd" 597
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/3/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___9D966B99AA91A04672A4F32BF973C1C8C88A7D72.udd" 598
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/9/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_70B01972401B2691994447B9F19E1__F189EA4E897300BD7F42FCCF9F81470D8BB14F7D.udd" 599
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_70B01972401B2691994447B9F19E1__9BA1650F78D107DDF6920775977BFE6573C66A74.udd" 600
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A53B95A54E8E1A7D8DA44899D1DE0__7550651E2179BB8246E102DFE977E138D4B4856C.udd" 601
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A53B95A54E8E1A7D8DA44899D1DE0__97500C93199AF4B189958684550B07D0C973CA87.udd" 602
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/5/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D04868C94E06BBE77AA318B65E2A0__213718D8B143820933817D76D3297F7D13A19CE7.udd" 603
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/0/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D04868C94E06BBE77AA318B65E2A0__8E013D9605B21DB6B481630EDF1608E5640BC8CF.udd" 604
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/1/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_E8FBF2094395C47FFED4A0A3FDD25__332813E64F0D5CBE072FB5CDFCDE1EE1EACCAE43.udd" 605
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/4/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_E8FBF2094395C47FFED4A0A3FDD25__B0ECE9349416A9BB320A7C43DDBF32F0EE548287.udd" 606
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/2/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_917A47064A1CDA72C9A4EAA1800D0__F3AEE8C8B54785BDBDCB1F13701C16B255141FF5.udd" 607
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_917A47064A1CDA72C9A4EAA1800D0__FC9B3200DEC683E829A2DBC7EE81212211A83E4B.udd" 608
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_0EB8E1464E052EBFDA95EAA5DE189__375E548D2DE26BA3ABECE499453E607ED46D497C.udd" 609
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/3/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__D3350BF2989A1543DA7FD02F734305AA1AC8ECE9.udd" 610
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__41DC4825187BD2A04FD432FDACF55E620DB320EF.udd" 611
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/0/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__3DDCCA58636E0AD2DAAA038A1561576EA646117A.udd" 612
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__E4E1CE50D4EB3F7ECB1867947B64CCDF801A0F8E.udd" 578
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__5454D51BD66BE8ADABB31156754371EF2DDB8166.udd" 579
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/1/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__D6BEDDA864E31866BF0D035D3FB592FD33DC28C1.udd" 580
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__85B050DBC3B789C7FD1621B7D8EB6C633BE0D4AA.udd" 581
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__F3FC833DCA9A1CBF1AAA99178DC0739166E5B9F4.udd" 582
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D93A509A4F29F3A2C80C7C951E3F0__71E5B29FC75583DC1D1EECDEC4B8414816458E92.udd" 583
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/3/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___3794BD81D3780AB7309CCEB850AC6ED3FE0AEFAD.udd" 584
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/1/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___CD8B424A745DFFA4F0BB9E09A72A035CCEA4E0DE.udd" 585
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/4/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___B4582C6F8E92444344AB2CB4C4F701ABAE906057.udd" 586
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___FA1D2270FC13FCBB6F15A645A39348996DAA4BCB.udd" 587
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/2/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___DC7C67A2496615037DC327E5886CD03539472D9F.udd" 588
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/3/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_BC5_984922AE44CF5F47DE2EE3A20ADD5938___9D966B99AA91A04672A4F32BF973C1C8C88A7D72.udd" 589
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/9/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_70B01972401B2691994447B9F19E1__F189EA4E897300BD7F42FCCF9F81470D8BB14F7D.udd" 590
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_70B01972401B2691994447B9F19E1__9BA1650F78D107DDF6920775977BFE6573C66A74.udd" 591
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/1/9/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM5_2__BC5N_DEV_SL_NODBUF6627F7B0__E7E0C0A8F521CE593F62D80319994A18EBC572B6.udd" 592
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A53B95A54E8E1A7D8DA44899D1DE0__7550651E2179BB8246E102DFE977E138D4B4856C.udd" 593
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/5/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A53B95A54E8E1A7D8DA44899D1DE0__97500C93199AF4B189958684550B07D0C973CA87.udd" 594
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/5/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D04868C94E06BBE77AA318B65E2A0__213718D8B143820933817D76D3297F7D13A19CE7.udd" 595
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/1/8/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM4_2__BC5N_DEV_SL_NODBUF6627F7B0__E3D072E9323F137F976A31C9FAE7235DC670B0CA.udd" 596
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/0/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_D04868C94E06BBE77AA318B65E2A0__8E013D9605B21DB6B481630EDF1608E5640BC8CF.udd" 597
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/3/8/STATICMESH_46A8778361B442A9523C54440EA1E9D_2C1BC8F50A7A43818AFE266EB43D9060_DF__D17D917E56B91149034268AEA52350F3C138CAEB.udd" 598
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/1/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_E8FBF2094395C47FFED4A0A3FDD25__332813E64F0D5CBE072FB5CDFCDE1EE1EACCAE43.udd" 599
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/8/4/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_79C9A1194C9DA__961D1E73821ADAA46547FCCBA6D6FAA2CB6F74CB.udd" 600
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/4/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_E8FBF2094395C47FFED4A0A3FDD25__B0ECE9349416A9BB320A7C43DDBF32F0EE548287.udd" 601
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/2/9/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM5_2__BC5N_DEV_SL_NODBUF735E039E__FE7435B325711DB112D9B9CF691697F31E6D580E.udd" 602
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/2/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_917A47064A1CDA72C9A4EAA1800D0__F3AEE8C8B54785BDBDCB1F13701C16B255141FF5.udd" 603
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/6/1/MATSM_85DD00DAF10D45C79D4ED0306AF2628B_PCD3D_SM4_2__BC5N_DEV_SL_NODBUF735E039E__019D79806BF8F1258D7D7A57CACCC6C94EE054E9.udd" 604
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/7/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_917A47064A1CDA72C9A4EAA1800D0__FC9B3200DEC683E829A2DBC7EE81212211A83E4B.udd" 605
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_0EB8E1464E052EBFDA95EAA5DE189__375E548D2DE26BA3ABECE499453E607ED46D497C.udd" 606
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/6/1/STATICMESH_46A8778361B442A9523C54440EA1E9D_2C1BC8F50A7A43818AFE266EB43D9060_62__4298CC57F767F64F8ED6373CA894D159C3F61390.udd" 607
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/3/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__D3350BF2989A1543DA7FD02F734305AA1AC8ECE9.udd" 608
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__41DC4825187BD2A04FD432FDACF55E620DB320EF.udd" 609
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/8/7/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_8737B7804F273__12495CC79A611075A3F4DDC2F6E7DA90C7DE5141.udd" 610
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/0/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_97876FFE4C43DEA0FF7125A7876AD__3DDCCA58636E0AD2DAAA038A1561576EA646117A.udd" 611
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/4/PHYSX_$7B1F0627AE$2DABEB$2D4206$2D8D78$2DE16BEB5DDC7E$7D_PHYSXPC_0083EB64478BDE4DD6FEC2AEA0FFF51C__1_0_13075_0.udd" 612
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/1/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A2CF50A545FB3228E9C70086B02B4__0CE1453073637B86F4A61D63F1387D7E1F1A19C0.udd" 613
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/6/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_0C9D0B644C3A0882CB16B7889DD83__2A37E28DDC72DD548A0350073461B8011F529C2C.udd" 614
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/4/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_0C9D0B644C3A0882CB16B7889DD83__75CCB73083D3D7EA93D18FEBE3F4DCB97E0B23AB.udd" 615
@@ -622,54 +622,54 @@
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/2/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_010349D04BB1296140426BA7DC02B183__581B9A455EBB735353E88998A870354DF7B2F0FC.udd" 622
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/1/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_010349D04BB1296140426BA7DC02B183__6E30A5C7AA55757AB0E50B33DB0446F23E5E2859.udd" 623
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/3/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_64B18A614149412377F48DB09B88E8DC__A3DA721D25E25FE0123A5F25D4F4878BAD5D09BE.udd" 624
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_64B18A614149412377F48DB09B88E8DC__C9E6983CAC2FBE29A877F8D54450200C98997F5C.udd" 625
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/5/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_016F24CD453780D661FEB38BC4FB9C96__19CE9BF5315EA027678A778CC60D04D1DD15709C.udd" 626
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/0/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__991A28391ABFB886747903E1E9A65F81395B4E06.udd" 627
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__D0A2C7DCD58C56C0D582628203DC70667B75DB37.udd" 628
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__EAC53D2739734976CD45BAD8B8BCEEAE29B888F1.udd" 629
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/5/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_C2942E36473AE522C9E01DAEDABD1114__14E4B512945A1402B2B14CA0575C9FEA02AEC068.udd" 630
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_B61374764E0FE1528EAC31B7404FDA6C__9135DBA2D606FA6C76763DE238BBFD320639DB35.udd" 631
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_B61374764E0FE1528EAC31B7404FDA6C__6C5AD7CD42430D0EB44092C8E49856280680767B.udd" 632
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_2363B2A8428047BCCAD7608C1A662__A6FDA8F7C4D18C21DD5055CA9E0AD07967BF08B0.udd" 633
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/6/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_2363B2A8428047BCCAD7608C1A662__6F741BBB88D9C5CFF2B504D6DCE803602DD8752D.udd" 634
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C06A2F2447AC2EB8E26772BBA7CEF__7D7A45B14B9D1FFE737F20CAD86533241DB51844.udd" 635
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/7/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C06A2F2447AC2EB8E26772BBA7CEF__B7C211775775411176CFA388DC609B016A463978.udd" 636
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A0FC80FB4EF39B4D6B613F9D32502__9F1B2A8B4207EF15CF10228BF80E1B171A3131DA.udd" 637
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A0FC80FB4EF39B4D6B613F9D32502__F40A0AC30AE6ACBF092BB5A9FB6A9B288AC68423.udd" 638
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C6887147487E8B6A9372989357C0A__56985341448174339962D1E28522ABC123809A25.udd" 639
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/4/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__9611336565A1032443F4FE75C7E764988B3D2E64.udd" 640
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/3/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__CB5C3D05E2E343DC54C73A3A97B6DC67B8FB6AC0.udd" 641
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/4/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__57BA295609F7998156A178BEE79BCE67BB247EC1.udd" 642
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_140E2534448C48282DE240814059C__6655B9D1F34279E1027266F03160E064E563624B.udd" 643
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/5/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_111F940E42BAC52978D0A0A35B9DE__E92F1E08EE06FD4D7584DAF31EB0427183B1F007.udd" 644
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/3/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_111F940E42BAC52978D0A0A35B9DE__0ADEA02847CD61DE83F92444A8C3A019B2DA329B.udd" 645
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_F236F9B04E0DE4459D2A5B824FDF3__5B6FDADEE6BC00F391E2BDDE6774DDAF20F5F4A9.udd" 646
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_F236F9B04E0DE4459D2A5B824FDF3__93F5F049BEA3662D209CE850925CA42E30EF66C2.udd" 647
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/1/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_DFD672C944E0B158A843C5AD81CE6__7B98878F501A63BA7C7DBC661063CF5D7CB71905.udd" 648
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_DFD672C944E0B158A843C5AD81CE6__EE4012466FE96F1DB33A35071128AC780F8D34F4.udd" 649
-"../../../Engine/Content/EditorResources/EmptyActor.uasset" 650
+"../../../Engine/Content/EditorResources/EmptyActor.uasset" 625
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/2/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_64B18A614149412377F48DB09B88E8DC__C9E6983CAC2FBE29A877F8D54450200C98997F5C.udd" 626
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/5/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_016F24CD453780D661FEB38BC4FB9C96__19CE9BF5315EA027678A778CC60D04D1DD15709C.udd" 627
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/0/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__991A28391ABFB886747903E1E9A65F81395B4E06.udd" 628
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/1/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__D0A2C7DCD58C56C0D582628203DC70667B75DB37.udd" 629
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_A064294E414A8812461A589AF64109C4__EAC53D2739734976CD45BAD8B8BCEEAE29B888F1.udd" 630
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/5/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_C2942E36473AE522C9E01DAEDABD1114__14E4B512945A1402B2B14CA0575C9FEA02AEC068.udd" 631
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_B61374764E0FE1528EAC31B7404FDA6C__9135DBA2D606FA6C76763DE238BBFD320639DB35.udd" 632
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_DXT1_B61374764E0FE1528EAC31B7404FDA6C__6C5AD7CD42430D0EB44092C8E49856280680767B.udd" 633
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/8/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_2363B2A8428047BCCAD7608C1A662__A6FDA8F7C4D18C21DD5055CA9E0AD07967BF08B0.udd" 634
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/6/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_2363B2A8428047BCCAD7608C1A662__6F741BBB88D9C5CFF2B504D6DCE803602DD8752D.udd" 635
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/2/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C06A2F2447AC2EB8E26772BBA7CEF__7D7A45B14B9D1FFE737F20CAD86533241DB51844.udd" 636
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/7/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C06A2F2447AC2EB8E26772BBA7CEF__B7C211775775411176CFA388DC609B016A463978.udd" 637
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A0FC80FB4EF39B4D6B613F9D32502__9F1B2A8B4207EF15CF10228BF80E1B171A3131DA.udd" 638
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/7/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_A0FC80FB4EF39B4D6B613F9D32502__F40A0AC30AE6ACBF092BB5A9FB6A9B288AC68423.udd" 639
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/9/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_C6887147487E8B6A9372989357C0A__56985341448174339962D1E28522ABC123809A25.udd" 640
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/4/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__9611336565A1032443F4FE75C7E764988B3D2E64.udd" 641
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/9/3/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__CB5C3D05E2E343DC54C73A3A97B6DC67B8FB6AC0.udd" 642
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/4/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_264802F24F53968E0AAE88959D78F__57BA295609F7998156A178BEE79BCE67BB247EC1.udd" 643
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/6/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_140E2534448C48282DE240814059C__6655B9D1F34279E1027266F03160E064E563624B.udd" 644
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/5/8/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_111F940E42BAC52978D0A0A35B9DE__E92F1E08EE06FD4D7584DAF31EB0427183B1F007.udd" 645
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/3/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_111F940E42BAC52978D0A0A35B9DE__0ADEA02847CD61DE83F92444A8C3A019B2DA329B.udd" 646
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/5/5/5/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_F236F9B04E0DE4459D2A5B824FDF3__5B6FDADEE6BC00F391E2BDDE6774DDAF20F5F4A9.udd" 647
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/4/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_F236F9B04E0DE4459D2A5B824FDF3__93F5F049BEA3662D209CE850925CA42E30EF66C2.udd" 648
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/1/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_DFD672C944E0B158A843C5AD81CE6__7B98878F501A63BA7C7DBC661063CF5D7CB71905.udd" 649
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/6/7/3/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_DFD672C944E0B158A843C5AD81CE6__EE4012466FE96F1DB33A35071128AC780F8D34F4.udd" 650
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Sound/GunShot.uasset" 651
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Sound/Bomb.uasset" 652
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/PathFinding/BB_Values.uasset" 653
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Meshes/GP_Cube_fbm/books_texture3009.uasset" 654
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/3/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__DDF0AA2821F3F7B9F860865C6927287D5046A027.udd" 655
 "C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/8/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__479BFAE7399ABD5D320FD1F83791FFF1FBACB66E.udd" 656
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/9/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__516AAC5D1F525F16BFC9CE5337F1D7A0C2493693.udd" 657
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/6/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__FF57F6443B542C9C062C280A0254FD35ABA0A6A3.udd" 658
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/3/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__6D84D32F69E995727298BC512B4F673F8BFA0CC9.udd" 659
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/Images/Lego.uasset" 660
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/4/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__30E68466BF6A12CDF71E26990FABA087B4CCC8EF.udd" 661
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/0/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__A2AEA886505EFCD81C9C6CFCFAB04F75F561AB61.udd" 662
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/NewWidgetBlueprint.uasset" 663
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/0/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__5DCB4B482C87963FE578AEE319AB13AEE0CC1338.udd" 664
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/5/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__DFED1798CE527B02767AB68E6B602DBBD8C70031.udd" 665
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__5D37BA321E6CEAADECE9636A4E6133CC79E8843D.udd" 666
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Teams.uasset" 667
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Fonts/DroidSans.uasset" 668
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPBuilding.uasset" 669
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/Background_Cue.uasset" 670
-"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/Background.uasset" 671
-"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/9/AUDIO_0002_0000_OGG_0001_F9521C5B4091F1D13EC6B8AFE6708099.udd" 672
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/Images/Lego.uasset" 657
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/4/9/2/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__516AAC5D1F525F16BFC9CE5337F1D7A0C2493693.udd" 658
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/6/6/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__FF57F6443B542C9C062C280A0254FD35ABA0A6A3.udd" 659
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/NewWidgetBlueprint.uasset" 660
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/GUI/GPMM_Teams.uasset" 661
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Fonts/DroidSans.uasset" 662
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/3/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_3EB7179546685BA2811F90B2531FA__6D84D32F69E995727298BC512B4F673F8BFA0CC9.udd" 663
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/4/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__30E68466BF6A12CDF71E26990FABA087B4CCC8EF.udd" 664
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Blueprints/BP_GPBuilding.uasset" 665
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/8/0/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__A2AEA886505EFCD81C9C6CFCFAB04F75F561AB61.udd" 666
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/Background_Cue.uasset" 667
+"../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Audio/Background.uasset" 668
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/1/0/7/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__5DCB4B482C87963FE578AEE319AB13AEE0CC1338.udd" 669
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/7/5/9/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__DFED1798CE527B02767AB68E6B602DBBD8C70031.udd" 670
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/0/0/9/AUDIO_0002_0000_OGG_0001_F9521C5B4091F1D13EC6B8AFE6708099.udd" 671
+"C:/Users/Ana/AppData/Local/UnrealEngine/Common/DerivedDataCache/3/4/0/TEXTURE_75F87CE100B546AAB8A1C4132AF9DB17_AUTODXT_50D911D04911CB6274396B8D80D50__5D37BA321E6CEAADECE9636A4E6133CC79E8843D.udd" 672
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Animations/ThirdPersonAnimation/Idle_To_Walk.uasset" 673
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Animations/ThirdPersonAnimation/FireRun.uasset" 674
 "../../../../../../Users/Ana/Documents/Unreal Projects/GamesProject/Content/Animations/NewAnimBlueprint.uasset" 675
