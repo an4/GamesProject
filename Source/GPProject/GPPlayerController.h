@@ -16,11 +16,6 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
 
     bool InTeam = false;
 public:
-
-    AGPPlayerController(const FObjectInitializer& ObjectInitializer);
-
-    bool GetPlayerPawnClass();
-
 	virtual void SetupInputComponent() override;
     bool IsServerPlayer = false;
 
@@ -74,22 +69,6 @@ public:
 
 	//UFUNCTION(reliable, server, WithValidation)
 	//void ServerSetSomeBool(bool bNewSomeBool);
-    UPROPERTY(Replicated, BluePrintReadWrite, Category = "Projection")
-    bool isProjecting = true;
-
-    protected:
-    /* Return The Correct Pawn Class Client-Side */
-    UFUNCTION(Reliable, Client)
-    void DeterminePawnClass();
-    virtual void DeterminePawnClass_Implementation();
-
-    /* Use BeginPlay to start the functionality */
-    virtual void BeginPlay() override;
-
-    /* Set Pawn Class On Server For This Controller */
-    UFUNCTION(Reliable, Server, WithValidation)
-    virtual void ServerSetPawn(bool InIsProjecting);
-    virtual void ServerSetPawn_Implementation(bool InIsProjecting);
-    virtual bool ServerSetPawn_Validate(bool InIsProjecting);
-	
+    UPROPERTY(BluePrintReadWrite, Category = "Projection")
+    bool isProjecting = true;	
 };

@@ -10,6 +10,7 @@
 #include "GPCaptureZone.h"
 #include "GPCharacter.h"
 #include "GPServerPawn.h"
+#include "GPGameInstance.h"
 
 #include "CoreMisc.h"
 
@@ -101,56 +102,18 @@ void AGPGameMode::StartPlay()
 UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
+	FString ControllerAddress = PlayerController->GetPlayerNetworkAddress();
+	FString StoredAddress = Cast<UGPGameInstance>(GetGameInstance())->ProjectingIP;
 
-    /* Override Functionality to get Pawn from PlayerController */
-    if (PlayerController)
-    {
-        if (PlayerController->GetPlayerPawnClass())
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MODE PROJECTION"));
-            return ServerPawnClass;
-        }
-    }
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MODE  DEFAULT"));
-    /* If we don't get the right Controller, use the Default Pawn */
-    return DefaultPawnClass;
+	FString temp = StoredAddress + FString(" : ") + ControllerAddress;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, *temp);
 
-    /*
-    TArray<FString> OutStrings;
-    if (PlayerController->IsServerPlayer)
-    {
-        return ServerPawnClass;
-    }
-    else
-    {
-        FString path = FPaths::ConvertRelativePathToFull(FPaths::GameDir() + FString("idhack.txt"));
-        FFileHelper::LoadANSITextFileToStrings(*path, NULL, OutStrings);
+	if (PlayerController->IsServerPlayer || ControllerAddress.Equals(StoredAddress))
+	{
+		return ServerPawnClass;
+	}
 
-        if (OutStrings.Num() > 0)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, *OutStrings[0]);
-            
-            if (OutStrings[0].Contains(FString("true")))
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Going to return ServerPawnClass"));
-                if (FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*path))
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("File Deleted"));
-                }
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("After Delete"));
-                return ServerPawnClass;
-            } 
-            else
-            {
-                if (!FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*path))
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("File Deleted"));
-                }
-            }
-        }
-    }
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Going to return DEFAULT PAWN CLASS"));
-    return DefaultPawnClass;*/
+	return DefaultPawnClass;
 }
 
 void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)

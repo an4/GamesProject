@@ -13,7 +13,8 @@ class GPPROJECT_API UGPGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-	
-	
+	public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Projection)
+	FString ProjectingIP = "";
 	
 };
