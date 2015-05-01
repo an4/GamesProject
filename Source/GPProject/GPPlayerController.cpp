@@ -6,6 +6,27 @@
 #include "UnrealNetwork.h"
 #include "GPGameMode.h"
 
+AGPPlayerController::AGPPlayerController(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    myIP = GetPlayerNetworkAddress();
+
+    bReplicates = true;
+}
+
+void AGPPlayerController::BeginPlay()
+{    
+}
+
+// Handles replication of properties to clients in multiplayer!
+void AGPPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    // Replicate health to all clients.
+    DOREPLIFETIME(AGPPlayerController, myIP);
+}
+
 
 // The following code is taken from the replication wiki. Details how to update a boolean property on the server from a client.
 
@@ -130,7 +151,15 @@ void AGPPlayerController::OnStopJump()
 
 void AGPPlayerController::OnFire()
 {
-	if (GetCharacter() != NULL)
+    if (Cast<AGPCharacter>(GetPawn()))
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Character"));
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ServerPawn"));
+    }
+    if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnFire();
 	}

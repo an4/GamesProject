@@ -14,13 +14,6 @@ class GPPROJECT_API AGPMenuGameMode : public AGameMode
 	GENERATED_BODY()
 	
 	public:
-	UFUNCTION(BlueprintCallable, Category = "Projection")
-	void SetProjectingPlayerIPAddress(APlayerController* InController);
 	
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerSetProjectingPlayerIPAddress(const FString& IP);
-
-	bool ServerSetProjectingPlayerIPAddress_Validate(const FString& IP);
-	void ServerSetProjectingPlayerIPAddress_Implementation(const FString& IP);
 	
 };

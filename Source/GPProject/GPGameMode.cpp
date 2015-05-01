@@ -103,15 +103,19 @@ UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
 	FString ControllerAddress = PlayerController->GetPlayerNetworkAddress();
-	FString StoredAddress = Cast<UGPGameInstance>(GetGameInstance())->ProjectingIP;
+	FString temp;
 
-	FString temp = StoredAddress + FString(" : ") + ControllerAddress;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, *temp);
-
-	if (PlayerController->IsServerPlayer || ControllerAddress.Equals(StoredAddress))
+    if (PlayerController->IsServerPlayer || ControllerAddress.Equals("192.168.0.8") || ControllerAddress.Contains("192.168.0.8"))
 	{
+        temp = FString("We are inside the if: ") + ControllerAddress;
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, *temp);
 		return ServerPawnClass;
 	}
+    else
+    {
+        temp = FString("Noif:    ") + ControllerAddress;
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, *temp);
+    }
 
 	return DefaultPawnClass;
 }
