@@ -15,11 +15,11 @@ class GPPROJECT_API AGPHUD : public AHUD
     AGPHUD(const FObjectInitializer& ObjectInitializer);
 
 //    /** Primary draw call for the HUD */
-//    virtual void DrawHUD() override;
+    virtual void DrawHUD() override;
 //	
 //private:
 //    /** Crosshair asset pointer */
 //    UTexture2D* CrosshairTex;
-//	UFont* DefaultFont;
+	UFont* DefaultFont;
 	
 };
