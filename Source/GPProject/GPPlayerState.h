@@ -25,8 +25,8 @@ public:
 	UPROPERTY(Replicated)
 		int32 numFlags = 0;
 
-	UPROPERTY(Replicated)
-		int8 Team;
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Team")
+		int32 Team;
 
 	UPROPERTY(Replicated)
 		bool hadFlag = false;
