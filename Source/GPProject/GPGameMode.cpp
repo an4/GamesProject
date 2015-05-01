@@ -48,6 +48,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	}
 
 	tickCount = 0.0;
+	PathExists = true;
+	updated = true;
 }
 
 void AGPGameMode::StartPlay()
@@ -657,18 +659,35 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		// Unpause the game
-		UnpauseGame();
-		// 'Respawn' all characters
-		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-		{
-			ActorItr->ServerRespawn(true);
-		}
+		//updated = false; //let's use this as a flag for if game has been paused
 
-		commstate = OCVSProtocolState::INIT;
+		checkPathTrue();
+
 	}
 	break;
 	default:
 	break;
 	}
+}
+
+void AGPGameMode::checkPathTrue() {
+
+	// Unpause the game
+	UnpauseGame();
+	// 'Respawn' all characters
+	for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ServerRespawn(true);
+	}
+		
+	commstate = OCVSProtocolState::INIT;
+	return;
+}
+
+void AGPGameMode::checkPathFalse() {
+
+	commstate = OCVSProtocolState::INIT;
+	Rescan();
+
+	return;
 }
