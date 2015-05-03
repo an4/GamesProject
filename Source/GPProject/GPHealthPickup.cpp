@@ -39,6 +39,7 @@ void AGPHealthPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveC
 
     if (currentActor) {
         currentActor->OnHealthPickUp();
+        Super::playSound();
     }
 }
 
