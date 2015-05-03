@@ -20,6 +20,12 @@ public:
 
     UPROPERTY()
     class USceneComponent* DummyRoot;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	class UMaterial* texLego;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	class UMaterial* texBook;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
 	UStaticMeshComponent* BuildingMesh;

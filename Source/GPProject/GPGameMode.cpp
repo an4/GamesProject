@@ -169,7 +169,7 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	// Scale factors for mesh scaling.
 	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
 	const float scaley = (scl.Y * worldy) / (worldy_px * meshy);
-	const float scalez = 5.0f;
+	const float scalez = 2.0f;
 
 	// Wrap the rotation into a rotator
 	FRotator rotation(0.0f, rot, 0.0f);
