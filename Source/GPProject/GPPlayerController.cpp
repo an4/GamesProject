@@ -165,6 +165,7 @@ void AGPPlayerController::OnRequestRescan()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(1);
+		gs->SetWaitingForRescan(false);
 	}
 }
 

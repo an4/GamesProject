@@ -659,8 +659,6 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		//updated = false; //let's use this as a flag for if game has been paused
-
 		checkPathTrue();
 
 	}
@@ -679,12 +677,17 @@ void AGPGameMode::checkPathTrue() {
 	{
 		ActorItr->ServerRespawn(true);
 	}
+
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetWaitingForRescan(false);
 		
 	commstate = OCVSProtocolState::INIT;
 	return;
 }
 
 void AGPGameMode::checkPathFalse() {
+
+	// TODO: This will need to be updated to make sure it works with the rescan timer
 
 	commstate = OCVSProtocolState::INIT;
 	Rescan();

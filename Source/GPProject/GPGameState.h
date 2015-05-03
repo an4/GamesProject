@@ -32,11 +32,20 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UPROPERTY(Replicated)
 		int32 team0Flags = 0;
 
+		UPROPERTY(Replicated)
+		bool waitingForRescan = false;
+
 		UFUNCTION()
 		void SetState(int32 newState);
 
 		UFUNCTION(BlueprintCallable, Category = "State")
 		int32 GetState();
+
+		UFUNCTION()
+		void SetWaitingForRescan(bool val);
+
+		UFUNCTION(BlueprintCallable, Category = "Rescan")
+		bool GetWaitingForRescan();
 
 		UFUNCTION()
 		void UpdateFlagLeader();

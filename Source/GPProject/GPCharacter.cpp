@@ -963,9 +963,40 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		// Start timer to go back to normal state TODO: We may want a timeout if the Kinect isn't working?
-		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::SetPauseStateOff, 3.0f);
+		gs->SetWaitingForRescan(true);
+		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			// We need to tell every actor to do it, so that it is set for all characters on all clients.
+			ActorItr->BroadcastRescanTimer();
+		}
+		BroadcastRescanTimer();
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, this, &AGPCharacter::SetPauseStateOff, 3.0f);
 	}
+}
+
+void AGPCharacter::BroadcastRescanTimer_Implementation()
+{
+	// Set it for the clients player, rather than every player on every client
+	if (GetController() != NULL)
+	{
+		// Set the timer to not actually do anything for clients
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, 3.0f, false, -1.0f);
+	}
+}
+
+bool AGPCharacter::getRescanTimerExists()
+{
+	return (GetWorld()->GetTimerManager().TimerExists(rescanTimer));
+}
+
+float AGPCharacter::getRescanTimeRemaining()
+{
+	if (GetWorld()->GetTimerManager().TimerExists(rescanTimer))
+	{
+		float time = GetWorld()->GetTimerManager().GetTimerRemaining(rescanTimer);
+		return time;
+	}
+	return 0.0f;
 }
 
 // TODO: Rename
