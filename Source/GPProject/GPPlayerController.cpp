@@ -23,7 +23,7 @@ void AGPPlayerController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    // Replicate health to all clients.
+    // Replicate IP to all clients.
     DOREPLIFETIME(AGPPlayerController, myIP);
 }
 
@@ -151,14 +151,6 @@ void AGPPlayerController::OnStopJump()
 
 void AGPPlayerController::OnFire()
 {
-    if (Cast<AGPCharacter>(GetPawn()))
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Character"));
-    }
-    else
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("ServerPawn"));
-    }
     if (GetCharacter() != NULL)
 	{
 		Cast<AGPCharacter>(GetCharacter())->OnFire();
