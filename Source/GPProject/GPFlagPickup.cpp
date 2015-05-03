@@ -43,6 +43,10 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 void AGPFlagPickup::Init(int8 Team, bool dropped) {
 	flagTeam = Team;
 	ServerSetMaterial(Team);
+	if (dropped)
+	{
+		ServerSetLight(Team, 100000.f);
+	}
 	wasDropped = dropped;
 }
 
@@ -66,6 +70,45 @@ void AGPFlagPickup::BroadcastSetMaterial_Implementation(int8 Team) {
 	else
 	{
 		PickupMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
+	}
+}
+
+bool AGPFlagPickup::ServerSetLight_Validate(int8 Team, float val)
+{
+	return true;
+}
+
+void AGPFlagPickup::ServerSetLight_Implementation(int8 Team, float val)
+{
+	// If we have been validated by the server, then we need to broadcast the change team to all clients.
+	if (Role == ROLE_Authority) {
+		BroadcastSetLight(Team, val);
+	}
+}
+
+void AGPFlagPickup::BroadcastSetLight_Implementation(int8 Team, float val) {
+	TArray<UActorComponent*> components;
+	GetComponents(components);
+	for (int32 i = 0; i < components.Num(); i++)
+	{
+		// Find the spotlight component
+		UActorComponent* comp = components[i];
+		if (components[i]->GetName() == "FlagSpotLight")
+		{
+			// Set the intensity on all clients so everyone can see we have a flag
+			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
+			if (spotlight) {
+				if (Team == 0)
+				{
+					spotlight->SetLightColor(FLinearColor(0.f, 255.f, 0.f, 1.f));
+				}
+				else
+				{
+					spotlight->SetLightColor(FLinearColor(255.f, 0.f, 0.f, 1.f));
+				}
+				spotlight->SetIntensity(val);
+			}
+		}
 	}
 }
 
@@ -145,6 +188,7 @@ void AGPFlagPickup::Tick(float DeltaSeconds)
 			wasDropped = false;
 			timeAlive = 0.0f;
 			ServerMoveToSpawn();
+			ServerSetLight(flagTeam, 0.f);
 		}
 	}
 }

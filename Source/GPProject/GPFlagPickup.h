@@ -43,6 +43,15 @@ public:
 	void BroadcastSetMaterial_Implementation(int8 Team);
 
 	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetLight(int8 Team, float val);
+	bool ServerSetLight_Validate(int8 Team, float val);
+	void ServerSetLight_Implementation(int8 Team, float val);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastSetLight(int8 Team, float val);
+	void BroadcastSetLight_Implementation(int8 Team, float val);
+
+	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerMoveToSpawn();
 	bool ServerMoveToSpawn_Validate();
 	void ServerMoveToSpawn_Implementation();

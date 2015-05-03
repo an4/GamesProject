@@ -1064,9 +1064,23 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 			SpawnParams.bNoFail = true;
 
 			FRotator rotation = FRotator(0.f, 0.f, 0.f);
-
-			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
-
+			AGPGameMode* gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+			AGPFlagPickup* flag = NULL;
+			if (gm != NULL)
+			{
+				if (gm->FlagPickupBPClass != NULL)
+				{
+					flag = World->SpawnActor<AGPFlagPickup>(gm->FlagPickupBPClass, loc, rotation, SpawnParams);
+				}
+				else
+				{
+					flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
+				}
+			}
+			else
+			{
+				flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
+			}
 			if (flag == NULL)
 			{
 				if (GEngine)
