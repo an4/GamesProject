@@ -23,6 +23,9 @@ class GPPROJECT_API AGPFlagPickup : public AGPPickup
 	UPROPERTY(Replicated)
 	bool wasDropped;
 
+	UPROPERTY(Replicated)
+	float timeToLive = 10.f;
+
 public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 	UMaterial* GreenMaterial;
@@ -69,4 +72,16 @@ public:
 
 	UPROPERTY(Replicated)
 	int8 flagTeam = -1;
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	float GetTimeAlive();
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	bool GetWasDropped();
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	float GetTimeToLive();
+
+	UPROPERTY(Replicated)
+	UTextRenderComponent * textRender;
 };

@@ -327,7 +327,15 @@ void AGPCharacter::BroadcastSetLightIntensity_Implementation(float val)
 			// Set the intensity on all clients so everyone can see we have a flag
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
-				spotlight->SetIntensity(val);
+				// Set to 0 for the owner so we don't blind the player
+				if (GetController() != NULL && Role != ROLE_Authority)
+				{
+					spotlight->SetIntensity(0);
+				}
+				else
+				{
+					spotlight->SetIntensity(val);
+				}
 			}
 		}
 	}

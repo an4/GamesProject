@@ -34,6 +34,10 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 	BaseCollisionComponent->InitSphereRadius(100.0f);
 	BaseCollisionComponent->SetSphereRadius(100.0f);
+	textRender = ObjectInitializer.CreateDefaultSubobject<UTextRenderComponent>(this, TEXT("TimeToRespawn"));
+	textRender->AttachTo(RootComponent);
+	textRender->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	textRender->SetText("");
 	timeAlive = 0.0f;
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -183,7 +187,13 @@ void AGPFlagPickup::Tick(float DeltaSeconds)
 	if (wasDropped)
 	{
 		timeAlive += DeltaSeconds;
-		if (timeAlive >= 10.f)
+		if (textRender) {
+			int t = ceilf(timeToLive - timeAlive);
+			FString str = FString::FromInt(t);
+			textRender->SetText(str);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, textRender->Text);
+		}
+		if (timeAlive >= timeToLive)
 		{
 			wasDropped = false;
 			timeAlive = 0.0f;
@@ -191,4 +201,19 @@ void AGPFlagPickup::Tick(float DeltaSeconds)
 			ServerSetLight(flagTeam, 0.f);
 		}
 	}
+}
+
+float AGPFlagPickup::GetTimeAlive()
+{
+	return timeAlive;
+}
+
+bool AGPFlagPickup::GetWasDropped()
+{
+	return wasDropped;
+}
+
+float AGPFlagPickup::GetTimeToLive()
+{
+	return timeToLive;
 }
