@@ -17,8 +17,6 @@ AGPAmmoPickup::AGPAmmoPickup(const FObjectInitializer& ObjectInitializer)
 
    // PickupMesh->SetMaterial(0, Material.Object);
 
-    
-
     Value = FMath::RandRange(50, 100);
 }
 
@@ -34,6 +32,7 @@ void AGPAmmoPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 
     if (currentActor) {
         currentActor->OnAmmoPickUp(this->getValue());
+        Super::playSound();
     }
 }
 

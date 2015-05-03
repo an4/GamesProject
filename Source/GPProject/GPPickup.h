@@ -28,4 +28,12 @@ public:
     /** StaticMeshComponent to represent the pickup in the level. */
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pickup)
     UStaticMeshComponent* PickupMesh;
+
+public:
+    UPROPERTY(EditDefaultsOnly, Category = Sounds)
+    USoundCue* PickUpSound;
+
+    UFUNCTION()
+    void playSound();
+
 };

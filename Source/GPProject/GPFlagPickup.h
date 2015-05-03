@@ -58,9 +58,6 @@ public:
     UFUNCTION()
     void OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-    UPROPERTY(EditDefaultsOnly, Category = Sounds)
-    USoundCue* PickUpSound;
-
 	UPROPERTY(Replicated)
 	int8 flagTeam;
 };
