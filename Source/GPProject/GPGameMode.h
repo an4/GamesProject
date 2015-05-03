@@ -35,6 +35,12 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditDefaultsOnly, Category = Building)
 		TSubclassOf<class AGPBuilding> BuildingClass;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PathFinding)
+		bool PathExists;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PathFinding)
+			bool updated;
+
         UPROPERTY()
         TSubclassOf<class AGPServerPawn> ServerPawnClass;
 
@@ -78,6 +84,15 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
         UFUNCTION()
         void SpawnAmmo();
+
+		UFUNCTION()
+		void EndGame(int8 Team);
+
+		UFUNCTION(BlueprintCallable, Category = Pathfinding)
+		void checkPathTrue();
+
+		UFUNCTION(BlueprintCallable, Category = Pathfinding)
+		void checkPathFalse();
 
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////

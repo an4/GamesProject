@@ -7,16 +7,15 @@
 AGPAmmoPickup::AGPAmmoPickup(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMesh(TEXT("StaticMesh'/Game/ExampleContent/healthBox.healthBox'"));
-    static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Materials/Red.Red'"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMesh(TEXT("StaticMesh'/Game/Meshes/ammobox.ammobox'"));
+    //static ConstructorHelpers::FObjectFinder<UMaterial> Material(TEXT("Material'/Game/Materials/Red.Red'"));
 
     if (StaticMesh.Object) {
         PickupMesh->SetStaticMesh(StaticMesh.Object);
+		BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPAmmoPickup::OnOverlapBegin);
     }
 
-    PickupMesh->SetMaterial(0, Material.Object);
-
-    BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPAmmoPickup::OnOverlapBegin);
+   // PickupMesh->SetMaterial(0, Material.Object);
 
     Value = FMath::RandRange(50, 100);
 }
@@ -33,6 +32,7 @@ void AGPAmmoPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 
     if (currentActor) {
         currentActor->OnAmmoPickUp(this->getValue());
+        Super::playSound();
     }
 }
 
