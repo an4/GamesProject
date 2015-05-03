@@ -32,7 +32,8 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     PickupMesh->SetMaterial(0, Material_Green.Object);*/
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
-
+	BaseCollisionComponent->InitSphereRadius(100.0f);
+	BaseCollisionComponent->SetSphereRadius(100.0f);
 	timeAlive = 0.0f;
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;

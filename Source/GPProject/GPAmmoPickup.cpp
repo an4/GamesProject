@@ -24,13 +24,12 @@ void AGPAmmoPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 {
     AGPCharacter* const currentActor = Cast<AGPCharacter>(OtherActor);
 
-    GetWorld()->DestroyActor(this, true);
-
-    if (Role == ROLE_Authority) {
-        SpawnAmmo(OtherActor);
-    }
-
     if (currentActor) {
+		GetWorld()->DestroyActor(this, true);
+
+		if (Role == ROLE_Authority) {
+			SpawnAmmo(OtherActor);
+		}
         currentActor->OnAmmoPickUp(this->getValue());
         Super::playSound();
     }
