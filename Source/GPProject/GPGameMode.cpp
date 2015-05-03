@@ -390,6 +390,17 @@ void AGPGameMode::ResetBuildings()
 	}
 }
 
+void AGPGameMode::ResetBombs()
+{
+	for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		if (ActorItr != NULL)
+		{
+			ActorItr->BroadcastRemoveBombs();
+		}
+	}
+}
+
 
 void AGPGameMode::PauseGame()
 {

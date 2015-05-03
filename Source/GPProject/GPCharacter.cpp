@@ -731,6 +731,30 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 	}
 }
 
+void AGPCharacter::BroadcastRemoveBombs_Implementation()
+{
+	if (RemoteBombClass != NULL)
+	{
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			AGPRemoteBomb* CurRB = NULL;
+			for (int i = 0; i < RemoteBombList.Num(); i++)
+			{
+				CurRB = RemoteBombList[i];
+				// Check make sure our actor exists
+				if (!CurRB) continue;
+				if (!CurRB->IsValidLowLevel()) continue;
+				// Remove it
+				CurRB->Destroy();
+			}
+			// Remove all entries from the array
+			RemoteBombList.Empty();
+			BombPlanted = false;
+		}
+	}
+}
+
 // Handles replication of properties to clients in multiplayer!
 void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -1029,6 +1053,7 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		}
 		else
 		{
+			gm->ResetBombs();
 			gm->ResetBuildings();
 			gm->Rescan();
 		}
