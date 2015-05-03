@@ -29,18 +29,14 @@ void AGPHealthPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveC
         if (currentActor->getHealth() == 100.0f) {
             return;
         }
-    }
+		GetWorld()->DestroyActor(this, true);
 
-    GetWorld()->DestroyActor(this, true);
-
-    if (Role == ROLE_Authority) {
-        SpawnHealth(OtherActor);
-    }
-
-    if (currentActor) {
-        currentActor->OnHealthPickUp();
-        Super::playSound();
-    }
+		if (Role == ROLE_Authority) {
+			SpawnHealth(OtherActor);
+		}
+		currentActor->OnHealthPickUp();
+		Super::playSound();
+	}
 }
 
 void AGPHealthPickup::SpawnHealth(class AActor* HealthOwner)

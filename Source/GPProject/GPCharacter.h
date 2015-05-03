@@ -99,6 +99,11 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void BroadcastOnBombDetonate();
         void BroadcastOnBombDetonate_Implementation();
 
+		// Removes bombs without exploding them
+		UFUNCTION(NetMulticast, Reliable)
+		void BroadcastRemoveBombs();
+		void BroadcastRemoveBombs_Implementation();
+
 		// handles damage
 		//UFUNCTION()
 		//float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);

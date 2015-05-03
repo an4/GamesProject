@@ -77,6 +77,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		void ResetBuildings();
 
 		UFUNCTION(exec)
+		void ResetBombs();
+
+		UFUNCTION(exec)
 		void PauseGame();
 
 		UFUNCTION(exec)

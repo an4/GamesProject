@@ -59,5 +59,5 @@ public:
     void OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(Replicated)
-	int8 flagTeam;
+	int8 flagTeam = -1;
 };
