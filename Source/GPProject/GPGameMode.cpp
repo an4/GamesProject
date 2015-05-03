@@ -48,6 +48,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	}
 
 	tickCount = 0.0;
+	PathExists = true;
+	updated = true;
 }
 
 void AGPGameMode::StartPlay()
@@ -657,20 +659,38 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		// Unpause the game
-		UnpauseGame();
-		// 'Respawn' all characters
-		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-		{
-			ActorItr->ServerRespawn(true);
-		}
-		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-		gs->SetWaitingForRescan(false);
+		checkPathTrue();
 
-		commstate = OCVSProtocolState::INIT;
 	}
 	break;
 	default:
 	break;
 	}
+}
+
+void AGPGameMode::checkPathTrue() {
+
+	// Unpause the game
+	UnpauseGame();
+	// 'Respawn' all characters
+	for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->ServerRespawn(true);
+	}
+
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetWaitingForRescan(false);
+		
+	commstate = OCVSProtocolState::INIT;
+	return;
+}
+
+void AGPGameMode::checkPathFalse() {
+
+	// TODO: This will need to be updated to make sure it works with the rescan timer
+
+	commstate = OCVSProtocolState::INIT;
+	Rescan();
+
+	return;
 }
