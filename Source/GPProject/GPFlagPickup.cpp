@@ -33,9 +33,6 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 
-    static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
-    PickUpSound = PickUpSoundCueLoader.Object;
-
 	timeAlive = 0.0f;
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -100,7 +97,7 @@ void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveCom
 		AGPPlayerState* PState = (AGPPlayerState*)currentActor->PlayerState;
 		if (PState) {
 			if (currentActor->CanPickupFlag() && PState->Team == flagTeam) {
-				this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
+                Super::playSound();
 
 				//GetWorld()->DestroyActor(this, true);
 
