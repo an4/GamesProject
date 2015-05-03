@@ -1061,6 +1061,7 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 				SpawnParams.Owner = NULL;
 			}
 			SpawnParams.Instigator = NULL;
+			SpawnParams.bNoFail = true;
 
 			FRotator rotation = FRotator(0.f, 0.f, 0.f);
 
