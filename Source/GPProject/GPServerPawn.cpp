@@ -2,6 +2,7 @@
 
 #include "GPProject.h"
 #include "GPServerPawn.h"
+#include "GPPlayerController.h"
 
 
 // Sets default values
@@ -21,7 +22,6 @@ AGPServerPawn::AGPServerPawn(const FObjectInitializer& ObjectInitializer)
 void AGPServerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-    SetActorLocation(FVector(0, 0, 5500));
 }
 
 // Called every frame
