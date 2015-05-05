@@ -60,19 +60,11 @@ void AGPRemoteBomb::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
         // Play Sound
         this->PlaySoundOnActor(BombDropSound, 0.5f, 0.5f);
         
-        // Disable movement once we hit the floor/a building
-		if (OtherActor->IsA(AGPBuilding::StaticClass()) || OtherActor->IsA(AStaticMeshActor::StaticClass())) {
+        // Disable movement once we hit a static object so that we stick to it
+		if (OtherActor->IsA(AGPBuilding::StaticClass()) || (OtherActor->IsA(AStaticMeshActor::StaticClass()) && !OtherComp->IsSimulatingPhysics())) {
 			BombProjectileMovement->Deactivate();
 		}
 		OtherComp->AddImpulseAtLocation(BombProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
-		/*if (OtherActor->IsA(AGPCharacter::StaticClass())) {
-			// Stick to the actor
-			BombProjectileMovement->Deactivate();
-			OtherActor->GetRootPrimitiveComponent()->MoveIgnoreActors.Add(this);
-			GetRootPrimitiveComponent()->MoveIgnoreActors.Add(OtherActor);
-			EAttachLocation::Type AttachLocationType = EAttachLocation::SnapToTarget;
-			AttachRootComponentToActor(OtherActor, NAME_None, AttachLocationType);
-		}*/
 	}
 }
 
