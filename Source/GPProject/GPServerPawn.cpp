@@ -2,7 +2,6 @@
 
 #include "GPProject.h"
 #include "GPServerPawn.h"
-#include "GPPlayerController.h"
 
 
 // Sets default values
