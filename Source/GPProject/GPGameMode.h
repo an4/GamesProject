@@ -47,7 +47,7 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY()
 		TSubclassOf<class AGPCaptureZone> CaptureZoneBPClass;
 
-		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale);
+		void SpawnBuilding(FVector2D centre, float rot, FVector2D scale, float hScale);
 
 		UFUNCTION()
 		void SpawnBuilding(FVector centre, FRotator rotation, FVector scale);
@@ -77,6 +77,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		void ResetBuildings();
 
 		UFUNCTION(exec)
+		void ResetBombs();
+
+		UFUNCTION(exec)
 		void PauseGame();
 
 		UFUNCTION(exec)
@@ -97,6 +100,11 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		//////////////////////////////////
 		///////// HERE BE DRAGONS ////////
 		//////////////////////////////////
+		uint8 FloorScale = 180;
+		uint8 TopScale = 0;
+
+		float CalcHeightScale(uint8 height);
+
 		enum class OCVSProtocolState { INIT, REQUEST, RECEIVE };
 
 		OCVSProtocolState commstate = OCVSProtocolState::INIT;

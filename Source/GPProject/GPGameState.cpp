@@ -40,6 +40,7 @@ void AGPGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 	DOREPLIFETIME(AGPGameState, flagLeader);
 	DOREPLIFETIME(AGPGameState, team1Flags);
 	DOREPLIFETIME(AGPGameState, team0Flags);
+	DOREPLIFETIME(AGPGameState, waitingForRescan);
 }
 
 void AGPGameState::SetState(int32 newState)
@@ -50,6 +51,16 @@ void AGPGameState::SetState(int32 newState)
 int32 AGPGameState::GetState()
 {
 	return gameState;
+}
+
+void AGPGameState::SetWaitingForRescan(bool val)
+{
+	waitingForRescan = val;
+}
+
+bool AGPGameState::GetWaitingForRescan()
+{
+	return waitingForRescan;
 }
 
 int32 AGPGameState::GetFlagLeader()

@@ -731,6 +731,30 @@ void AGPCharacter::BroadcastOnBombDetonate_Implementation()
 	}
 }
 
+void AGPCharacter::BroadcastRemoveBombs_Implementation()
+{
+	if (RemoteBombClass != NULL)
+	{
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			AGPRemoteBomb* CurRB = NULL;
+			for (int i = 0; i < RemoteBombList.Num(); i++)
+			{
+				CurRB = RemoteBombList[i];
+				// Check make sure our actor exists
+				if (!CurRB) continue;
+				if (!CurRB->IsValidLowLevel()) continue;
+				// Remove it
+				CurRB->Destroy();
+			}
+			// Remove all entries from the array
+			RemoteBombList.Empty();
+			BombPlanted = false;
+		}
+	}
+}
+
 // Handles replication of properties to clients in multiplayer!
 void AGPCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
@@ -963,9 +987,40 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		// Start timer to go back to normal state TODO: We may want a timeout if the Kinect isn't working?
-		FTimerHandle handle = FTimerHandle();
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AGPCharacter::SetPauseStateOff, 3.0f);
+		gs->SetWaitingForRescan(true);
+		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			// We need to tell every actor to do it, so that it is set for all characters on all clients.
+			ActorItr->BroadcastRescanTimer();
+		}
+		BroadcastRescanTimer();
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, this, &AGPCharacter::SetPauseStateOff, 3.0f);
 	}
+}
+
+void AGPCharacter::BroadcastRescanTimer_Implementation()
+{
+	// Set it for the clients player, rather than every player on every client
+	if (GetController() != NULL)
+	{
+		// Set the timer to not actually do anything for clients
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, 3.0f, false, -1.0f);
+	}
+}
+
+bool AGPCharacter::getRescanTimerExists()
+{
+	return (GetWorld()->GetTimerManager().TimerExists(rescanTimer));
+}
+
+float AGPCharacter::getRescanTimeRemaining()
+{
+	if (GetWorld()->GetTimerManager().TimerExists(rescanTimer))
+	{
+		float time = GetWorld()->GetTimerManager().GetTimerRemaining(rescanTimer);
+		return time;
+	}
+	return 0.0f;
 }
 
 // TODO: Rename
@@ -998,6 +1053,7 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		}
 		else
 		{
+			gm->ResetBombs();
 			gm->ResetBuildings();
 			gm->Rescan();
 		}
@@ -1030,6 +1086,7 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 				SpawnParams.Owner = NULL;
 			}
 			SpawnParams.Instigator = NULL;
+			SpawnParams.bNoFail = true;
 
 			FRotator rotation = FRotator(0.f, 0.f, 0.f);
 
