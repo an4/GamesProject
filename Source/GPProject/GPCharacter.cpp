@@ -327,7 +327,15 @@ void AGPCharacter::BroadcastSetLightIntensity_Implementation(float val)
 			// Set the intensity on all clients so everyone can see we have a flag
 			USpotLightComponent * spotlight = Cast<USpotLightComponent>(comp);
 			if (spotlight) {
-				spotlight->SetIntensity(val);
+				// Set to 0 for the owner so we don't blind the player
+				if (GetController() != NULL && Role != ROLE_Authority)
+				{
+					spotlight->SetIntensity(0);
+				}
+				else
+				{
+					spotlight->SetIntensity(val);
+				}
 			}
 		}
 	}
@@ -1089,9 +1097,23 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 			SpawnParams.bNoFail = true;
 
 			FRotator rotation = FRotator(0.f, 0.f, 0.f);
-
-			AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
-
+			AGPGameMode* gm = Cast<AGPGameMode>(World->GetAuthGameMode());
+			AGPFlagPickup* flag = NULL;
+			if (gm != NULL)
+			{
+				if (gm->FlagPickupBPClass != NULL)
+				{
+					flag = World->SpawnActor<AGPFlagPickup>(gm->FlagPickupBPClass, loc, rotation, SpawnParams);
+				}
+				else
+				{
+					flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
+				}
+			}
+			else
+			{
+				flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), loc, rotation, SpawnParams);
+			}
 			if (flag == NULL)
 			{
 				if (GEngine)

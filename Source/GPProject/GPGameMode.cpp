@@ -49,6 +49,12 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 		CaptureZoneBPClass = (UClass*)CaptureZoneBP.Object->GeneratedClass;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UBlueprint> FlagPickupBP(TEXT("Blueprint'/Game/Blueprints/BP_GPFlagPickup.BP_GPFlagPickup'"));
+	if (FlagPickupBP.Object != NULL)
+	{
+		FlagPickupBPClass = (UClass*)FlagPickupBP.Object->GeneratedClass;
+	}
+
 	tickCount = 0.0;
 	PathExists = true;
 	updated = true;
@@ -302,8 +308,15 @@ void AGPGameMode::SpawnFlag(int8 Team)
 		{
 			location = FVector(2300.f, 3800.f, 0.f);
 		}
-        AGPFlagPickup* flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
-
+		AGPFlagPickup* flag = NULL;
+		if (FlagPickupBPClass != NULL)
+		{
+			flag = World->SpawnActor<AGPFlagPickup>(FlagPickupBPClass, location, rotation, SpawnParams);
+		}
+		else
+		{
+			flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
+		}
         if (flag == NULL)
         {
             if (GEngine)
