@@ -17,7 +17,7 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     ProjectileMovement = ObjectInitializer.CreateDefaultSubobject<UProjectileMovementComponent>(this, TEXT("ProjectileComp"));
     ProjectileMovement->UpdatedComponent = CollisionComp;
     ProjectileMovement->InitialSpeed = 3000.f;
-    ProjectileMovement->MaxSpeed = 3000.f;
+    ProjectileMovement->MaxSpeed = 5000.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = true;
     ProjectileMovement->Bounciness = 0.9f;
@@ -44,13 +44,21 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     OnHitSound = HitSoundCueLoader.Object;
 }
 
-void AGPProjectile::InitVelocity(const FVector& ShootDirection)
+void AGPProjectile::InitVelocity(const FVector& ShootDirection, const FVector& ActorVelocity)
 {
     if (ProjectileMovement)
     {
+		float ActorVel = 0;
+		ActorVel = (ShootDirection.X * ActorVelocity.X + ShootDirection.Y * ActorVelocity.Y + ShootDirection.Z * ActorVelocity.Z);
         // set the projectile's velocity to the desired direction
-        ProjectileMovement->Velocity = ShootDirection * ProjectileMovement->InitialSpeed;
-    }
+		float iniSpeed = 2*ProjectileMovement->InitialSpeed;
+		if (ActorVel > 0)
+		{
+			iniSpeed += ActorVel;
+		}
+        ProjectileMovement->Velocity = (ShootDirection * iniSpeed);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::SanitizeFloat(ActorVel));
+	}
 }
 
 void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

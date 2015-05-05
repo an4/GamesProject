@@ -622,7 +622,14 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 
 				// find launch direction
 				FVector const LaunchDir = MuzzleRotation.Vector();
-				Projectile->InitVelocity(LaunchDir);
+				FVector V = this->GetVelocity();
+				//FVector V = GetActorForwardVector();
+				//V = MuzzleRotation.UnrotateVector(V);
+				FString str = FString::SanitizeFloat(V.X).Append(", ");
+				str.Append(FString::SanitizeFloat(V.Y).Append(", "));
+				str.Append(FString::SanitizeFloat(V.Z).Append(", "));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, str);
+				Projectile->InitVelocity(LaunchDir, V);
 			}
 		}
 	}
