@@ -11,6 +11,8 @@
 #include "GPCharacter.h"
 #include "GPServerPawn.h"
 
+#include "CoreMisc.h"
+
 #include "GPKinectAPI/OCVSPacketAck.h"
 #include "GPKinectAPI/OCVSPacketChallenge.h"
 #include "GPKinectAPI/OCVSPacketScanReq.h"
@@ -101,11 +103,15 @@ void AGPGameMode::StartPlay()
 UClass* AGPGameMode::GetDefaultPawnClassForController(AController* InController)
 {
     AGPPlayerController* PlayerController = Cast<AGPPlayerController>(InController);
-    if (PlayerController->IsServerPlayer)
-    {
-        return ServerPawnClass;
-    }
-    return DefaultPawnClass;
+	FString ControllerAddress = PlayerController->GetPlayerNetworkAddress();
+	FString temp;
+
+    if (PlayerController->IsServerPlayer || ControllerAddress.Equals("192.168.0.8") || ControllerAddress.Contains("192.168.0.8"))
+	{
+		return ServerPawnClass;
+	}
+
+	return DefaultPawnClass;
 }
 
 void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)

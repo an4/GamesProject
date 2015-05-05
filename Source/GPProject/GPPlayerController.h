@@ -2,6 +2,8 @@
 
 #pragma once
 #include "GameFramework/PlayerController.h"
+#include "GPCharacter.h"
+#include "GPServerPawn.h"
 #include "GPPlayerController.generated.h"
 
 /**
@@ -14,6 +16,17 @@ class GPPROJECT_API AGPPlayerController : public APlayerController
 
     bool InTeam = false;
 public:
+
+    AGPPlayerController(const FObjectInitializer& ObjectInitializer);
+
+    void BeginPlay() override;
+
+    UPROPERTY(Replicated)
+    FString myIP;
+
+    bool ServerSetProjectingPlayerIPAddress_Validate(const FString& IP);
+    void ServerSetProjectingPlayerIPAddress_Implementation(const FString& IP);
+
 	virtual void SetupInputComponent() override;
     bool IsServerPlayer = false;
 
@@ -67,5 +80,6 @@ public:
 
 	//UFUNCTION(reliable, server, WithValidation)
 	//void ServerSetSomeBool(bool bNewSomeBool);
-	
+    UPROPERTY(BluePrintReadWrite, Category = "Projection")
+    bool isProjecting = true;	
 };

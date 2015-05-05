@@ -21,7 +21,6 @@ AGPServerPawn::AGPServerPawn(const FObjectInitializer& ObjectInitializer)
 void AGPServerPawn::BeginPlay()
 {
 	Super::BeginPlay();
-    SetActorLocation(FVector(0, 0, 5500));
 }
 
 // Called every frame
