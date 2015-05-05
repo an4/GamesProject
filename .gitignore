@@ -3,7 +3,6 @@
 /DerivedDataCache
 /Intermediate
 /Saved
-Plugins/VictoryPlugin/Binaries/*
 
 # Lose the VS files that UE4 can regenerate.
 *.sln
