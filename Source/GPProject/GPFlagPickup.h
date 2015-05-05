@@ -33,6 +33,9 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 	UMaterial* RedMaterial;
 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+	UMaterial* TextMaterial;
+
 	UFUNCTION()
 	void Init(int8 Team, bool isNew);
 
@@ -63,6 +66,16 @@ public:
 	void BroadcastMoveToSpawn();
 	void BroadcastMoveToSpawn_Implementation();
 
+	// Sets the text for the textRender component
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetText(int32 new_t);
+	bool ServerSetText_Validate(int32 new_t);
+	void ServerSetText_Implementation(int32 new_t);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastSetText(int32 new_t);
+	void BroadcastSetText_Implementation(int32 new_t);
+
 	UFUNCTION()
 	void ClientOnlySetMaterial();
 
@@ -82,6 +95,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
 	float GetTimeToLive();
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadWrite)
 	UTextRenderComponent * textRender;
 };

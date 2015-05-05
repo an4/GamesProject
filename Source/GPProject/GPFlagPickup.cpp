@@ -30,13 +30,20 @@ AGPFlagPickup::AGPFlagPickup(const FObjectInitializer& ObjectInitializer)
     }
 	/*
     PickupMesh->SetMaterial(0, Material_Green.Object);*/
+	static ConstructorHelpers::FObjectFinder<UMaterial> Material3(TEXT("Material'/Game/Materials/TextFacingCamera.TextFacingCamera'"));
+	if (Material3.Object != NULL)
+	{
+		TextMaterial = (UMaterial*)Material3.Object;
+	}
 
     BaseCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AGPFlagPickup::OnOverlapBegin);
 	BaseCollisionComponent->InitSphereRadius(100.0f);
 	BaseCollisionComponent->SetSphereRadius(100.0f);
 	textRender = ObjectInitializer.CreateDefaultSubobject<UTextRenderComponent>(this, TEXT("TimeToRespawn"));
 	textRender->AttachTo(RootComponent);
-	textRender->SetRelativeLocation(FVector(0.f, 0.f, 100.f));
+	textRender->SetRelativeLocationAndRotation(FVector(0.f, 0.f, 100.f), FRotator(0.f, 90.f, 0.f));
+	//textRender->SetMaterial(0, UMaterialInstanceDynamic::Create(TextMaterial, this));
+	//textRender->SetWorldSize(100.f);
 	textRender->SetText("");
 	timeAlive = 0.0f;
 	PrimaryActorTick.bCanEverTick = true;
@@ -135,6 +142,7 @@ void AGPFlagPickup::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & Out
 
 	// Replicate to everyone
 	DOREPLIFETIME(AGPFlagPickup, flagTeam);
+	DOREPLIFETIME(AGPFlagPickup, textRender);
 }
 
 void AGPFlagPickup::OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -182,16 +190,48 @@ void AGPFlagPickup::BroadcastMoveToSpawn_Implementation()
 	SetActorLocation(loc, false);
 }
 
+bool AGPFlagPickup::ServerSetText_Validate(int32 new_t)
+{
+	return true;
+}
+
+void AGPFlagPickup::ServerSetText_Implementation(int32 new_t)
+{
+	if (Role == ROLE_Authority)
+	{
+		BroadcastSetText(new_t);
+	}
+}
+
+void AGPFlagPickup::BroadcastSetText_Implementation(int32 new_t)
+{
+	if (new_t <= 0)
+	{
+		textRender->SetText("");
+	}
+	else
+	{
+		FString int_part = FString::FromInt(new_t);
+		FString str = FString("Returning to base in<br>").Append(int_part);
+		textRender->SetText(str);
+	}
+}
+
 void AGPFlagPickup::Tick(float DeltaSeconds)
 {
 	if (wasDropped)
 	{
 		timeAlive += DeltaSeconds;
 		if (textRender) {
-			int t = ceilf(timeToLive - timeAlive);
-			FString str = FString::FromInt(t);
-			textRender->SetText(str);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, textRender->Text);
+			int32 new_t = ceilf(timeToLive - timeAlive);
+			// Get just the number
+			FString c_t = textRender->Text.RightChop(24);
+			int32 current_t = FCString::Atoi(*c_t);
+			// Check that the time is different to avoid broadcasting on every tick
+			if (new_t < current_t || (new_t == 10 && new_t > current_t))
+			{
+				ServerSetText(new_t);
+			}
 		}
 		if (timeAlive >= timeToLive)
 		{
