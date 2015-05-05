@@ -548,6 +548,12 @@ void AGPGameMode::TCPConnectionListener()
 
 			// Ensure commstate is reset.
 			commstate = OCVSProtocolState::INIT;
+			dataExpecting = OCVSPacketChallenge().GetPackedSize();
+			dataRead = 0;
+
+			// Initialise the receive buffer. 1MB should be more than enough.
+			const int32 bufferSize = 1024;
+			ReceivedData.Init(bufferSize);
 
 			//can thread this too
 			GetWorldTimerManager().SetTimer(this, &AGPGameMode::TCPSocketListener, 0.01, true);
@@ -580,15 +586,34 @@ void AGPGameMode::TCPSocketListener()
 {
 	if (!ConnectionSocket || (commstate == OCVSProtocolState::REQUEST && wantScan == ScanRequestState::NONE)) return; // TODO: We may want to do some keepalive comms whilst in request state
 
-	TArray<uint8> ReceivedData;
 	uint32 Size;
+	int32 Read = 0;
 
 	while (ConnectionSocket->HasPendingData(Size))
 	{
-		ReceivedData.Init(FMath::Min(Size, 65507u));
+		ConnectionSocket->Recv(ReceivedData.GetData() + dataRead, ReceivedData.Num() - dataRead, Read);
+	}
 
-		int32 Read = 0;
-		ConnectionSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+	// Only continue if some data was received, or the client is waiting on a request from us.
+	if (commstate == OCVSProtocolState::REQUEST) {
+		// continue...
+		if (Read > 0) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Unexpected Data Bytes Read ~> %d!"), Read));
+		}
+	}
+	else if (Read >= 0) {
+		// Increment the total read counter.
+		dataRead += Read;
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
+
+		if (dataRead < dataExpecting) {
+			// Want more data, wait.
+			return;
+		}
+	}
+	else {
+		return;
 	}
 
 	if (ReceivedData.Num() <= 0 && commstate != OCVSProtocolState::REQUEST)
@@ -596,8 +621,6 @@ void AGPGameMode::TCPSocketListener()
 		//No Data Received
 		return;
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d"), ReceivedData.Num()));
 
 	// TODO: This needs to be tidied considerably!
 	// TODO: Need to anticipate incoming packet size and buffer accordingly.
@@ -617,6 +640,8 @@ void AGPGameMode::TCPSocketListener()
 			check(sent == pktChallenge.GetPackedSize());
 
 			commstate = OCVSProtocolState::REQUEST;
+			dataExpecting = 0;
+			dataRead = 0;
 		}
 	}
 	break;
@@ -650,6 +675,8 @@ void AGPGameMode::TCPSocketListener()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
 		commstate = OCVSProtocolState::RECEIVE;
+		dataExpecting = OCVSPacketChallenge().GetPackedSize();
+		dataRead = 0;
 		wantScan = ScanRequestState::NONE;
 	}
 	break;
@@ -670,7 +697,14 @@ void AGPGameMode::TCPSocketListener()
 
 		int offset = scanHd.GetPackedSize();
 
+		uint32 need = scanHd.GetLength();
+
 		// TODO: Ensure we actually have all of the promised data... or block between chunks
+		if (dataRead < need + offset) {
+			// Not enough data yet!
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Not enough data! Want ~> %d"), (need + offset) - dataRead));
+			return;
+		}
 
 		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {

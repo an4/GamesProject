@@ -116,6 +116,10 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		virtual void EndPlay(EEndPlayReason::Type reason) override;
 
+		uint32 dataRead;
+		uint32 dataExpecting;
+		TArray<uint8> ReceivedData;
+
 		FSocket* ListenerSocket;
 		FSocket* ConnectionSocket;
 		FIPv4Endpoint RemoteAddressForConnection;
