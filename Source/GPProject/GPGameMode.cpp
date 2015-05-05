@@ -145,7 +145,7 @@ void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)
 }
 
 
-void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
+void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl, float hScl)
 {
 	// World size TODO: Calculate this!
 	const float worldx = 6000.0f;
@@ -157,6 +157,7 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	// Building mesh size TODO: Calculate this!
 	const float meshx = 200.0f;
 	const float meshy = 200.0f;
+	const float meshz = 200.0f;
 
 	// Dimensions of the entire input space (in pixels!)
 	const float worldx_px = 480.0f; // TODO: Bring back Kinect Interface with resolution constants
@@ -166,10 +167,13 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl)
 	const float cscalex = worldx / worldx_px;
 	const float cscaley = worldy / worldy_px;
 
+	// Scale factor to combine with the incoming scale factor, to make building jumps possible
+	const float adjustz = 7.0f;
+
 	// Scale factors for mesh scaling.
 	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
 	const float scaley = (scl.Y * worldy) / (worldy_px * meshy);
-	const float scalez = 2.0f;
+	const float scalez = adjustz * hScl;
 
 	// Wrap the rotation into a rotator
 	FRotator rotation(0.0f, rot, 0.0f);
@@ -556,6 +560,15 @@ void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
 	}
 }
 
+
+float AGPGameMode::CalcHeightScale(uint8 height)
+{
+	float range = FloorScale - TopScale;
+	float adjH = height - TopScale; // Due to the way the Kinect works, higher value = higher distance = shorter
+	return adjH / range;
+}
+
+
 //Rama's TCP Socket Listener
 void AGPGameMode::TCPSocketListener()
 {
@@ -591,7 +604,7 @@ void AGPGameMode::TCPSocketListener()
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff);
 
-		if (pktChallenge.VerifyReceived(somestuff)) {
+		if (pktChallenge.VerifyReceived(somestuff, FloorScale, TopScale)) {
 			int32 sent = 0;
 			ConnectionSocket->Send(ReceivedData.GetData(), ReceivedData.Num(), sent);
 
@@ -656,10 +669,13 @@ void AGPGameMode::TCPSocketListener()
 		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
 			OCVSPacketScanChunk scanChnk(somestuff, offset);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f rheight: %d"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y, scanChnk.scale));
+
+			// Calculate the height scale factor
+			float heightScale = CalcHeightScale(scanChnk.scale);
 
 			// Spawn the received building.
-			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y));
+			SpawnBuilding(FVector2D(scanChnk.centre_x, scanChnk.centre_y), scanChnk.rotation, FVector2D(scanChnk.scale_x, scanChnk.scale_y), heightScale);
 
 			// Move the offset by the last chunk.
 			offset += scanChnk.GetPackedSize();

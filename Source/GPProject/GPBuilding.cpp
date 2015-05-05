@@ -10,18 +10,22 @@ AGPBuilding::AGPBuilding(const FObjectInitializer& ObjectInitializer)
     DummyRoot = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("RootBoxComponent"));
     RootComponent = DummyRoot;
 
-    BuildingMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent")); 
+    Building = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MeshComponent")); 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> cubemeshpath(TEXT("StaticMesh'/Game/Meshes/GP_Cube.GP_Cube'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> cubemeshpath2(TEXT("StaticMesh'/Game/Meshes/buildingCube.buildingCube'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> texLegoPath(TEXT("Material'/Game/Materials/texLego.texLego'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> texBookPath(TEXT("Material'/Game/Materials/texBook.texBook'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> texTruckPath(TEXT("Material'/Game/Materials/texTruck.texTruck'"));
 	if (cubemeshpath.Object)
 	{
-		BuildingMesh->SetStaticMesh(cubemeshpath.Object);
+		BuildingMesh = cubemeshpath.Object;
+		BuildingMesh2 = cubemeshpath2.Object;
 		texLego = texLegoPath.Object;
 		texBook = texBookPath.Object;
+		texTruck = texTruckPath.Object;
 	}
 
-	BuildingMesh->AttachTo(RootComponent);
+	Building->AttachTo(RootComponent);
 
 	bReplicates = true;
 	bReplicateMovement = true;
@@ -38,14 +42,18 @@ void AGPBuilding::OnRep_Scale()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("CHECK"));
-
 	// Set the material here..
-	if (Scale.Z < Scale.Y*0.5 && Scale.Z < Scale.Y*0.5) {
-		BuildingMesh->SetMaterial(0, texBook);
+	if (Scale.Z < Scale.Y*0.25 && Scale.Z < Scale.Y*0.25) {
+		Building->SetStaticMesh(BuildingMesh);
+		Building->SetMaterial(0, texBook);
+	}
+	else if (Scale.Y < Scale.X*1.3 && Scale.Y > 0.7*Scale.X && Scale.Y < Scale.Z*1.3 && Scale.Y > 0.7*Scale.Z && Scale.Z < Scale.X*1.3 && Scale.Z > 0.7*Scale.X) {
+		Building->SetStaticMesh(BuildingMesh2);
+		Building->SetMaterial(0, texTruck);
 	}
 	else {
-		BuildingMesh->SetMaterial(0, texLego);
+		Building->SetStaticMesh(BuildingMesh2);
+		Building->SetMaterial(0, texTruck);
 	}
 
 	SetActorScale3D(Scale);
@@ -58,11 +66,17 @@ void AGPBuilding::SetScale(FVector AbsoluteScale)
 		Scale = AbsoluteScale;
 
 		// Set the material here..
-		if (AbsoluteScale.Z < AbsoluteScale.Y*0.5 && AbsoluteScale.Z < AbsoluteScale.Y*0.5) {
-			BuildingMesh->SetMaterial(0, texBook);
+		if (Scale.Z < Scale.Y*0.25 && Scale.Z < Scale.Y*0.25) {
+			Building->SetStaticMesh(BuildingMesh);
+			Building->SetMaterial(0, texBook);
+		}
+		else if (Scale.Y < Scale.X*1.3 && Scale.Y > 0.7*Scale.X && Scale.Y < Scale.Z*1.3 && Scale.Y > 0.7*Scale.Z && Scale.Z < Scale.X*1.3 && Scale.Z > 0.7*Scale.X) {
+			Building->SetStaticMesh(BuildingMesh2);
+			Building->SetMaterial(0, texTruck);
 		}
 		else {
-			BuildingMesh->SetMaterial(0, texLego);
+			Building->SetStaticMesh(BuildingMesh2);
+			Building->SetMaterial(0, texTruck);
 		}
 
 		SetActorScale3D(Scale);
