@@ -42,14 +42,16 @@ void AGPBuilding::OnRep_Scale()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
 
+	GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %f %f %f"), Scale.X, Scale.Y, Scale.Z));
+
 	// Set the material here..
-	if (Scale.Z < Scale.Y*0.25 && Scale.Z < Scale.Y*0.25) {
+	if (Scale.Z < Scale.Y*0.5 && Scale.Z < Scale.X*0.5 && Scale.Z < 2) {
 		Building->SetStaticMesh(BuildingMesh);
 		Building->SetMaterial(0, texBook);
 	}
-	else if (Scale.Y < Scale.X*1.3 && Scale.Y > 0.7*Scale.X && Scale.Y < Scale.Z*1.3 && Scale.Y > 0.7*Scale.Z && Scale.Z < Scale.X*1.3 && Scale.Z > 0.7*Scale.X) {
-		Building->SetStaticMesh(BuildingMesh2);
-		Building->SetMaterial(0, texTruck);
+	else if (Scale.X > Scale.Y*2 || Scale.Y > Scale.X*2) {
+		Building->SetStaticMesh(BuildingMesh);
+		Building->SetMaterial(0, texLego);
 	}
 	else {
 		Building->SetStaticMesh(BuildingMesh2);
@@ -65,14 +67,13 @@ void AGPBuilding::SetScale(FVector AbsoluteScale)
 	{
 		Scale = AbsoluteScale;
 
-		// Set the material here..
-		if (Scale.Z < Scale.Y*0.25 && Scale.Z < Scale.Y*0.25) {
+		if (Scale.Z < Scale.Y*0.5 && Scale.Z < Scale.X*0.5 && Scale.Z < 2) {
 			Building->SetStaticMesh(BuildingMesh);
 			Building->SetMaterial(0, texBook);
 		}
-		else if (Scale.Y < Scale.X*1.3 && Scale.Y > 0.7*Scale.X && Scale.Y < Scale.Z*1.3 && Scale.Y > 0.7*Scale.Z && Scale.Z < Scale.X*1.3 && Scale.Z > 0.7*Scale.X) {
-			Building->SetStaticMesh(BuildingMesh2);
-			Building->SetMaterial(0, texTruck);
+		else if (Scale.X > Scale.Y * 2 || Scale.Y > Scale.X * 2) {
+			Building->SetStaticMesh(BuildingMesh);
+			Building->SetMaterial(0, texLego);
 		}
 		else {
 			Building->SetStaticMesh(BuildingMesh2);
