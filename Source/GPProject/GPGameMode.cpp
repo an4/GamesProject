@@ -561,11 +561,17 @@ void AGPGameMode::TCPConnectionListener()
 	}
 }
 
-void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec)
+void AGPGameMode::VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec, int len, int offset)
 {
 	vec.clear();
-	for (auto Iter(arr.CreateConstIterator()); Iter; Iter++)
+	int i = 0;
+	auto Iter(arr.CreateConstIterator());
+	for (; offset > 0; --offset) {
+		++Iter;
+	}
+	for (; Iter && i < len; ++Iter)
 	{
+		i++;
 		// *Iter to access what this iterator is pointing to.
 		uint8 the_thing = *Iter;
 		vec.push_back((char)the_thing);
@@ -605,10 +611,9 @@ void AGPGameMode::TCPSocketListener()
 		// Increment the total read counter.
 		dataRead += Read;
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
-
 		if (dataRead < dataExpecting) {
 			// Want more data, wait.
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
 			return;
 		}
 	}
@@ -631,11 +636,11 @@ void AGPGameMode::TCPSocketListener()
 		// Need to send challenge response
 		OCVSPacketChallenge pktChallenge;
 		std::vector<char> somestuff;
-		VectorFromTArray(ReceivedData, somestuff);
+		VectorFromTArray(ReceivedData, somestuff, dataRead);
 
 		if (pktChallenge.VerifyReceived(somestuff, FloorScale, TopScale)) {
 			int32 sent = 0;
-			ConnectionSocket->Send(ReceivedData.GetData(), ReceivedData.Num(), sent);
+			ConnectionSocket->Send(ReceivedData.GetData(), pktChallenge.GetPackedSize(), sent);
 
 			check(sent == pktChallenge.GetPackedSize());
 
@@ -665,7 +670,7 @@ void AGPGameMode::TCPSocketListener()
 
 		OCVSPacketScanReq pktReq(mode);
 		std::vector<char> somestuff;
-		VectorFromTArray(ReceivedData, somestuff);
+		VectorFromTArray(ReceivedData, somestuff, dataRead);
 		pktReq.Pack(somestuff);
 
 		int32 sent = 0;
@@ -675,20 +680,15 @@ void AGPGameMode::TCPSocketListener()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
 		commstate = OCVSProtocolState::RECEIVE;
-		dataExpecting = OCVSPacketChallenge().GetPackedSize();
+		dataExpecting = OCVSPacketScanHeader(OCVSPacketScanHeader::RESULT_FAILURE_UNKNOWN).GetPackedSize() + OCVSPacketAck::getInstance()->GetPackedSize();
 		dataRead = 0;
 		wantScan = ScanRequestState::NONE;
 	}
 	break;
 	case OCVSProtocolState::RECEIVE:
 	{
-		// Should have received an ACK, then scan head, then the lone scan chunk.
-		// TODO: This should be functionality of PacketAck?
-		//Eat the ACK byte
-		ReceivedData.RemoveAt(0);
-
 		std::vector<char> somestuff;
-		VectorFromTArray(ReceivedData, somestuff);
+		VectorFromTArray(ReceivedData, somestuff, dataRead - 1, 1); // Skip over the ACK.
 
 		// Read the scan head.
 		OCVSPacketScanHeader scanHd(somestuff);
@@ -698,9 +698,10 @@ void AGPGameMode::TCPSocketListener()
 		int offset = scanHd.GetPackedSize();
 
 		uint32 need = scanHd.GetLength();
+		dataExpecting = need + offset + OCVSPacketAck::getInstance()->GetPackedSize();
 
 		// TODO: Ensure we actually have all of the promised data... or block between chunks
-		if (dataRead < need + offset) {
+		if (dataRead < dataExpecting) {
 			// Not enough data yet!
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Not enough data! Want ~> %d"), (need + offset) - dataRead));
 			return;
@@ -749,6 +750,8 @@ void AGPGameMode::checkPathTrue() {
 	gs->SetWaitingForRescan(false);
 		
 	commstate = OCVSProtocolState::INIT;
+	dataExpecting = OCVSPacketChallenge().GetPackedSize();
+	dataRead = 0;
 	return;
 }
 
@@ -757,6 +760,8 @@ void AGPGameMode::checkPathFalse() {
 	// TODO: This will need to be updated to make sure it works with the rescan timer
 
 	commstate = OCVSProtocolState::INIT;
+	dataExpecting = OCVSPacketChallenge().GetPackedSize();
+	dataRead = 0;
 	Rescan();
 
 	return;
