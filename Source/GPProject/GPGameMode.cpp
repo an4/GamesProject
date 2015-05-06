@@ -56,8 +56,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	}
 
 	tickCount = 0.0;
-	PathExists = true;
 	updated = true;
+	PathExists = true;
 }
 
 void AGPGameMode::StartPlay()
@@ -184,7 +184,7 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl, float h
 	const float cscaley = worldy / worldy_px;
 
 	// Scale factor to combine with the incoming scale factor, to make building jumps possible
-	const float adjustz = 7.0f;
+	const float adjustz = 70.0f;
 
 	// Scale factors for mesh scaling.
 	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
@@ -392,6 +392,7 @@ void AGPGameMode::Rescan()
 void AGPGameMode::Rescan(const FString &msg)
 {
 	if (msg.Equals(TEXT("n"), ESearchCase::IgnoreCase)) {
+		ResetBuildings();
 		wantScan = ScanRequestState::SCAN;
 	}
 	else if (msg.Equals(TEXT("d"), ESearchCase::IgnoreCase)) {
@@ -638,7 +639,7 @@ void AGPGameMode::TCPSocketListener()
 
 		if (dataRead < dataExpecting) {
 			// Want more data, wait.
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
 			return;
 		}
 	}
@@ -717,8 +718,8 @@ void AGPGameMode::TCPSocketListener()
 
 		// Read the scan head.
 		OCVSPacketScanHeader scanHd(somestuff);
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
+		
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
 
 		int offset = scanHd.GetPackedSize();
 
@@ -735,7 +736,7 @@ void AGPGameMode::TCPSocketListener()
 		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
 			OCVSPacketScanChunk scanChnk(somestuff, offset);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f rheight: %d"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y, scanChnk.scale));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f rheight: %d"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y, scanChnk.scale));
 
 			// Calculate the height scale factor
 			float heightScale = CalcHeightScale(scanChnk.scale);
@@ -752,7 +753,7 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		checkPathTrue();
+		updated = false;
 
 	}
 	break;
@@ -773,21 +774,33 @@ void AGPGameMode::checkPathTrue() {
 
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	gs->SetWaitingForRescan(false);
-		
+
 	commstate = OCVSProtocolState::INIT;
 	dataExpecting = OCVSPacketChallenge().GetPackedSize();
 	dataRead = 0;
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Path Accepted.")));
+
 	return;
 }
 
 void AGPGameMode::checkPathFalse() {
 
 	// TODO: This will need to be updated to make sure it works with the rescan timer
-
 	commstate = OCVSProtocolState::INIT;
 	dataExpecting = OCVSPacketChallenge().GetPackedSize();
 	dataRead = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rescanning...")));
 	Rescan();
+
+
+	return;
+}
+
+void AGPGameMode::rebuildNavigation() {
+
+	// Rebuild the Navigation?
+	GetWorld()->Exec(GetWorld(), TEXT("RebuildNavigation"));
 
 	return;
 }
