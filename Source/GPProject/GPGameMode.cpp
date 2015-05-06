@@ -63,6 +63,7 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 void AGPGameMode::StartPlay()
 {
 	Super::StartPlay();
+
     //AGPPlayerController* ServerController;
 	if (Role == ROLE_Authority)
 	{

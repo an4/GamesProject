@@ -16,6 +16,12 @@ AGPPlayerController::AGPPlayerController(const FObjectInitializer& ObjectInitial
 
 void AGPPlayerController::BeginPlay()
 {    
+	if (GEngine)
+	{
+		UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+		FIntPoint Resolution = Settings->GetScreenResolution();
+		Settings->RequestResolutionChange(Resolution.X, Resolution.Y, EWindowMode::WindowedFullscreen, false);
+	}
 }
 
 // Handles replication of properties to clients in multiplayer!
