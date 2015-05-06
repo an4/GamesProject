@@ -63,6 +63,14 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 void AGPGameMode::StartPlay()
 {
 	Super::StartPlay();
+	
+	if (GEngine)
+	{
+		UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+		FIntPoint Resolution = Settings->GetScreenResolution();
+		Settings->RequestResolutionChange(Resolution.X, Resolution.Y, EWindowMode::WindowedFullscreen, false);
+	}
+
     //AGPPlayerController* ServerController;
 	if (Role == ROLE_Authority)
 	{
