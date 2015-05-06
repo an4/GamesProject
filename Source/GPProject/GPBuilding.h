@@ -20,9 +20,24 @@ public:
 
     UPROPERTY()
     class USceneComponent* DummyRoot;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	class UMaterial* texLego;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	class UMaterial* texBook;
+
+	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
+	class UMaterial* texTruck;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+	UStaticMeshComponent* Building;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
-	UStaticMeshComponent* BuildingMesh;
+	UStaticMesh* BuildingMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = StaticMeshComponents)
+	UStaticMesh* BuildingMesh2;
 
 	UPROPERTY(Replicated, ReplicatedUsing = OnRep_Scale)
 	FVector Scale;

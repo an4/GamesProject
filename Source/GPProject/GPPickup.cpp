@@ -11,7 +11,7 @@ AGPPickup::AGPPickup(const FObjectInitializer& ObjectInitializer)
 
     // Create the root SphereComponent to handle the pickup's collision
     BaseCollisionComponent =  ObjectInitializer.CreateDefaultSubobject<USphereComponent>(this, TEXT("BaseSphereComponent"));
-
+	BaseCollisionComponent->BodyInstance.SetCollisionProfileName("Pickup");
     // Set the SphereComponent as the root component.
     RootComponent = BaseCollisionComponent;
 
@@ -24,4 +24,12 @@ AGPPickup::AGPPickup(const FObjectInitializer& ObjectInitializer)
     //PickupMesh->SetSimulatePhysics(true);
 
     bReplicates = true;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
+    PickUpSound = PickUpSoundCueLoader.Object;
+}
+
+void AGPPickup::playSound()
+{
+    this->PlaySoundOnActor(PickUpSound, 0.5f, 0.5f);
 }

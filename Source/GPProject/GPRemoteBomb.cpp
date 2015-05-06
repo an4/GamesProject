@@ -12,7 +12,11 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	// Use a box as a simple collision representation
 	BombCollisionComp = ObjectInitializer.CreateDefaultSubobject<UBoxComponent>(this, TEXT("BoxComp"));
 	BombCollisionComp->BodyInstance.SetCollisionProfileName("RemoteBomb");
-	BombCollisionComp->InitBoxExtent(FVector(5, 5, 5));
+	BombCollisionComp->SetBoxExtent(FVector(16, 23.5, 15), true);
+	//Can't get this to work, just ended up shifting the mesh in the blueprint.
+	//BombCollisionComp->SetRelativeLocation(FVector(0, 9, 3));
+	//BombCollisionComp->UpdateCollisionProfile();
+
 	BombCollisionComp->OnComponentHit.AddDynamic(this, &AGPRemoteBomb::OnHit);
 	RootComponent = BombCollisionComp;
 
@@ -32,6 +36,12 @@ AGPRemoteBomb::AGPRemoteBomb(const FObjectInitializer& ObjectInitializer)
 	bNetLoadOnClient = true;
 	bReplicates = false;
 	bReplicateMovement = false;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> DetonateSoundCueLoader(TEXT("SoundCue'/Game/Audio/BombDetonate_Cue.BombDetonate_Cue'"));
+    BombDetonateSound = DetonateSoundCueLoader.Object;
+
+    static ConstructorHelpers::FObjectFinder<USoundCue> DropSoundCueLoader(TEXT("SoundCue'/Game/Audio/BombDrop_Cue.BombDrop_Cue'"));
+    BombDropSound = DropSoundCueLoader.Object;
 }
 
 void AGPRemoteBomb::InitVelocity(const FVector& ShootDirection)
@@ -47,19 +57,14 @@ void AGPRemoteBomb::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 {
 	if (OtherActor && (OtherActor != this) && OtherComp && Role == ROLE_Authority)
 	{
-		// Disable movement once we hit the floor/a building
-		if (OtherActor->IsA(AGPBuilding::StaticClass()) || OtherActor->IsA(AStaticMeshActor::StaticClass())) {
+        // Play Sound
+        this->PlaySoundOnActor(BombDropSound, 0.5f, 0.5f);
+        
+        // Disable movement once we hit a static object so that we stick to it
+		if (OtherActor->IsA(AGPBuilding::StaticClass()) || (OtherActor->IsA(AStaticMeshActor::StaticClass()) && !OtherComp->IsSimulatingPhysics())) {
 			BombProjectileMovement->Deactivate();
 		}
 		OtherComp->AddImpulseAtLocation(BombProjectileMovement->Velocity * 100.0f, Hit.ImpactPoint);
-		/*if (OtherActor->IsA(AGPCharacter::StaticClass())) {
-			// Stick to the actor
-			BombProjectileMovement->Deactivate();
-			OtherActor->GetRootPrimitiveComponent()->MoveIgnoreActors.Add(this);
-			GetRootPrimitiveComponent()->MoveIgnoreActors.Add(OtherActor);
-			EAttachLocation::Type AttachLocationType = EAttachLocation::SnapToTarget;
-			AttachRootComponentToActor(OtherActor, NAME_None, AttachLocationType);
-		}*/
 	}
 }
 
@@ -67,7 +72,10 @@ void AGPRemoteBomb::Explode()
 {
 	if (ProjectileClass != NULL)
 	{
-		UWorld* const World = GetWorld();
+        // Play Sound
+        this->PlaySoundOnActor(BombDetonateSound, 0.5f, 0.5f);
+        
+        UWorld* const World = GetWorld();
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;

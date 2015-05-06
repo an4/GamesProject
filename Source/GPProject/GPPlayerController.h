@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "GameFramework/PlayerController.h"
+#include "GPCharacter.h"
+#include "GPServerPawn.h"
 #include "GPPlayerController.generated.h"
 
 /**
@@ -11,10 +12,29 @@
 UCLASS()
 class GPPROJECT_API AGPPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
+    bool InTeam = false;
 public:
+
+    AGPPlayerController(const FObjectInitializer& ObjectInitializer);
+
+    void BeginPlay() override;
+
+    UPROPERTY(Replicated)
+    FString myIP;
+
+    bool ServerSetProjectingPlayerIPAddress_Validate(const FString& IP);
+    void ServerSetProjectingPlayerIPAddress_Implementation(const FString& IP);
+
 	virtual void SetupInputComponent() override;
+    bool IsServerPlayer = false;
+
+    UFUNCTION(BlueprintCallable, Category = "Team")
+	void JoinTeam0();
+
+    UFUNCTION(BlueprintCallable, Category = "Team")
+	void JoinTeam1();
 
 	//handles moving forward/backward
     UFUNCTION()
@@ -45,6 +65,10 @@ public:
 
 	//handles bomb detonation
 	void OnBombDetonate();
+
+	// Handles rescan requesting
+	void OnRequestRescan();
+
 	//UFUNCTION(Reliable, Server, WithValidation)
 	//void ServerOnFire();
 
@@ -56,5 +80,6 @@ public:
 
 	//UFUNCTION(reliable, server, WithValidation)
 	//void ServerSetSomeBool(bool bNewSomeBool);
-	
+    UPROPERTY(BluePrintReadWrite, Category = "Projection")
+    bool isProjecting = true;	
 };

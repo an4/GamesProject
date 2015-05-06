@@ -15,12 +15,86 @@ class GPPROJECT_API AGPFlagPickup : public AGPPickup
 	
     AGPFlagPickup(const FObjectInitializer& ObjectInitializer);
 
+	void Tick(float DeltaSeconds) override;
+
+	UPROPERTY(Replicated)
+	float timeAlive;
+
+	UPROPERTY(Replicated)
+	bool wasDropped;
+
+	UPROPERTY(Replicated)
+	float timeToLive = 10.f;
+
 public:
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+	UMaterial* GreenMaterial;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+	UMaterial* RedMaterial;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
+	UMaterial* TextMaterial;
+
+	UFUNCTION()
+	void Init(int8 Team, bool isNew);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetMaterial(int8 Team);
+	bool ServerSetMaterial_Validate(int8 Team);
+	void ServerSetMaterial_Implementation(int8 Team);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastSetMaterial(int8 Team);
+	void BroadcastSetMaterial_Implementation(int8 Team);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetLight(int8 Team, float val);
+	bool ServerSetLight_Validate(int8 Team, float val);
+	void ServerSetLight_Implementation(int8 Team, float val);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastSetLight(int8 Team, float val);
+	void BroadcastSetLight_Implementation(int8 Team, float val);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerMoveToSpawn();
+	bool ServerMoveToSpawn_Validate();
+	void ServerMoveToSpawn_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastMoveToSpawn();
+	void BroadcastMoveToSpawn_Implementation();
+
+	// Sets the text for the textRender component
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSetText(int32 new_t);
+	bool ServerSetText_Validate(int32 new_t);
+	void ServerSetText_Implementation(int32 new_t);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void BroadcastSetText(int32 new_t);
+	void BroadcastSetText_Implementation(int32 new_t);
+
+	UFUNCTION()
+	void ClientOnlySetMaterial();
+
     /** called when something enters the sphere component */
     UFUNCTION()
     void OnOverlapBegin(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-    /* Spawns a flag in a random location */
-    UFUNCTION()
-    void SpawnFlag(class AActor* FlagOwner);
+	UPROPERTY(Replicated)
+	int8 flagTeam = -1;
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	float GetTimeAlive();
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	bool GetWasDropped();
+
+	UFUNCTION(BlueprintCallable, Category = "FlagDrop")
+	float GetTimeToLive();
+
+	UPROPERTY(Replicated, VisibleDefaultsOnly, BlueprintReadWrite)
+	UTextRenderComponent * textRender;
 };
