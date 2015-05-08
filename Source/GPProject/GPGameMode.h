@@ -41,6 +41,11 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PathFinding)
 		bool PathExists;
 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PathFinding)
+		float iterations;
+
+		FTimerHandle rescanTimer = FTimerHandle();
+
         UPROPERTY()
         TSubclassOf<class AGPServerPawn> ServerPawnClass;
 

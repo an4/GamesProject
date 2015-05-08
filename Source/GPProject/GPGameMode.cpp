@@ -184,7 +184,7 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl, float h
 	const float cscaley = worldy / worldy_px;
 
 	// Scale factor to combine with the incoming scale factor, to make building jumps possible
-	const float adjustz = 70.0f;
+	const float adjustz = 7.0f;
 
 	// Scale factors for mesh scaling.
 	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
@@ -222,6 +222,28 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		SpawnParams.Instigator = NULL;
 
 		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), centre, rotation, SpawnParams);
+
+		// Should add "building in base" check here. If base is blocked, then set PathExists to false.
+
+		// I should calculate the position of the four corners and use that to check if the building is in the base.
+		// Base coordinates are -2300, -3800 and 2300, 3800.
+		float halfwidth = (200 * scale.X) / 2;
+		float halfheight = (200 * scale.Y) / 2;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building Centre: %f %f Building Sides: %f %f %f %f"), centre.X, centre.Y, centre.X - halfwidth, centre.X + halfwidth, centre.Y - halfheight, centre.Y + halfheight));
+		if (-2200 > (centre.X - halfwidth)) {
+			if (-3700 > (centre.Y - halfheight)) {
+				PathExists = false;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
+			}
+		}
+		if (2200 < (centre.X + halfwidth)) {
+			if (3700 < (centre.Y + halfheight)) {
+				PathExists = false;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
+			}
+		}
+
+		// Should edit Chris's GUI so that it displays a different message if PathExists = false.
 
 		if (building != NULL)
 		{
@@ -659,6 +681,7 @@ void AGPGameMode::TCPSocketListener()
 	{
 	case OCVSProtocolState::INIT:
 	{
+
 		// Need to send challenge response
 		OCVSPacketChallenge pktChallenge;
 		std::vector<char> somestuff;
@@ -673,10 +696,12 @@ void AGPGameMode::TCPSocketListener()
 			commstate = OCVSProtocolState::REQUEST;
 			dataExpecting = 0;
 			dataRead = 0;
+
 		}
 	}
 	break;
 	case OCVSProtocolState::REQUEST:
+
 	// Need to send request, if we want a scan.
 	if (wantScan != ScanRequestState::NONE) {
 		OCVSPacketScanReq::ScanType mode;
@@ -713,6 +738,7 @@ void AGPGameMode::TCPSocketListener()
 	break;
 	case OCVSProtocolState::RECEIVE:
 	{
+
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff, dataRead - 1, 1); // Skip over the ACK.
 
@@ -755,6 +781,8 @@ void AGPGameMode::TCPSocketListener()
 
 		updated = false;
 
+		iterations = 0.0f;
+
 	}
 	break;
 	default:
@@ -779,7 +807,7 @@ void AGPGameMode::checkPathTrue() {
 	dataExpecting = OCVSPacketChallenge().GetPackedSize();
 	dataRead = 0;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Path Accepted.")));
+	PathExists = true;
 
 	return;
 }
@@ -787,11 +815,23 @@ void AGPGameMode::checkPathTrue() {
 void AGPGameMode::checkPathFalse() {
 
 	// TODO: This will need to be updated to make sure it works with the rescan timer
-	commstate = OCVSProtocolState::INIT;
+	//commstate = OCVSProtocolState::INIT;
 	dataExpecting = OCVSPacketChallenge().GetPackedSize();
 	dataRead = 0;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rescanning...")));
-	Rescan();
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(1);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rescanning...State %d"),gs->GetState()));
+
+	PathExists = false;
+
+	// Get the timer for rescan here
+	for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->SetPauseState();
+	}
+	
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RESCAN BABY!")));
+	//this->Rescan();
 
 
 	return;
