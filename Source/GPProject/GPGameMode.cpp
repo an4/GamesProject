@@ -410,7 +410,6 @@ void AGPGameMode::BlueprintRescan()
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	if (gs->GetWaitingForRescan())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Setting rescan"));
 		wantScan = ScanRequestState::SCAN;
 	}
 }
