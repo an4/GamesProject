@@ -98,6 +98,9 @@ void AGPGameMode::StartPlay()
         // Spawn Ammo
         SpawnAmmo();
 
+		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+		gs->SetWaitingForRescan(true);
+
 		// Start listener for Kinect input
 		if (!StartTCPReceiver("KinectSocketListener", "127.0.0.1", 25599))
 		{
@@ -402,6 +405,15 @@ void AGPGameMode::Rescan(const FString &msg)
 	}
 }
 
+void AGPGameMode::BlueprintRescan()
+{
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	if (gs->GetWaitingForRescan())
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, TEXT("Setting rescan"));
+		wantScan = ScanRequestState::SCAN;
+	}
+}
 
 void AGPGameMode::ResetBuildings()
 {
@@ -429,7 +441,7 @@ void AGPGameMode::ResetBombs()
 void AGPGameMode::PauseGame()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	gs->SetState(0);
+	gs->SetState(2);
 }
 
 

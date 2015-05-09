@@ -90,7 +90,7 @@ void AGPPlayerController::MoveForward(float Value)
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	if (GetCharacter() != NULL)
 	{
-		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1))
+		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1) && !gs->GetWaitingForRescan())
 		{
 			// find out which way is forward
 			FRotator Rotation = GetControlRotation();
@@ -111,7 +111,7 @@ void AGPPlayerController::MoveRight(float Value)
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	if (GetCharacter() != NULL)
 	{
-		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1))
+		if ((((AGPCharacter*)GetCharacter())->Health > 0) && (Value != 0.0f) && (gs->GetState() == 1) && !gs->GetWaitingForRescan())
 		{
 			// find out which way is right
 			const FRotator Rotation = GetControlRotation();
