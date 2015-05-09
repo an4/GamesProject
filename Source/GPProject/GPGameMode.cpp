@@ -759,6 +759,8 @@ void AGPGameMode::TCPSocketListener()
 			return;
 		}
 
+		PathExists = true;
+
 		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
 			OCVSPacketScanChunk scanChnk(somestuff, offset);
@@ -783,6 +785,10 @@ void AGPGameMode::TCPSocketListener()
 
 		iterations = 0.0f;
 
+		commstate = OCVSProtocolState::INIT;
+		dataExpecting = OCVSPacketChallenge().GetPackedSize();
+		dataRead = 0;
+
 	}
 	break;
 	default:
@@ -802,10 +808,6 @@ void AGPGameMode::checkPathTrue() {
 
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	gs->SetWaitingForRescan(false);
-
-	commstate = OCVSProtocolState::INIT;
-	dataExpecting = OCVSPacketChallenge().GetPackedSize();
-	dataRead = 0;
 
 	PathExists = true;
 
@@ -829,10 +831,9 @@ void AGPGameMode::checkPathFalse() {
 	{
 		ActorItr->SetPauseState();
 	}
-	
+
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RESCAN BABY!")));
 	//this->Rescan();
-
 
 	return;
 }
