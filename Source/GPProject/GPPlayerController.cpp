@@ -18,9 +18,9 @@ void AGPPlayerController::BeginPlay()
 {    
 	if (GEngine)
 	{
-		UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+		/*UGameUserSettings* Settings = GEngine->GetGameUserSettings();
 		FIntPoint Resolution = Settings->GetScreenResolution();
-		Settings->RequestResolutionChange(Resolution.X, Resolution.Y, EWindowMode::WindowedFullscreen, false);
+		Settings->RequestResolutionChange(Resolution.X, Resolution.Y, EWindowMode::WindowedFullscreen, false);*/
 	}
 }
 
