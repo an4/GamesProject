@@ -76,6 +76,9 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 
 		void Rescan();
 
+		UFUNCTION(BlueprintCallable, Category = Scan)
+		void BlueprintRescan();
+
 		UFUNCTION(exec)
 		void ResetBuildings();
 

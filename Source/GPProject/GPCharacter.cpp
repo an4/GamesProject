@@ -554,19 +554,19 @@ void AGPCharacter::OnStopJump()
 bool AGPCharacter::CanFire()
 {
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-	return (Health > 0.0f && gs->GetState() == 1 && Ammo > 0);
+	return (Health > 0.0f && gs->GetState() == 1 && Ammo > 0 && !gs->GetWaitingForRescan());
 }
 
 bool AGPCharacter::CanDetonate()
 {
     AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-    return (Health > 0.0f && gs->GetState() == 1);
+	return (Health > 0.0f && gs->GetState() == 1 && !gs->GetWaitingForRescan());
 }
 
 bool AGPCharacter::CanPlaceBomb()
 {
     AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
-    return (Health > 0.0f && gs->GetState() == 1 && Ammo > 5 && RemoteBombList.Num() < MaxBombs);
+	return (Health > 0.0f && gs->GetState() == 1 && Ammo > 5 && RemoteBombList.Num() < MaxBombs && !gs->GetWaitingForRescan());
 }
 
 void AGPCharacter::OnFire()
@@ -1002,7 +1002,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 			ActorItr->BroadcastRescanTimer();
 		}
 		BroadcastRescanTimer();
-		GetWorld()->GetTimerManager().SetTimer(rescanTimer, this, &AGPCharacter::SetPauseStateOff, 3.0f);
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, this, &AGPCharacter::SetPauseStateOff, 30.0f);
 	}
 }
 
@@ -1012,7 +1012,7 @@ void AGPCharacter::BroadcastRescanTimer_Implementation()
 	if (GetController() != NULL)
 	{
 		// Set the timer to not actually do anything for clients
-		GetWorld()->GetTimerManager().SetTimer(rescanTimer, 3.0f, false, -1.0f);
+		GetWorld()->GetTimerManager().SetTimer(rescanTimer, 30.0f, false, -1.0f);
 	}
 }
 
