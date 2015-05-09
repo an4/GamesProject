@@ -115,9 +115,13 @@ class GPPROJECT_API AGPGameMode : public AGameMode
 		enum class ScanRequestState { NONE, SCAN, DEBUG, INTERACTIVE };
 		ScanRequestState wantScan = ScanRequestState::NONE;
 
-		void VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec);
+		void VectorFromTArray(TArray<uint8> &arr, std::vector<char> &vec, int len, int offset = 0);
 
 		virtual void EndPlay(EEndPlayReason::Type reason) override;
+
+		uint32 dataRead;
+		uint32 dataExpecting;
+		TArray<uint8> ReceivedData;
 
 		FSocket* ListenerSocket;
 		FSocket* ConnectionSocket;
