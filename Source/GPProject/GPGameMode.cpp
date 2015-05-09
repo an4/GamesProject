@@ -687,7 +687,7 @@ void AGPGameMode::TCPSocketListener()
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff, dataRead);
 
-		if (pktChallenge.VerifyReceived(somestuff, FloorScale, TopScale)) {
+		if (pktChallenge.VerifyReceived(somestuff, dataRead, FloorScale, TopScale)) {
 			int32 sent = 0;
 			ConnectionSocket->Send(ReceivedData.GetData(), pktChallenge.GetPackedSize(), sent);
 
