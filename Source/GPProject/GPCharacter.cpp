@@ -614,14 +614,25 @@ void AGPCharacter::BroadcastOnFire_Implementation(FVector CameraLoc, FRotator Ca
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = Instigator;
 			// spawn the projectile at the muzzle
+			FVector const LaunchDir = MuzzleRotation.Vector();
+			/*float newY = (1 / sqrt(1 + ((LaunchDir.X*LaunchDir.X) / (LaunchDir.Y*LaunchDir.Y))));
+			if (LaunchDir.Y < 0)
+			{
+				newY = newY * (-1);
+			}
+			float newX = sqrt(1 - newY*newY);
+			if (LaunchDir.X < 0)
+			{
+				newX = newX * (-1);
+			}
+			FVector const TwoDLaunchDir = FVector(newX, newY, 0.f);
+			FVector const MuzzleLocation2 = MuzzleLocation + TwoDLaunchDir * 100;*/
 			AGPProjectile* const Projectile = World->SpawnActor<AGPProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
 				// Play Sound
 				Projectile->PlaySoundOnActor(ShotGunSound, 0.2f, 0.5f);
-
-				// find launch direction
-				FVector const LaunchDir = MuzzleRotation.Vector();
+				GetCapsuleComponent()->MoveIgnoreActors.Add(Projectile);
 				Projectile->InitVelocity(LaunchDir);
 			}
 		}

@@ -16,8 +16,8 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     // Use a ProjectileMovementComponent to govern this projectile's movement
     ProjectileMovement = ObjectInitializer.CreateDefaultSubobject<UProjectileMovementComponent>(this, TEXT("ProjectileComp"));
     ProjectileMovement->UpdatedComponent = CollisionComp;
-    ProjectileMovement->InitialSpeed = 3000.f;
-    ProjectileMovement->MaxSpeed = 3000.f;
+    ProjectileMovement->InitialSpeed = 3500.f;
+    ProjectileMovement->MaxSpeed = 5000.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = true;
     ProjectileMovement->Bounciness = 0.9f;
@@ -49,8 +49,8 @@ void AGPProjectile::InitVelocity(const FVector& ShootDirection)
     if (ProjectileMovement)
     {
         // set the projectile's velocity to the desired direction
-        ProjectileMovement->Velocity = ShootDirection * ProjectileMovement->InitialSpeed;
-    }
+		ProjectileMovement->Velocity = ShootDirection * ProjectileMovement->InitialSpeed;
+	}
 }
 
 void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
