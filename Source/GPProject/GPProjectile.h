@@ -33,7 +33,7 @@ class GPPROJECT_API AGPProjectile : public AActor
 		bool hitWall;
 	
         /** inits velocity of the projectile in the shoot direction */
-        void InitVelocity(const FVector& ShootDirection, const FVector& ActorVelocity);
+        void InitVelocity(const FVector& ShootDirection);
         /** called when projectile hits something */
         UFUNCTION()
         void OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

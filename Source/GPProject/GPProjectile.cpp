@@ -44,20 +44,13 @@ AGPProjectile::AGPProjectile(const FObjectInitializer& ObjectInitializer)
     OnHitSound = HitSoundCueLoader.Object;
 }
 
-void AGPProjectile::InitVelocity(const FVector& ShootDirection, const FVector& ActorVelocity)
+void AGPProjectile::InitVelocity(const FVector& ShootDirection)
 {
     if (ProjectileMovement)
     {
-		float ActorVel = 0;
-		ActorVel = (ShootDirection.X * ActorVelocity.X + ShootDirection.Y * ActorVelocity.Y + ShootDirection.Z * ActorVelocity.Z);
         // set the projectile's velocity to the desired direction
-		float iniSpeed = 2*ProjectileMovement->InitialSpeed;
-		if (ActorVel > 0)
-		{
-			iniSpeed += ActorVel;
-		}
+		float iniSpeed = ProjectileMovement->InitialSpeed;
         ProjectileMovement->Velocity = (ShootDirection * iniSpeed);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::SanitizeFloat(ActorVel));
 	}
 }
 

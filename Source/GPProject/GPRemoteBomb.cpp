@@ -94,7 +94,7 @@ void AGPRemoteBomb::Explode()
 				{
 					// find launch direction
 					FVector const LaunchDir = MuzzleRotation.Vector();
-					Projectile->InitVelocity(LaunchDir, FVector(0.f,0.f,0.f));
+					Projectile->InitVelocity(LaunchDir);
 				}
 				else
 				{
