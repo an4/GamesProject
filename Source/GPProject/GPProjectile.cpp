@@ -78,7 +78,7 @@ void AGPProjectile::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FV
 
 
 			// Damage the other actor! TODO: Is there a proper way to use the damage system in UE4?
-			const float damage = 5.0f;
+			const float damage = 12.5f;
 			// Uuuh pointers? Hmm... TODO: nullptr -> subclass of UDamageType
 			FPointDamageEvent* DamageEvent = new FPointDamageEvent(damage, Hit, NormalImpulse, nullptr);
 
