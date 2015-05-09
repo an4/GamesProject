@@ -56,8 +56,8 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	}
 
 	tickCount = 0.0;
-	PathExists = true;
 	updated = true;
+	PathExists = true;
 }
 
 void AGPGameMode::StartPlay()
@@ -222,6 +222,28 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		SpawnParams.Instigator = NULL;
 
 		AGPBuilding* building = World->SpawnActor<AGPBuilding>(AGPBuilding::StaticClass(), centre, rotation, SpawnParams);
+
+		// Should add "building in base" check here. If base is blocked, then set PathExists to false.
+
+		// I should calculate the position of the four corners and use that to check if the building is in the base.
+		// Base coordinates are -2300, -3800 and 2300, 3800.
+		float halfwidth = (200 * scale.X) / 2;
+		float halfheight = (200 * scale.Y) / 2;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building Centre: %f %f Building Sides: %f %f %f %f"), centre.X, centre.Y, centre.X - halfwidth, centre.X + halfwidth, centre.Y - halfheight, centre.Y + halfheight));
+		if (-2200 > (centre.X - halfwidth)) {
+			if (-3700 > (centre.Y - halfheight)) {
+				PathExists = false;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
+			}
+		}
+		if (2200 < (centre.X + halfwidth)) {
+			if (3700 < (centre.Y + halfheight)) {
+				PathExists = false;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
+			}
+		}
+
+		// Should edit Chris's GUI so that it displays a different message if PathExists = false.
 
 		if (building != NULL)
 		{
@@ -392,6 +414,7 @@ void AGPGameMode::Rescan()
 void AGPGameMode::Rescan(const FString &msg)
 {
 	if (msg.Equals(TEXT("n"), ESearchCase::IgnoreCase)) {
+		ResetBuildings();
 		wantScan = ScanRequestState::SCAN;
 	}
 	else if (msg.Equals(TEXT("d"), ESearchCase::IgnoreCase)) {
@@ -638,7 +661,7 @@ void AGPGameMode::TCPSocketListener()
 
 		if (dataRead < dataExpecting) {
 			// Want more data, wait.
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data Bytes Read ~> %d Expecting ~> %d"), dataRead, dataExpecting));
 			return;
 		}
 	}
@@ -658,12 +681,13 @@ void AGPGameMode::TCPSocketListener()
 	{
 	case OCVSProtocolState::INIT:
 	{
+
 		// Need to send challenge response
 		OCVSPacketChallenge pktChallenge;
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff, dataRead);
 
-		if (pktChallenge.VerifyReceived(somestuff, FloorScale, TopScale)) {
+		if (pktChallenge.VerifyReceived(somestuff, dataRead, FloorScale, TopScale)) {
 			int32 sent = 0;
 			ConnectionSocket->Send(ReceivedData.GetData(), pktChallenge.GetPackedSize(), sent);
 
@@ -672,10 +696,12 @@ void AGPGameMode::TCPSocketListener()
 			commstate = OCVSProtocolState::REQUEST;
 			dataExpecting = 0;
 			dataRead = 0;
+
 		}
 	}
 	break;
 	case OCVSProtocolState::REQUEST:
+
 	// Need to send request, if we want a scan.
 	if (wantScan != ScanRequestState::NONE) {
 		OCVSPacketScanReq::ScanType mode;
@@ -712,13 +738,14 @@ void AGPGameMode::TCPSocketListener()
 	break;
 	case OCVSProtocolState::RECEIVE:
 	{
+
 		std::vector<char> somestuff;
 		VectorFromTArray(ReceivedData, somestuff, dataRead - 1, 1); // Skip over the ACK.
 
 		// Read the scan head.
 		OCVSPacketScanHeader scanHd(somestuff);
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
+		
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with chunks ~> %d"), scanHd.GetChunkCount()));
 
 		int offset = scanHd.GetPackedSize();
 
@@ -732,10 +759,12 @@ void AGPGameMode::TCPSocketListener()
 			return;
 		}
 
+		PathExists = true;
+
 		// Read the chunk(s) TODO: Don't block on it here!!!
 		for (int i = 0; i < (int)scanHd.GetChunkCount(); i++) {
 			OCVSPacketScanChunk scanChnk(somestuff, offset);
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f rheight: %d"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y, scanChnk.scale));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Got Scan with rect at ~> %f,%f rot: %f scale: %f,%f rheight: %d"), scanChnk.centre_x, scanChnk.centre_y, scanChnk.rotation, scanChnk.scale_x, scanChnk.scale_y, scanChnk.scale));
 
 			// Calculate the height scale factor
 			float heightScale = CalcHeightScale(scanChnk.scale);
@@ -752,7 +781,13 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		checkPathTrue();
+		updated = false;
+
+		iterations = 0.0f;
+
+		commstate = OCVSProtocolState::INIT;
+		dataExpecting = OCVSPacketChallenge().GetPackedSize();
+		dataRead = 0;
 
 	}
 	break;
@@ -773,21 +808,40 @@ void AGPGameMode::checkPathTrue() {
 
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	gs->SetWaitingForRescan(false);
-		
-	commstate = OCVSProtocolState::INIT;
-	dataExpecting = OCVSPacketChallenge().GetPackedSize();
-	dataRead = 0;
+
+	PathExists = true;
+
 	return;
 }
 
 void AGPGameMode::checkPathFalse() {
 
 	// TODO: This will need to be updated to make sure it works with the rescan timer
-
-	commstate = OCVSProtocolState::INIT;
+	//commstate = OCVSProtocolState::INIT;
 	dataExpecting = OCVSPacketChallenge().GetPackedSize();
 	dataRead = 0;
-	Rescan();
+	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
+	gs->SetState(1);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rescanning...State %d"),gs->GetState()));
+
+	PathExists = false;
+
+	// Get the timer for rescan here
+	for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ActorItr->SetPauseState();
+	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("RESCAN BABY!")));
+	//this->Rescan();
+
+	return;
+}
+
+void AGPGameMode::rebuildNavigation() {
+
+	// Rebuild the Navigation?
+	GetWorld()->Exec(GetWorld(), TEXT("RebuildNavigation"));
 
 	return;
 }
