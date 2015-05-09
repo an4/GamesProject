@@ -40,10 +40,6 @@ void AGPBuilding::BeginPlay()
 
 void AGPBuilding::OnRep_Scale()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %d"), Role == ROLE_Authority));
-
-	//GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Blue, *FString::Printf(TEXT("Scaling block client: %f %f %f"), Scale.X, Scale.Y, Scale.Z));
-
 	// Set the material here..
 	if (Scale.Z < Scale.Y*0.5 && Scale.Z < Scale.X*0.5 && Scale.Z < 2) {
 		Building->SetStaticMesh(BuildingMesh);

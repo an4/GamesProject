@@ -143,19 +143,9 @@ void AGPGameMode::SpawnCaptureZone(FVector centre, FRotator rotation, int8 Team)
 			cp = World->SpawnActor<AGPCaptureZone>(AGPCaptureZone::StaticClass(), centre, rotation, SpawnParams);
 		}
 
-		if (cp == NULL)
+		if (cp != NULL)
 		{
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp is null"));
-			}
-		}
-		else {
 			cp->Init(Team);
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Cp spawned"));
-			}
 		}
 	}
 }
@@ -229,17 +219,14 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		// Base coordinates are -2300, -3800 and 2300, 3800.
 		float halfwidth = (200 * scale.X) / 2;
 		float halfheight = (200 * scale.Y) / 2;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building Centre: %f %f Building Sides: %f %f %f %f"), centre.X, centre.Y, centre.X - halfwidth, centre.X + halfwidth, centre.Y - halfheight, centre.Y + halfheight));
 		if (-2200 > (centre.X - halfwidth)) {
 			if (-3700 > (centre.Y - halfheight)) {
 				PathExists = false;
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
 			}
 		}
 		if (2200 < (centre.X + halfwidth)) {
 			if (3700 < (centre.Y + halfheight)) {
 				PathExists = false;
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Building on base detected!!")));
 			}
 		}
 
@@ -270,10 +257,8 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 		const float minDistX = scaledX + (100. * bIt->GetActorScale().X) + extraGap;
 		const float minDistY = scaledY + (100. * bIt->GetActorScale().Y) + extraGap;
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d dist squared %f"), bIt->GetUniqueID(), dist));
 		if (FMath::Abs<float>(loc.X - centre.X) <= minDistX && FMath::Abs<float>(loc.Y - centre.Y) <= minDistY)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Bldg %d at %f %f, and %f %f with min %f %f in the way..."), bIt->GetUniqueID(), loc.X, loc.Y, centre.X, centre.Y, minDistX, minDistY).Append(bIt->GetName()));
 			return false;
 		}
 	}
@@ -290,7 +275,6 @@ bool AGPGameMode::IsClear(FVector2D centre, FRotator rotation, FVector scale)
 		// For now ignore rotation and scale and just make sure the bounding circle of the mesh around centre is clear.
 		if (FMath::Abs<float>(loc.X - centre.X) <= minPawnDistX && FMath::Abs<float>(loc.Y - centre.Y) <= minPawnDistY)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Pawn %d in the way..."), pIt->Get()->GetUniqueID()));
 			return false;
 		}
 	}
@@ -307,7 +291,6 @@ void AGPGameMode::Tick(float DeltaSeconds)
 		FVector centre = FMath::RandPointInBox(FBox(FVector(-2500., -2500., 0.), FVector(2500., 2500., 0.)));
 		FVector scale = FMath::RandPointInBox(FBox(FVector(0.75, 0.75, 2.0), FVector(4.0, 4.0, 12.0)));
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Spawning at %f %f %f"), centre.X, centre.Y, centre.Z));
 		if (IsClear(FVector2D(centre), FRotator::ZeroRotator, scale)) {
 			SpawnBuilding(centre, FRotator::ZeroRotator, scale);
 		}
@@ -343,19 +326,9 @@ void AGPGameMode::SpawnFlag(int8 Team)
 		{
 			flag = World->SpawnActor<AGPFlagPickup>(AGPFlagPickup::StaticClass(), location, rotation, SpawnParams);
 		}
-        if (flag == NULL)
+        if (flag != NULL)
         {
-            if (GEngine)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-            }
-        }
-        else {
 			flag->Init(Team, false);
-            if (GEngine)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-            }
         }
     }
 }
@@ -398,7 +371,6 @@ void AGPGameMode::SpawnAmmo()
 
 void AGPGameMode::EndGame(int8 Team)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("End Game"));
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	gs->SetState(3);
 }
@@ -469,7 +441,6 @@ void AGPGameMode::PauseGame()
 
 void AGPGameMode::UnpauseGame()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GO GO GO"));
 	AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 	gs->SetState(1);
 }
@@ -504,7 +475,7 @@ bool AGPGameMode::StartTCPReceiver(
 	//Not created?
 	if (!ListenerSocket)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StartTCPReceiver>> Listen socket could not be created! ~> %s %d"), *TheIP, ThePort));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StartTCPReceiver>> Listen socket could not be created! ~> %s %d"), *TheIP, ThePort));
 		return false;
 	}
 
@@ -651,9 +622,9 @@ void AGPGameMode::TCPSocketListener()
 	// Only continue if some data was received, or the client is waiting on a request from us.
 	if (commstate == OCVSProtocolState::REQUEST) {
 		// continue...
-		if (Read > 0) {
+		/*if (Read > 0) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Unexpected Data Bytes Read ~> %d!"), Read));
-		}
+		}*/
 	}
 	else if (Read >= 0) {
 		// Increment the total read counter.
@@ -728,7 +699,7 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: This reinterpret cast is nice but smelly...
 		ConnectionSocket->Send(reinterpret_cast<uint8 *>(somestuff.data()), somestuff.size(), sent);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Sent bytes ~> %d"), sent));
 
 		commstate = OCVSProtocolState::RECEIVE;
 		dataExpecting = OCVSPacketScanHeader(OCVSPacketScanHeader::RESULT_FAILURE_UNKNOWN).GetPackedSize() + OCVSPacketAck::getInstance()->GetPackedSize();
@@ -755,7 +726,7 @@ void AGPGameMode::TCPSocketListener()
 		// TODO: Ensure we actually have all of the promised data... or block between chunks
 		if (dataRead < dataExpecting) {
 			// Not enough data yet!
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Not enough data! Want ~> %d"), (need + offset) - dataRead));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Not enough data! Want ~> %d"), (need + offset) - dataRead));
 			return;
 		}
 
