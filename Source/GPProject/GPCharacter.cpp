@@ -828,7 +828,9 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 		BroadcastOnFlagPickup();
 		int8 Team = flag->flagTeam;
 		GetWorld()->DestroyActor(flag, true);
-		
+        // Increase number of flags captured.
+        AGPGameState* const MyGameState = GetWorld() != NULL ? GetWorld()->GetGameState<AGPGameState>() : NULL;
+        MyGameState->flagsCaptured += 1;
 	}
 }
 
@@ -929,6 +931,9 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 		ServerSpawnFlag(loc, Team, false);
 		// Then pause the game
 		SetPauseState();
+        // Decrease number of flags captured.
+        AGPGameState* const MyGameState = GetWorld() != NULL ? GetWorld()->GetGameState<AGPGameState>() : NULL;
+        MyGameState->flagsCaptured -= 1;
 	}
 }
 
