@@ -809,7 +809,7 @@ bool AGPCharacter::CanCaptureFlag()
 
 // Defer to server
 void AGPCharacter::OnFlagPickup(AGPFlagPickup * flag) {
-	if (CanPickupFlag())
+	if (CanPickupFlag() && GetController() != NULL && Role != ROLE_Authority)
 	{
 		ServerOnFlagPickup(flag);
 	}
@@ -854,7 +854,7 @@ void AGPCharacter::OnFlagCapture()
 {
 	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
 	int8 T = PState->Team;
-	if (CanCaptureFlag())
+	if (CanCaptureFlag() && GetController() != NULL && Role != ROLE_Authority)
 	{
 		ServerOnFlagCapture(T);
 	}
