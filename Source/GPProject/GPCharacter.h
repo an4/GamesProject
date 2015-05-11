@@ -27,6 +27,9 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 	bool CanFire();
 	
     public:
+		UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		USoundCue* PickUpSound;
+
 		UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterial* GreenMaterial;
 		
@@ -184,8 +187,8 @@ class GPPROJECT_API AGPCharacter : public ACharacter
 		void ServerOnFlagPickup_Implementation(AGPFlagPickup * flag);
 
 		UFUNCTION(NetMulticast, Reliable)
-		void BroadcastOnFlagPickup();
-		void BroadcastOnFlagPickup_Implementation();
+		void BroadcastOnFlagPickup(FVector loc);
+		void BroadcastOnFlagPickup_Implementation(FVector loc);
 
 		UFUNCTION()
 		void OnFlagCapture();

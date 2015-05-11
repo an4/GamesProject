@@ -62,6 +62,9 @@ AGPCharacter::AGPCharacter(const FObjectInitializer& ObjectInitializer)
     
     SpawnPoints[0] = FVector( 2300.0f,  3800.0f, 112.0f);
 	SpawnPoints[1] = FVector(-2300.0f, -3800.0f, 112.0f);
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> PickUpSoundCueLoader(TEXT("SoundCue'/Game/Audio/PickUp_Cue.PickUp_Cue'"));
+	PickUpSound = PickUpSoundCueLoader.Object;
 }
 
 bool AGPCharacter::CanJoinTeam(int8 Team)
@@ -801,7 +804,7 @@ bool AGPCharacter::CanCaptureFlag()
 
 // Defer to server
 void AGPCharacter::OnFlagPickup(AGPFlagPickup * flag) {
-	if (CanPickupFlag())
+	if (CanPickupFlag() && GetController() != NULL && Role == ROLE_Authority)
 	{
 		ServerOnFlagPickup(flag);
 	}
@@ -817,7 +820,8 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 	if (Role == ROLE_Authority)
 	{
 		// Tell all that a flag has been picked up
-		BroadcastOnFlagPickup();
+		FVector loc = flag->GetActorLocation();
+		BroadcastOnFlagPickup(loc);
 		int8 Team = flag->flagTeam;
 		GetWorld()->DestroyActor(flag, true);
         // Increase number of flags captured.
@@ -826,11 +830,12 @@ void AGPCharacter::ServerOnFlagPickup_Implementation(AGPFlagPickup * flag)
 	}
 }
 
-void AGPCharacter::BroadcastOnFlagPickup_Implementation()
+void AGPCharacter::BroadcastOnFlagPickup_Implementation(FVector loc)
 {
 	// If we're that player, change our playerstate (which will replicate automatically)
 	if (GetController() != NULL)
 	{
+		PlaySoundAtLocation(PickUpSound, loc, 0.5f, 0.5f);
 		AGPPlayerController* Controller = Cast<AGPPlayerController>(GetController());
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		if (State == NULL)
@@ -848,7 +853,7 @@ void AGPCharacter::OnFlagCapture()
 {
 	AGPPlayerState* PState = (AGPPlayerState*)PlayerState;
 	int8 T = PState->Team;
-	if (CanCaptureFlag())
+	if (CanCaptureFlag() && GetController() != NULL && Role == ROLE_Authority)
 	{
 		ServerOnFlagCapture(T);
 	}
