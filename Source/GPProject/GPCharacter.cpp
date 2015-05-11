@@ -419,7 +419,7 @@ void AGPCharacter::ServerRespawnDropFlag_Implementation()
 			}
 			else
 			{
-				ServerSpawnFlag(SpawnPoints[0], Team, true);
+				ServerSpawnFlag(SpawnPoints[0], Team, false);
 			}
 			resetFlag = false;
 		}
