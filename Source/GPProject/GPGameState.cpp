@@ -58,6 +58,7 @@ int32 AGPGameState::GetState()
 void AGPGameState::SetWaitingForRescan(bool val)
 {
 	waitingForRescan = val;
+    flagsCaptured = 0;
 }
 
 bool AGPGameState::GetWaitingForRescan()
