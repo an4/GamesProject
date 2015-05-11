@@ -419,7 +419,7 @@ void AGPCharacter::ServerRespawnDropFlag_Implementation()
 			}
 			else
 			{
-				ServerSpawnFlag(SpawnPoints[0], Team, true);
+				ServerSpawnFlag(SpawnPoints[0], Team, false);
 			}
 			resetFlag = false;
 		}
@@ -1010,6 +1010,10 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 		}
 		BroadcastRescanTimer();
 		GetWorld()->GetTimerManager().SetTimer(rescanTimer, this, &AGPCharacter::SetPauseStateOff, 30.0f);
+		for (TActorIterator<AGPCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+		{
+			ActorItr->ServerRespawn(true);
+		}
 	}
 }
 
