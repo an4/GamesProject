@@ -98,14 +98,14 @@ void AGPRemoteBomb::Explode()
 				}
 				else
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Failed to launch projectile"));
+                    UE_LOG(LogTemp, Warning, TEXT("Failed to launch projectile"));
 				}
 			}
 		}
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Failed to find class"));
+        UE_LOG(LogTemp, Warning, TEXT("Failed to find class"));
 	}
 	AGPRemoteBomb::Destroy();
 }

@@ -132,7 +132,7 @@ void AGPFlagPickup::ClientOnlySetMaterial() {
 		PickupMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(RedMaterial, this));
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("flagTeam is not set"));
+        UE_LOG(LogTemp, Warning, TEXT("flagTeam is not set"));
 	}
 }
 
