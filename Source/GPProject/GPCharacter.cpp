@@ -189,14 +189,12 @@ void AGPCharacter::BroadcastJoinTeam_Implementation(int8 Team)
 			AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
 			otherPlayer->IncreasePoints();
 
-			if (GEngine)
+			if (Health <= 0)
 			{
-				if (Health <= 0)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-					Respawn();
-				}
+				UE_LOG(LogTemp, Warning, TEXT("We died! Oh noes!"));
+				Respawn();
 			}
+
 			return DamageAmount;
 			//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 		}
@@ -241,13 +239,10 @@ void AGPCharacter::ServerTakeDamage_Implementation(float DamageAmount, FDamageEv
 					AGPCharacter* otherPlayer = Cast<AGPCharacter, AActor>(DamageCauser->GetOwner());
 					otherPlayer->IncreasePoints();
 
-					if (GEngine)
+					if (Health <= 0)
 					{
-						if (Health <= 0)
-						{
-							GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died! Oh noes!"));
-							ServerRespawn(false);
-						}
+                        UE_LOG(LogTemp, Warning, TEXT("We died! Oh noes!"));
+						ServerRespawn(false);
 					}
 				}
 				//return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -264,10 +259,7 @@ void AGPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("A player has entered the game!"));
-	}
+    UE_LOG(LogTemp, Warning, TEXT("A player has entered the game!"));
 
 	// Set starting health
 
@@ -447,7 +439,7 @@ void AGPCharacter::BroadcastRespawn_Implementation()
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		if (State == NULL)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+            UE_LOG(LogTemp, Warning, TEXT("State is null"));
 		}
 		else 
 		{
@@ -486,7 +478,7 @@ void AGPCharacter::BroadcastFinishRespawn_Implementation()
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		if (State == NULL)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+            UE_LOG(LogTemp, Warning, TEXT("State is null"));
 		}
 		else {
 			State->SetCanPickupFlag(true);
@@ -843,7 +835,7 @@ void AGPCharacter::BroadcastOnFlagPickup_Implementation()
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		if (State == NULL)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+            UE_LOG(LogTemp, Warning, TEXT("State is null"));
 		}
 		else {
 			State->SetHasFlag(true);
@@ -905,17 +897,11 @@ void AGPCharacter::ServerOnFlagCapture_Implementation(int8 Team)
 
 			if (flag == NULL)
 			{
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-				}
+				UE_LOG(LogTemp, Warning, TEXT("Flag is null"));
 			}
 			else {
 				flag->Init(Team, false);
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-				}
+				UE_LOG(LogTemp, Warning, TEXT("Flag spawned"));
 			}*/
 		}
 		// Update the current top score
@@ -947,7 +933,7 @@ void AGPCharacter::BroadcastOnFlagCapture_Implementation()
 		AGPPlayerState* State = Cast<AGPPlayerState>(Controller->PlayerState);
 		if (State == NULL)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("State is null"));
+            UE_LOG(LogTemp, Warning, TEXT("State is null"));
 		}
 		// Remove flag state and increment our count
 		else {
@@ -984,12 +970,12 @@ void AGPCharacter::SetPauseState()
 	UWorld* const World = GetWorld();
 	if (World == NULL || !World)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game world"));
+        UE_LOG(LogTemp, Warning, TEXT("Unable to find game world"));
 	}
 	AGPGameState* gs = Cast<AGPGameState>(World->GetGameState());
 	if (gs == NULL || !gs)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Unable to find game state"));
+        UE_LOG(LogTemp, Warning, TEXT("Unable to find game state"));
 	}
 	if (gs->GetState() == 1)
 	{
@@ -1007,7 +993,7 @@ void AGPCharacter::ServerSetPauseState_Implementation()
 {
 	if (Role == ROLE_Authority)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting pause state"));
+        UE_LOG(LogTemp, Warning, TEXT("Setting pause state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(2);
 		// Start timer to go back to normal state TODO: We may want a timeout if the Kinect isn't working?
@@ -1073,7 +1059,7 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 		AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
 		if (gm == NULL || !gm)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+            UE_LOG(LogTemp, Warning, TEXT("GameMode null"));
 		}
 		else
 		{
@@ -1081,7 +1067,7 @@ void AGPCharacter::ServerSetPauseStateOff_Implementation()
 			gm->ResetBuildings();
 			gm->Rescan();
 		}
-		/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Setting game state"));
+		/*UE_LOG(LogTemp, Warning, TEXT("Setting game state"));
 		AGPGameState* gs = Cast<AGPGameState>(GetWorld()->GetGameState());
 		gs->SetState(1);*/
 	}
@@ -1132,17 +1118,11 @@ void AGPCharacter::ServerSpawnFlag_Implementation(FVector loc, int8 Team, bool w
 			}
 			if (flag == NULL)
 			{
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag is null"));
-				}
+                UE_LOG(LogTemp, Warning, TEXT("Flag is null"));
 			}
 			else {
 				flag->Init(Team, wasDropped);
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Flag spawned"));
-				}
+                UE_LOG(LogTemp, Log, TEXT("Flag spawned"));
 			}
 		}
 	}
@@ -1153,7 +1133,7 @@ void AGPCharacter::Tick(float deltaSeconds)
 	FVector ActorLocation = GetActorLocation();
 	if (GetActorLocation().Z <= -100000 && Health > 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("We died to falling! Oh noes!"));
+        UE_LOG(LogTemp, Warning, TEXT("We died to falling! Oh noes!"));
 		// Move flag back to capture area
 		ServerRespawn(true);
 	}

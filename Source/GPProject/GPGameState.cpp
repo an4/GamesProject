@@ -77,7 +77,7 @@ void AGPGameState::UpdateFlagLeader()
 	AGPGameMode * gm = Cast<AGPGameMode>(World->GetAuthGameMode());
 	if (gm == NULL || !gm)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("GameMode null"));
+        UE_LOG(LogTemp, Warning, TEXT("GameMode null"));
 	}
 	else
 	{
