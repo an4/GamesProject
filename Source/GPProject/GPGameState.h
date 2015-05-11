@@ -32,6 +32,9 @@ class GPPROJECT_API AGPGameState : public AGameState
 		UPROPERTY(Replicated)
 		int32 team0Flags = 0;
 
+        UPROPERTY(REPLICATED)
+        int32 flagsCaptured = 0;
+
 		UPROPERTY(Replicated)
 		bool waitingForRescan = false;
 
@@ -58,4 +61,7 @@ class GPPROJECT_API AGPGameState : public AGameState
 
 		UFUNCTION(BlueprintImplementableEvent, Category = "Game End")
 		virtual void GameEndCondition(int32 team);
+
+        UFUNCTION(BlueprintCallable, Category = "Flag")
+        int32 GetFlagsCaptured();
 };

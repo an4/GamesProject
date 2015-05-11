@@ -13,6 +13,7 @@ AGPGameState::AGPGameState(const class FObjectInitializer& ObjectInitializer)
 	TeamPlayerCount[1] = 0;
 	gameState = 1;
 	flagLeader = 0;
+    flagsCaptured = 0;
 }
 
 int8 AGPGameState::GetSetTeam()
@@ -40,6 +41,7 @@ void AGPGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutL
 	DOREPLIFETIME(AGPGameState, flagLeader);
 	DOREPLIFETIME(AGPGameState, team1Flags);
 	DOREPLIFETIME(AGPGameState, team0Flags);
+    DOREPLIFETIME(AGPGameState, flagsCaptured);
 	DOREPLIFETIME(AGPGameState, waitingForRescan);
 }
 
@@ -56,6 +58,7 @@ int32 AGPGameState::GetState()
 void AGPGameState::SetWaitingForRescan(bool val)
 {
 	waitingForRescan = val;
+    flagsCaptured = 0;
 }
 
 bool AGPGameState::GetWaitingForRescan()
@@ -133,4 +136,9 @@ int32 AGPGameState::GetTeamFlags(int32 team)
 	{
 		return 0;
 	}
+}
+
+int32 AGPGameState::GetFlagsCaptured()
+{
+    return flagsCaptured;
 }
