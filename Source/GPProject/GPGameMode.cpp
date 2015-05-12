@@ -232,12 +232,14 @@ void AGPGameMode::SpawnBuilding(FVector centre, FRotator rotation, FVector scale
 		// UE_LOG(LogTemp, Log, TEXT("Building Centre: %f %f Building Sides: %f %f %f %f"), centre.X, centre.Y, centre.X - halfwidth, centre.X + halfwidth, centre.Y - halfheight, centre.Y + halfheight);
 		if (-2025 > (centre.X - halfwidth)) {
 			if (-3525 > (centre.Y - halfheight)) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("NEGATIVE FAIL\n")));
 				PathExists = false;
 				// UE_LOG(LogTemp, Log, TEXT("Building on base detected!!"))
 			}
 		}
 		if (2025 < (centre.X + halfwidth)) {
 			if (3525 < (centre.Y + halfheight)) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("POSITIVE FAIL\n")));
 				PathExists = false;
                 // UE_LOG(LogTemp, Log, TEXT("Building on base detected!!"))
 			}
