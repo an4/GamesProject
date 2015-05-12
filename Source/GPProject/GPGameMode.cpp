@@ -28,7 +28,13 @@ AGPGameMode::AGPGameMode(const class FObjectInitializer& ObjectInitializer)
 	PlayerControllerClass = AGPPlayerController::StaticClass();
 	PlayerStateClass = AGPPlayerState::StaticClass();
 	GameStateClass = AGPGameState::StaticClass();
-	HUDClass = AGPHUD::StaticClass();
+	//HUDClass = AGPHUD::StaticClass();
+	
+	static ConstructorHelpers::FObjectFinder<UBlueprint> HUDObject(TEXT("Blueprint'/Game/GUI/BP_GPHUD.BP_GPHUD'"));
+	if (HUDObject.Object != NULL)
+	{
+		HUDClass = (UClass*)HUDObject.Object->GeneratedClass;
+	}
 
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FObjectFinder<UBlueprint> PlayerPawnObject(TEXT("Blueprint'/Game/Blueprints/BP_GPCharacter.BP_GPCharacter'"));
