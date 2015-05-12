@@ -184,7 +184,7 @@ void AGPGameMode::SpawnBuilding(FVector2D ctr, float rot, FVector2D scl, float h
 	const float cscaley = worldy / worldy_px;
 
 	// Scale factor to combine with the incoming scale factor, to make building jumps possible
-	const float adjustz = 7.0f;
+	const float adjustz = 6.0f;
 
 	// Scale factors for mesh scaling.
 	const float scalex = (scl.X * worldx) / (worldx_px * meshx);
